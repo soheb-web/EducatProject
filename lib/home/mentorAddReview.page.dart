@@ -1,3 +1,9 @@
+/*
+
+*/
+
+
+
 import 'dart:developer';
 
 import 'package:educationapp/coreFolder/Controller/getMentorReveiwController.dart';
@@ -17,7 +23,8 @@ import 'package:hive/hive.dart';
 
 class MentoraddReviewPage extends ConsumerStatefulWidget {
   final String id;
-  final Review? getmentorReviewModel;
+  final Review? getmentorReviewModel; // ← existing review (nullable)
+
   const MentoraddReviewPage({
     super.key,
     required this.id,
@@ -25,51 +32,29 @@ class MentoraddReviewPage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<MentoraddReviewPage> createState() =>
-      _MentoraddReviewPageState();
+  ConsumerState<MentoraddReviewPage> createState() => _MentoraddReviewPageState();
 }
 
 class _MentoraddReviewPageState extends ConsumerState<MentoraddReviewPage> {
-  int selectedRating = 0;
-  final descriptionController = TextEditingController();
-
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // 👉 Agar review already exist karta hai (edit mode)
-    if (widget.getmentorReviewModel != null) {
-      selectedRating = widget.getmentorReviewModel!.rating ?? 0;
-      descriptionController.text =
-          widget.getmentorReviewModel!.description ?? "";
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    var box = Hive.box("userdata");
-    var userId = box.get("userid");
-    // final getMentorReviewProvider =
-    //     ref.watch(getMentorReviewController(widget.id.toString()));
     final themeMode = ref.watch(themeProvider);
+    final hasReview = widget.getmentorReviewModel != null;
+    final rating = widget.getmentorReviewModel?.rating ?? 0;
+    final description = widget.getmentorReviewModel?.description ?? "";
+
     return Scaffold(
-      backgroundColor:
-          themeMode == ThemeMode.dark ? Color(0xff1B1B1B) : Color(0xff9088F1),
+      backgroundColor: themeMode == ThemeMode.dark ? Color(0xff1B1B1B) : Color(0xff9088F1),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 30.h,
-          ),
+          SizedBox(height: 30.h),
           Padding(
             padding: EdgeInsets.only(left: 20.w, right: 20.w),
             child: Row(
               children: [
                 InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  onTap: () => Navigator.pop(context),
                   child: Container(
                     width: 50.w,
                     height: 48.h,
@@ -79,42 +64,28 @@ class _MentoraddReviewPageState extends ConsumerState<MentoraddReviewPage> {
                     ),
                     child: Padding(
                       padding: EdgeInsets.only(left: 10.w),
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                      ),
+                      child: Icon(Icons.arrow_back_ios, color: Colors.white),
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: 50.w,
-                ),
+                SizedBox(width: 50.w),
                 Text(
-                  "Add Review",
+                  hasReview ? "Your Review" : "Add Review",
                   style: GoogleFonts.inter(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white),
-                )
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
               ],
             ),
           ),
-          SizedBox(
-            height: 35.h,
-          ),
+          SizedBox(height: 35.h),
           Expanded(
             child: Container(
-              padding: EdgeInsets.only(
-                left: 20.w,
-                top: 20.h,
-                bottom: 20.h,
-                right: 20.w,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
               decoration: BoxDecoration(
-                //  color: Colors.white,
-                color: themeMode == ThemeMode.dark
-                    ? Colors.white
-                    : Color(0xff1B1B1B),
+                color: themeMode == ThemeMode.dark ? Colors.white : Color(0xff1B1B1B),
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(30.r),
                   topLeft: Radius.circular(30.r),
@@ -125,275 +96,88 @@ class _MentoraddReviewPageState extends ConsumerState<MentoraddReviewPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Fill out the details",
+                      "Review Details",
                       style: GoogleFonts.inter(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w600,
-                        color: themeMode == ThemeMode.dark
-                            ? Color(0xff1B1B1B)
-                            : Colors.white,
+                        color: themeMode == ThemeMode.dark ? Color(0xff1B1B1B) : Colors.white,
                       ),
                     ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
+                    SizedBox(height: 24.h),
+
+                    // ★★★★★ Stars – read only
                     Row(
                       children: List.generate(5, (index) {
                         final starIndex = index + 1;
-                        return GestureDetector(
-                          onTap: () =>
-                              setState(() => selectedRating = starIndex),
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 8.w),
-                            child: Icon(
-                              starIndex <= selectedRating
-                                  ? Icons.star
-                                  : Icons.star_border,
-                              color: const Color(0xff9088F1),
-                              size: 30.sp,
-                            ),
+                        return Padding(
+                          padding: EdgeInsets.only(left: index == 0 ? 0 : 8.w),
+                          child: Icon(
+                            starIndex <= rating ? Icons.star : Icons.star_border,
+                            color: const Color(0xff9088F1),
+                            size: 36.sp,
                           ),
                         );
                       }),
                     ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
+
+                    if (rating > 0) ...[
+                      SizedBox(height: 8.h),
+                      Text(
+                        "$rating / 5",
+                        style: GoogleFonts.roboto(
+                          fontSize: 14.sp,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+
+                    SizedBox(height: 32.h),
+
                     Text(
-                      "Description",
+                      "Your Comment",
                       style: GoogleFonts.roboto(
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w500,
-                        color: themeMode == ThemeMode.dark
-                            ? Color(0xFF1B1B1B)
-                            : Colors.white,
+                        color: themeMode == ThemeMode.dark ? Color(0xFF1B1B1B) : Colors.white,
                       ),
                     ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    TextField(
-                      maxLines: 4,
-                      controller: descriptionController,
-                      style: TextStyle(
-                        color: themeMode == ThemeMode.dark
-                            ? Color(0xFF4D4D4D)
-                            : Colors.white,
-                      ),
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(
-                              left: 15.w, right: 15.w, top: 10.h, bottom: 10.h),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20.r),
-                              borderSide: BorderSide(
-                                color: Colors.grey,
-                              )),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20.r),
-                              borderSide: BorderSide(
-                                color: themeMode == ThemeMode.dark
-                                    ? Color(0xFF4D4D4D)
-                                    : Colors.white,
-                              ))),
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        minimumSize: MaterialStateProperty.all(
-                            Size(double.infinity, 60.h)),
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                          (states) {
-                            // When button is disabled
-                            if (states.contains(MaterialState.disabled)) {
-                              return themeMode == ThemeMode.dark
-                                  ? const Color(0xFFDCF881).withOpacity(0.4)
-                                  : Colors.white.withOpacity(0.4);
-                            }
+                    SizedBox(height: 12.h),
 
-                            // When button is enabled
-                            return themeMode == ThemeMode.dark
-                                ? const Color(0xFFDCF881)
-                                : Colors.white;
-                          },
+                    // Read-only description
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(16.w),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(20.r),
+                        // color: themeMode == ThemeMode.dark
+                        //     ? Colors.grey.shade900.withOpacity(0.4)
+                        //     : Colors.grey.shade100.withOpacity(0.5),
+                      ),
+                      child: Text(
+                        description.isNotEmpty ? description : "No comment provided.",
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          height: 1.5,
+                          color: themeMode == ThemeMode.dark ? Colors.black87 : Colors.white70,
                         ),
                       ),
-                      onPressed: selectedRating == 0 || _isLoading
-                          ? null
-                          : () async {
-                              log(widget.id);
-
-                              setState(() {
-                                _isLoading = true;
-                              });
-
-                              final body = MentorReviewBodyModel(
-                                mentorId: widget.id,
-                                description: descriptionController.text.trim(),
-                                rating: selectedRating,
-                              );
-
-                              try {
-                                final service = APIStateNetwork(createDio());
-                                final response =
-                                    await service.mentorReview(body);
-
-                                if (response.status == true) {
-                                  Navigator.pop(context);
-                                  ref.invalidate(getMentorReviewController(
-                                      widget.id.toString()));
-                                  Fluttertoast.showToast(
-                                      msg: response.message.toString());
-
-                                  // Reset only after success
-                                  setState(() {
-                                    selectedRating = 0;
-                                    descriptionController.clear();
-                                  });
-                                } else {
-                                  Fluttertoast.showToast(
-                                      msg: "Something went wrong");
-                                }
-                              } catch (e, st) {
-                                log("${e.toString()} /n ${st.toString()}");
-                              } finally {
-                                setState(() => _isLoading = false);
-                              }
-                            },
-                      child: _isLoading
-                          ? SizedBox(
-                              height: 25,
-                              width: 25,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.w,
-                                color: themeMode == ThemeMode.dark
-                                    ? Color(0xFF1B1B1B)
-                                    : Colors.white,
-                              ),
-                            )
-                          : Text(
-                              "Submit Review",
-                              style: GoogleFonts.roboto(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
-                                color: themeMode == ThemeMode.dark
-                                    ? Color(0xFF1B1B1B)
-                                    : Color(0xFF1B1B1B),
-                              ),
-                            ),
                     ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    // getMentorReviewProvider.when(
-                    //   data: (snp) {
-                    //     if (snp.reviews!.isEmpty) {
-                    //       return Center(
-                    //         child: Text(
-                    //           "No Review yet.",
-                    //           style: GoogleFonts.inter(
-                    //             fontSize: 16.sp,
-                    //             color: themeMode == ThemeMode.dark
-                    //                 ? const Color(0xFF1B1B1B)
-                    //                 : Colors.white,
-                    //           ),
-                    //         ),
-                    //       );
-                    //     }
-                    //     return ListView.builder(
-                    //       reverse: true,
-                    //       padding: EdgeInsets.zero,
-                    //       shrinkWrap: true,
-                    //       physics: NeverScrollableScrollPhysics(),
-                    //       itemCount: snp.reviews!.length,
-                    //       itemBuilder: (context, index) {
-                    //         final review = snp.reviews![index];
 
-                    //         final double avg = double.tryParse(
-                    //                 review.rating.toString() ?? "") ??
-                    //             0.0;
-                    //         final int rating = avg.clamp(0, 5).toInt();
+                    SizedBox(height: 40.h),
 
-                    //         return Container(
-                    //           padding: EdgeInsets.only(
-                    //               left: 16.w,
-                    //               right: 16.w,
-                    //               top: 16.h,
-                    //               bottom: 16.h),
-                    //           decoration: BoxDecoration(
-                    //             borderRadius: BorderRadius.circular(20.r),
-                    //             // color: Color(0xFFF1F2F6),
-                    //             color: themeMode == ThemeMode.dark
-                    //                 ? Color(0xffF1F2F6)
-                    //                 : Color(0xff9088F1),
-                    //           ),
-                    //           margin: EdgeInsets.only(
-                    //               bottom: 20.h, left: 10.w, right: 10.w),
-                    //           child: Column(
-                    //             crossAxisAlignment: CrossAxisAlignment.start,
-                    //             children: [
-                    //               Row(
-                    //                 children: [
-                    //                   ...List.generate(
-                    //                     rating,
-                    //                     (indiex) => Icon(
-                    //                       Icons.star,
-                    //                       color: Colors.amber,
-                    //                       size: 20.0,
-                    //                     ),
-                    //                   ),
-                    //                   ...List.generate(
-                    //                     5 - rating, // Remaining stars (5 - filled stars)
-                    //                     (i) => const Icon(
-                    //                       Icons
-                    //                           .star_border, // Outlined star icon
-                    //                       color: Colors
-                    //                           .amber, // Use the same color for visual consistency
-                    //                       size: 20.0,
-                    //                     ),
-                    //                   ),
-                    //                 ],
-                    //               ),
-                    //               SizedBox(height: 5.h),
-                    //               Text(
-                    //                 review.description ?? '',
-                    //                 style: GoogleFonts.roboto(
-                    //                   fontSize: 16.sp,
-                    //                   color: themeMode == ThemeMode.light
-                    //                       ? Color(0xffDEDDEC)
-                    //                       : Color(0xFF666666),
-                    //                 ),
-                    //               ),
-                    //               Text(
-                    //                 review.userName ?? "N/A",
-                    //                 style: GoogleFonts.roboto(
-                    //                   fontSize: 14.sp,
-                    //                   color: themeMode == ThemeMode.light
-                    //                       ? Color(0xffDEDDEC)
-                    //                       : Color(0xFF666666),
-                    //                 ),
-                    //               ),
-                    //               // SizedBox(
-                    //               //   height: 10.h,
-                    //               // )
-                    //             ],
-                    //           ),
-                    //         );
-                    //       },
-                    //     );
-                    //   },
-                    //   error: (error, stackTrace) {
-                    //     log(stackTrace.toString());
-                    //     return Center(
-                    //       child: Text(error.toString()),
-                    //     );
-                    //   },
-                    //   loading: () => Center(
-                    //     child: CircularProgressIndicator(),
-                    //   ),
-                    // )
+                    if (!hasReview) ...[
+                      Text(
+                        "You haven't submitted a review yet.",
+                        style: GoogleFonts.roboto(
+                          fontSize: 15.sp,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                      SizedBox(height: 20.h),
+                      // Optional: button to go to add review screen
+                    ] else
+                      const SizedBox.shrink(),
                   ],
                 ),
               ),

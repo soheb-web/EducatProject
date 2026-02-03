@@ -1,11 +1,11 @@
 import 'package:educationapp/coreFolder/Controller/themeController.dart';
-import 'package:educationapp/coreFolder/Model/ReviewGetModel.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+
+import '../coreFolder/Model/ReviewGetModel.dart';
 
 class ShowReviewDetailsPage extends ConsumerStatefulWidget {
   final Review review;
@@ -16,7 +16,6 @@ class ShowReviewDetailsPage extends ConsumerStatefulWidget {
     required this.review,
     this.isViewOnly = false,
   });
-
   @override
   ConsumerState<ShowReviewDetailsPage> createState() =>
       _ShowReviewDetailsPageState();

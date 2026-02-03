@@ -158,7 +158,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'findmentor.page.dart';
 
 class OnlineMentorPage extends ConsumerStatefulWidget {
   final List<Map<String, dynamic>> onlineMentors;
@@ -207,6 +206,31 @@ class _OnlineMentorPageState extends ConsumerState<OnlineMentorPage> {
           style: TextStyle(color: Colors.white),
         ),
         elevation: 0,
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Container(
+            margin: EdgeInsets.only(left: 10.w, top: 10, bottom: 10),
+            width: 3.w, // ← yeh chhota kiya
+            height: 3.h, // ← yeh chhota kiya
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.only(left: 6), // ← thoda kam kiya
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  size: 20,
+                  color:
+                  themeMode == ThemeMode.dark ? Color(0xFF1B1B1B) : null,
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
       body: Column(
         children: [

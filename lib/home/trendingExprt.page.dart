@@ -106,7 +106,7 @@ class _TrendingExprtPageState extends ConsumerState<TrendingExprtPage> {
                           contentPadding: EdgeInsets.only(
                               left: 15.w, right: 15.w, top: 10.h, bottom: 10.h),
                           hint: Text(
-                            "Search",
+                            "Search Mentor",
                             style: GoogleFonts.inter(
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w400,

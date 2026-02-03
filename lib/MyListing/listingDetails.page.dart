@@ -1717,7 +1717,7 @@ class __ListingDetailsContentState extends ConsumerState<_ListingDetailsContent>
                     _buildActionButton(
                       icon: Icons.email_outlined,
                       label:
-                      "Message & view phone number (${(double.tryParse(widget.item.budget ?? '0') ?? 0).toInt()} coins)",
+                      "Message (${(double.tryParse(widget.item.budget ?? '0') ?? 0).toInt()} coins)",
                       onTap: () {}, // Placeholder
                     ),
                     SizedBox(height: 12.h),
@@ -1753,23 +1753,23 @@ class __ListingDetailsContentState extends ConsumerState<_ListingDetailsContent>
                             : () async {
                           await _handleApply(ref);
                         },
-                        icon: isApplying
-                            ? SizedBox(
-                          width: 20.w,
-                          height: 20.h,
-                          child: const CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        )
-                            : Icon(Icons.apple_outlined, size: 20),
+                        // icon: isApplying
+                        //     ? SizedBox(
+                        //   width: 20.w,
+                        //   height: 20.h,
+                        //   child: const CircularProgressIndicator(
+                        //     color: Colors.white,
+                        //     strokeWidth: 2,
+                        //   ),
+                        // )
+                        //     : Icon(Icons.apple_outlined, size: 20),
                         label: isApplying
                             ? const Text("")
                             : Text(
                           "Apply Now",
                           style: GoogleFonts.inter(
                               fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w700,
                               color: Colors.white),
                         ),
                       ),
@@ -1965,15 +1965,13 @@ class __ListingDetailsContentState extends ConsumerState<_ListingDetailsContent>
           children: [
             Icon(icon, color: Colors.white, size: 20.sp),
             SizedBox(width: 12.w),
-            Expanded(
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.inter(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white),
-              ),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white),
             ),
           ],
         ),

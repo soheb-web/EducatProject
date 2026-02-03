@@ -1,1213 +1,1033 @@
-// Updated widget
 import 'dart:developer';
+
 import 'package:educationapp/coreFolder/Controller/themeController.dart';
-import 'package:educationapp/home/saveReview.page.dart';
 import 'package:educationapp/home/showReviewDetails.page.dart';
 import 'package:educationapp/home/webView.page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../coreFolder/Controller/reviewController.dart';
 import '../coreFolder/Model/ReviewGetModel.dart';
 import 'AllReviewPage.dart';
+import 'ColloegeUserPage.dart';
+import 'MentorDetail.dart';
+import 'StudentDetail.dart';
+
+// Enum for tabs
+enum CollegeTab { home, posts, jobs, alumni }
 
 class CollegeDetailPage extends ConsumerStatefulWidget {
-  int id;
-  CollegeDetailPage(this.id, {super.key});
+  final int id;
+  const CollegeDetailPage(this.id, {super.key});
 
   @override
   ConsumerState<CollegeDetailPage> createState() => _CollegeDetailPageState();
 }
 
 class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
+  CollegeTab _currentTab = CollegeTab.home;
+
+  // ────────────────────────────────────────────────
+  // Moved here so it's accessible in the whole class
+  static const Color linkedinBlue = Color(0xff9088F1);
+  // ────────────────────────────────────────────────
+
+  static const staticBannerUrl =
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Andhra_University_Entrance_Gate.jpg/1280px-Andhra_University_Entrance_Gate.jpg";
+  static const staticLogoUrl = "https://www.andhrauniversity.edu.in/img/au-logo.png";
+  static const staticCentenaryText = "Celebrating 100 years of Excellence...";
+  static const staticFollowers = "254K followers";
+  static const staticAlumniCount = "214K alumni";
+  static const staticIndustry = "Higher Education";
+  static const staticHeadquarters = "Andhra Pradesh, IN";
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.light,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final reviewAsync = ref.watch(reviewProvider(widget.id));
+    final reviewAsync = ref.watch(reviewCollegeProvider(widget.id));
     final themeMode = ref.watch(themeProvider);
-    return Scaffold(
+    final isDark = themeMode == ThemeMode.dark;
+
+    return Scaffold( 
+      extendBodyBehindAppBar: true,
+      backgroundColor: isDark ?   Colors.white:const Color(0xFF121212),
       body: reviewAsync.when(
-          data: (snap) => SingleChildScrollView(
-                child: Stack(
-                  children: [
-                    Column(
-                      children: [
-                        Container(
-                          height: 200.h,
-                          width: double.infinity,
-                          color: const Color(0xff9088F1),
+        data: (snap) {
+          final college = snap.collage;
+
+          if (college == null) {
+            return const Center(
+              child: Text(
+                "No college information available",
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+              ),
+            );
+          }
+
+          final bannerUrl = staticBannerUrl;
+          final logoUrl = college.image ?? staticLogoUrl;
+          final centenaryText = staticCentenaryText;
+
+          return SingleChildScrollView(
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Banner
+                Container(
+                  height: 260.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(logoUrl),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.4),
+                        BlendMode.darken,
+                      ),
+                    ),
+                  ),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 20.w, bottom: 20.h),
+                      child: Text(
+                        centenaryText,
+                        style: GoogleFonts.roboto(
+                          fontSize: 17.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          shadows: const [
+                            Shadow(blurRadius: 6, color: Colors.black54)
+                          ],
                         ),
-                        Container(
-                          height: MediaQuery.of(context).size.height,
-                          color: themeMode == ThemeMode.light
-                              ? Color(0xFF1B1B1B)
-                              : Colors.white,
-                          child: Container(
-                            width: double.infinity,
-                            margin: EdgeInsets.only(top: 100.h),
-                            child: SingleChildScrollView(
-                              child: Column(children: [
-                                SizedBox(
-                                  height: 10.h,
-                                ),
-                                Text(
-                                  snap.collage!.name.toString(),
-                                  style: GoogleFonts.roboto(
-                                    fontSize: 24.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: themeMode == ThemeMode.dark
-                                        ? Color(0xFF1B1B1B)
-                                        : Colors.white,
-                                  ),
-                                ),
-                                Text(
-                                  // profile.totalExperience ?? 'No experience listed',
-                                  "${snap.collage!.description.toString()}, ${snap.collage!.type.toString()}, ${snap.collage!.city.toString()}",
-                                  style: GoogleFonts.roboto(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color(0xff666666),
-                                  ),
-                                ),
-                                Text(
-                                  // profile.totalExperience ?? 'No experience listed',
-                                  "+91${snap.collage!.phone.toString()}, ${snap.collage!.pincode.toString()}",
-                                  style: GoogleFonts.roboto(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color(0xff666666),
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      EdgeInsets.only(left: 15.w, right: 15.w),
-                                  child: InkWell(
-                                    onTap: () async {
-                                      String url = snap.collage!.website
-                                          .toString()
-                                          .trim();
+                      ),
+                    ),
+                  ),
+                ),
 
-                                      if (url.isEmpty) return;
-
-                                      url = url.replaceAll(" ", "");
-
-                                      if (url.startsWith("http://")) {
-                                        url = url.replaceFirst(
-                                            "http://", "https://");
-                                      }
-
-                                      if (!url.startsWith("https://")) {
-                                        url = "https://$url";
-                                      }
-
-                                      final uri = Uri.tryParse(url);
-                                      if (uri == null) {
-                                        log("Invalid URL: $url");
-                                        return;
-                                      }
-
-                                      // OPEN WEBVIEW PAGE
-                                      Navigator.push(
-                                        context,
-                                        CupertinoPageRoute(
-                                          builder: (context) =>
-                                              WebViewPage(url: url),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.only(
-                                          left: 10.w,
-                                          right: 10.w,
-                                          top: 6.h,
-                                          bottom: 6.h),
-                                      child: Text(
-                                        textAlign: TextAlign.center,
-                                        snap.collage!.website.toString(),
-                                        style: GoogleFonts.roboto(
-                                          fontSize: 17.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.blue, // clickable color
-                                          decoration: TextDecoration
-                                              .underline, // highlight clickable effect
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 15.w),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                          left: 12.w,
-                                          right: 12.w,
-                                          top: 8.h,
-                                          bottom: 8.h),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(20.r),
-
-                                        /// color: const Color(0xffDEDDEC),
-                                        color: themeMode == ThemeMode.light
-                                            ? Color(0xff9088F1)
-                                            : Color(0xffDEDDEC),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(width: 5.w),
-                                          Text(
-                                            "${snap.collage!.city.toString()}",
-                                            style: GoogleFonts.roboto(
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color:
-                                                  themeMode == ThemeMode.light
-                                                      ? Colors.white
-                                                      : Color(0xFF1B1B1B),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 15.w,
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                          left: 12.w,
-                                          right: 12.w,
-                                          top: 8.h,
-                                          bottom: 8.h),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(20.r),
-                                        color: themeMode == ThemeMode.light
-                                            ? Color(0xff9088F1)
-                                            : Color(0xffDEDDEC),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.star,
-                                            size: 16.sp,
-                                            color: themeMode == ThemeMode.light
-                                                ? Colors.white
-                                                : Color(0xFF1B1B1B),
-                                          ),
-                                          SizedBox(width: 5.w),
-                                          Text(
-                                            "${snap.collage?.rating ?? 0} Rating",
-                                            style: GoogleFonts.roboto(
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color:
-                                                  themeMode == ThemeMode.light
-                                                      ? Colors.white
-                                                      : Color(0xFF1B1B1B),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 15.w),
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                          left: 12.w,
-                                          right: 12.w,
-                                          top: 8.h,
-                                          bottom: 8.h),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(20.r),
-                                        color: themeMode == ThemeMode.light
-                                            ? Color(0xff9088F1)
-                                            : Color(0xffDEDDEC),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(width: 5.w),
-                                          Text(
-                                            "Total Review ${snap.collage!.totalReviews.toString()}",
-                                            style: GoogleFonts.roboto(
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color:
-                                                  themeMode == ThemeMode.light
-                                                      ? Colors.white
-                                                      : Color(0xFF1B1B1B),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 30.h,
-                                ),
-                                Divider(),
-                                SizedBox(
-                                  height: 10.h,
-                                ),
-                                Container(
-                                  margin:
-                                      EdgeInsets.only(left: 16.w, right: 16.w),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Reviews & Testimonials",
-                                        style: GoogleFonts.roboto(
-                                          fontSize: 18.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: themeMode == ThemeMode.light
-                                              ? Color(0xffDEDDEC)
-                                              : Color(0xff9088F1),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              CupertinoPageRoute(
-                                                  builder: (context) =>
-                                                      AllReviewPage(
-                                                        id: snap.collage!.id ??
-                                                            0,
-                                                      )));
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "View All",
-                                              style: GoogleFonts.roboto(
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.w600,
-                                                color:
-                                                    themeMode == ThemeMode.light
-                                                        ? Color(0xffDEDDEC)
-                                                        : Color(0xff9088F1),
-                                              ),
-                                            ),
-                                            Icon(
-                                              Icons.arrow_forward_ios,
-                                              size: 20.sp,
-                                              color:
-                                                  themeMode == ThemeMode.light
-                                                      ? Color(0xffDEDDEC)
-                                                      : Color(0xff9088F1),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 20.h),
-                                ListView.builder(
-                                  reverse: true,
-                                  padding: EdgeInsets.zero,
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: snap.reviews!.length,
-                                  itemBuilder: (context, index) {
-                                    final review = snap.reviews![index];
-                                    return InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            CupertinoPageRoute(
-                                              builder: (context) =>
-                                                  ShowReviewDetailsPage(
-                                                review:
-                                                    review, // 🔥 selected review
-                                                isViewOnly: true,
-                                              ),
-                                            ));
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.only(
-                                            left: 16.w,
-                                            right: 16.w,
-                                            top: 16.h,
-                                            bottom: 16.h),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20.r),
-                                          // color: Color(0xFFF1F2F6),
-                                          color: themeMode == ThemeMode.dark
-                                              ? Color(0xffF1F2F6)
-                                              : Color(0xff9088F1),
-                                        ),
-                                        margin: EdgeInsets.only(
-                                            bottom: 20.h,
-                                            left: 15.w,
-                                            right: 15.w),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.star,
-                                                  color: themeMode ==
-                                                          ThemeMode.light
-                                                      ? Color(0xffDEDDEC)
-                                                      : Color(0xff9088F1),
-                                                  size: 16.sp,
-                                                ),
-                                                SizedBox(width: 5.w),
-                                                Text(
-                                                  "${review.rating}/5",
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 16.sp,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: themeMode ==
-                                                            ThemeMode.light
-                                                        ? Color(0xffDEDDEC)
-                                                        : Color(0xFF666666),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 5.h),
-                                            Text(
-                                              review.description ?? '',
-                                              style: GoogleFonts.roboto(
-                                                fontSize: 16.sp,
-                                                color:
-                                                    themeMode == ThemeMode.light
-                                                        ? Color(0xffDEDDEC)
-                                                        : Color(0xFF666666),
-                                              ),
-                                            ),
-                                            Text(
-                                              "Posted on ${review.createdAt?.toString().split(' ')[0] ?? ''}",
-                                              style: GoogleFonts.roboto(
-                                                fontSize: 14.sp,
-                                                color:
-                                                    themeMode == ThemeMode.light
-                                                        ? Color(0xffDEDDEC)
-                                                        : Color(0xFF666666),
-                                              ),
-                                            ),
-                                            Text(
-                                              review.fullName ?? '',
-                                              style: GoogleFonts.roboto(
-                                                fontSize: 16.sp,
-                                                color:
-                                                    themeMode == ThemeMode.light
-                                                        ? Color(0xffDEDDEC)
-                                                        : Color(0xff9088F1),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ]),
-                            ),
+                // Top bar
+                SafeArea(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: CircleAvatar(
+                            radius: 22.r,
+                            backgroundColor: Colors.white.withOpacity(0.92),
+                            child: Icon(Icons.arrow_back_ios_new_rounded,
+                                color: Colors.black87, size: 22.sp),
+                          ),
+                        ),
+                        SizedBox(width: 16.w),
+                        Text(
+                          "College Review",
+                          style: GoogleFonts.roboto(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
                           ),
                         ),
                       ],
                     ),
-                    Positioned(
-                      top: 30.h,
-                      left: 20.w,
-                      right: 20.w,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                                height: 50.h,
-                                width: 45.w,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 8.w),
-                                  child: Icon(
-                                    Icons.arrow_back_ios,
-                                    color: Color(0xFF1B1B1B),
+                  ),
+                ),
+
+                Padding(
+                  padding: EdgeInsets.only(top: 220.h),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: isDark ?   Colors.white:const Color(0xFF121212),
+                      borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(32.r)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 60.h),
+
+                        // College name + verified
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 24.w),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  college.name ?? "College Name",
+                                  style: GoogleFonts.roboto( 
+                                    fontSize: 26.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: isDark ?Colors.black87: Colors.white ,
                                   ),
-                                )),
+                                ),
+                              ),
+                              Icon(Icons.verified,
+                                  color: linkedinBlue, size: 24.sp),
+                            ],
                           ),
-                          Text(
-                            "Collage Review",
+                        ),
+
+                        SizedBox(height: 6.h),
+
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 24.w),
+                          child: Text(
+                            "Higher Education • $staticFollowers • $staticAlumniCount",
                             style: GoogleFonts.roboto(
-                              fontSize: 20.sp,
+                                fontSize: 15.sp, color: Colors.grey[600]),
+                          ),
+                        ),
+
+                        SizedBox(height: 24.h),
+
+                        // Follow / Message buttons
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 24.w),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  icon: const Icon(Icons.add, size: 18),
+                                  label: const Text("Follow"),
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: linkedinBlue,
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(30.r)),
+                                    padding:
+                                    EdgeInsets.symmetric(vertical: 12.h),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 12.w),
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  icon: const Icon(Icons.send, size: 18),
+                                  label: const Text("Message"),
+                                  onPressed: () {},
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: linkedinBlue,
+                                    side: const BorderSide(
+                                        color: linkedinBlue, width: 1.5),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(30.r)),
+                                    padding:
+                                    EdgeInsets.symmetric(vertical: 12.h),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              IconButton(
+                                icon: Icon(Icons.more_horiz,
+                                    color: Colors.grey[700], size: 28.sp),
+                                onPressed: () {},
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(height: 20.h),
+
+                        // TABS
+                        SizedBox(
+                          height: 52.h,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            children: [
+                              _buildTab("Home", _currentTab == CollegeTab.home,
+                                  isDark, () {
+                                    setState(() => _currentTab = CollegeTab.home);
+                                  }),
+                              _buildTab("About", _currentTab == CollegeTab.posts,
+                                  isDark, () {
+                                    setState(() => _currentTab = CollegeTab.posts);
+                                  }),
+
+                              _buildTab("Alumni",
+                                  _currentTab == CollegeTab.alumni, isDark, () {
+                                    setState(() => _currentTab = CollegeTab.alumni);
+                                  }),
+                            ],
+                          ),
+                        ),
+
+                        const Divider(height: 1, thickness: 0.8),
+
+                        // Tab content
+                        _buildTabContent(college, snap, isDark),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Logo
+                Positioned(
+                  top: 160.h,
+                  left: 24.w,
+                  child: Container(
+                    height: 100.h,
+                    width: 100.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 4.w),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.35),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6)),
+                      ],
+                    ),
+                    child: ClipOval(
+                      child: Image.network(
+                        logoUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: linkedinBlue,
+                          child: const Icon(Icons.school,
+                              color: Colors.white, size: 50),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stk) {
+          log("$err\n$stk");
+          return Center(child: Text("Error: $err"));
+        },
+      ),
+    );
+  }
+
+  Widget _buildTab(
+      String text,
+      bool active,
+      bool isDark,
+      VoidCallback onTap,
+      ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              text,
+              style: GoogleFonts.roboto(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w600,
+                color: active ? linkedinBlue : (isDark ? Colors.black54: Colors.white70 ),
+              ),
+            ),
+            if (active)
+              Container(
+                margin: EdgeInsets.only(top: 6.h),
+                height: 3.h,
+                width: 36.w,
+                color: linkedinBlue,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabContent(
+      Collage college,
+      ReviewGetModel snap,
+      bool isDark,
+      ) {
+    switch (_currentTab) {
+      case CollegeTab.home:
+        return
+          Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(24.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Overview",
+                      style: GoogleFonts.roboto(
+                        color: isDark ?Colors.black87: Colors.white ,
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                      )),
+                  SizedBox(height: 10.h),
+                  Text(
+                    college.description ?? "No description available.",
+                    style: GoogleFonts.roboto(
+                      fontSize: 15.sp,
+                      color: isDark ? Colors.black87: Colors.white70,
+                    ),
+                  ),
+                  SizedBox(height: 28.h),
+                  // Text("Details",
+                  //     style: GoogleFonts.roboto(
+                  //       fontSize: 18.sp,
+                  //       fontWeight: FontWeight.w700,
+                  //       color: isDark ?Colors.black87: Colors.white ,
+                  //     )),
+                  // SizedBox(height: 12.h),
+                  // _buildDetailRow("Website", college.website, null, isDark),
+                  // _buildDetailRow("Industry", staticIndustry, null, isDark),
+                  // _buildDetailRow("Headquarters", staticHeadquarters, null, isDark),
+                  // if (college.city != null || college.pincode != null)
+                  //   _buildDetailRow(
+                  //     "Location",
+                  //     "${college.city ?? ''} ${college.pincode ?? ''}",
+                  //     null,
+                  //     isDark,
+                  //   ),
+                  // if (college.phone != null)
+                  //   _buildDetailRow("Phone", "+91 ${college.phone}", null, isDark),
+                ],
+              ),
+            ),
+            const Divider(),
+            Padding(
+              padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 12.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Reviews & Testimonials",
+                    style: GoogleFonts.roboto(
+                      fontSize: 19.sp,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ?Colors.black87: Colors.white ,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (_) => AllReviewPage(
+                            flag:true,
+                            id: college.id ?? 0),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          "View All",
+                          style: GoogleFonts.roboto(
+                            fontSize: 16.sp,
+                            color: linkedinBlue,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Icon(Icons.arrow_forward_ios,
+                            size: 16.sp, color: linkedinBlue),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              itemCount: snap.reviews?.length ?? 0,
+              itemBuilder: (context, index) {
+                final review = snap.reviews![index];
+                final rating = (review.rating ?? 0).clamp(0, 5);
+
+                return GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (_) => ShowReviewDetailsPage(
+                        review: review,
+                        isViewOnly: true,
+                      ),
+                    ),
+                  ),
+                  child: Card(
+                    elevation: isDark ? 2 : 1,
+                    margin: EdgeInsets.only(bottom: 16.h),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.r)),
+                    color: isDark
+                        ? Color(0xffF1F2F6)
+                        : Color(0xff9088F1),
+                    // color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                    child: Padding(
+                      padding: EdgeInsets.all(16.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                review.fullName ?? "Anonymous",
+                                style: GoogleFonts.roboto(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: isDark
+                                      ?Color(0xff9088F1)
+                                      : Color(0xffDEDDEC)
+                                ),
+                              ),
+                              SizedBox(width: 10.w,),
+                              Row(
+                                children: List.generate(
+                                  5,
+                                      (i) => Icon(
+                                    i < rating ? Icons.star : Icons.star_border,
+                                    color: Colors.amber,
+                                    size: 18.sp,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8.h),
+                          Text(
+                            review.title ?? "",
+                            style: GoogleFonts.roboto(
+                              fontSize: 15.sp,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              color:isDark
+
+                                  ? Color(0xFF201F1F)
+                              : Color(0xffDEDDEC)
                             ),
                           ),
-                          Container(
-                            height: 50.h,
-                            width: 50.w,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              // color: Colors.white,
+                          SizedBox(height: 6.h),
+                          Text(
+                            review.description ?? "",
+                            style: GoogleFonts.roboto(
+                              fontSize: 14.sp,
+
+                              color:isDark?  Color(0xFF666666)
+                                : Color(0xffDEDDEC)
+
                             ),
-                            // child: const Icon(Icons.search),
+                          ),
+                          SizedBox(height: 10.h),
+                          Text(
+                            "Posted on ${review.createdAt?.toString().split(' ')[0] ?? ''}",
+                            style: GoogleFonts.roboto(
+                              fontSize: 13.sp,
+                              color: isDark?   Color(0xFF201F1F):
+                                   Color(0xffDEDDEC)
+
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: 110.h,
-                      child: Center(
-                        child: Container(
-                          height: 182.h,
-                          width: 182.w,
-                          decoration: BoxDecoration(
-                              color: Colors.grey, shape: BoxShape.circle),
-                          child: ClipOval(
-                            child: snap.collage!.image.toString() != null
-                                ? Image.network(
-                                    snap.collage!.image.toString(),
-                                    height: 182.h,
-                                    width: 182.w,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error,
-                                            stackTrace) =>
-                                        Image.network(
-                                            "https://t4.ftcdn.net/jpg/06/71/92/37/360_F_671923740_x0zOL3OIuUAnSF6sr7PuznCI5bQFKhI0.jpg",
-                                            height: 182.h,
-                                            width: 182.w,
-                                            fit: BoxFit.cover),
-                                  )
-                                : Image.network(
-                                    "https://t4.ftcdn.net/jpg/06/71/92/37/360_F_671923740_x0zOL3OIuUAnSF6sr7PuznCI5bQFKhI0.jpg",
-                                    height: 182.h,
-                                    width: 182.w,
-                                    fit: BoxFit.cover),
-                          ),
+                  ),
+                );
+              },
+            ),
+            SizedBox(height: 50.h),
+          ],
+        );
+
+      case CollegeTab.alumni:
+        final users = snap.collage?.users ?? [];
+
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(24.w, 24.h, 24.w, 16.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Alumni Network",
+                    style: GoogleFonts.roboto(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? Colors.black87 : Colors.white,
+                    ),
+                  ),
+                  Text(
+                    "${users.length} ${users.length == 1 ? 'Alumnus' : 'Alumni'}",
+                    style: GoogleFonts.roboto(
+                      fontSize: 15.sp,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            if (users.isEmpty)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 40.h),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.people_outline_rounded,
+                        size: 64.sp,
+                        color: Colors.grey[400],
+                      ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        "No alumni connected yet",
+                        style: GoogleFonts.roboto(
+                          fontSize: 17.sp,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else
+              Container(
+                margin: EdgeInsets.only(left: 10.w,right: 10.w),
+                child: Row(
+                  children: [
+
+                    Expanded(
+                      child: SizedBox(
+                        height: 110.h, // increased height for avatar + name + spacing
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          padding: EdgeInsets.symmetric(horizontal: 24.w),
+                          itemCount: users.length >= 4 ? 4 : users.length,
+                          itemBuilder: (context, index) {
+                            final user = users[index];
+                            return Padding(
+                              padding: EdgeInsets.only(right: 20.w), // good spacing between items
+                              child: Expanded(
+                                child: Row(
+                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      // mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        GestureDetector(
+                                          onTap:(){
+                                            user.userType=="Mentor"?
+                                            Navigator.push(context,  MaterialPageRoute(builder: (context)=>MentorDetailPage(id:user.id!))):
+                                            Navigator.push(context,  MaterialPageRoute(builder: (context)=>StudenetDetailPage(id:user.id!)));
+            },
+                                          child: Container(
+                                            width: 64.w,
+                                            height: 64.h,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: linkedinBlue.withOpacity(0.5),
+                                                width: 2.w,
+                                              ),
+                                            ),
+                                            child: ClipOval(
+                                              clipBehavior: Clip.hardEdge, // ensures perfect rounding
+                                              child: user.profilePic != null && user.profilePic!.isNotEmpty
+                                                  ? Image.network(
+                                                user.profilePic!,
+                                                width: 64.w,
+                                                height: 64.h,
+                                                fit: BoxFit.cover, // fills the circle properly
+                                                loadingBuilder: (context, child, loadingProgress) {
+                                                  if (loadingProgress == null) return child;
+                                                  return Center(
+                                                    child: SizedBox(
+                                                      width: 32.w,
+                                                      height: 32.h,
+                                                      child: CircularProgressIndicator(
+                                                        strokeWidth: 2.w,
+                                                        value: loadingProgress.expectedTotalBytes != null
+                                                            ? loadingProgress.cumulativeBytesLoaded /
+                                                            (loadingProgress.expectedTotalBytes ?? 1)
+                                                            : null,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                errorBuilder: (context, error, stackTrace) => _defaultAvatar(),
+                                              )
+                                                  : _defaultAvatar(),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 8.h),
+                                        SizedBox(
+                                          width: 80.w, // prevent text overflow
+                                          child: Text(
+                                            user.fullName ?? "Unknown", // ← add fallback if name is null
+                                            style: GoogleFonts.roboto(
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: isDark ? Colors.black87 : Colors.white,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
+
+                    GestureDetector(
+
+                        onTap: (){
+
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Colloegeuserpage(
+
+                              widget.id,  snap.collage!.name??"")));
+
+                        },
+                        child: Icon(Icons.arrow_forward_ios,
+
+                          color: isDark ? Colors.black87 : Colors.white,
+
+                        )),
+
+
                   ],
                 ),
               ),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) {
-            log(stack.toString());
-            return Center(child: Text(error.toString()));
-          }),
+
+            SizedBox(height: 32.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              child: Text(
+                "(Connect & message features coming soon)",
+                style: GoogleFonts.roboto(
+                  fontSize: 13.sp,
+                  color: Colors.grey[500],
+                  fontStyle: FontStyle.italic,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: 60.h),
+          ],
+        );
+      case CollegeTab.posts:
+      case CollegeTab.jobs:
+
+      return
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(24.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Overview",
+                      style: GoogleFonts.roboto(
+                        color: isDark ?Colors.black87: Colors.white ,
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                      )),
+                  SizedBox(height: 10.h),
+                  Text(
+                    college.description ?? "No description available.",
+                    style: GoogleFonts.roboto(
+                      fontSize: 15.sp,
+                      color: isDark ? Colors.black87: Colors.white70,
+                    ),
+                  ),
+                  SizedBox(height: 28.h),
+                  Text("Details",
+                      style: GoogleFonts.roboto(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w700,
+                        color: isDark ?Colors.black87: Colors.white ,
+                      )),
+                  SizedBox(height: 12.h),
+                  _buildDetailRow("Website", college.website, null, isDark),
+                  _buildDetailRow("Industry", staticIndustry, null, isDark),
+                  _buildDetailRow("Headquarters", staticHeadquarters, null, isDark),
+                  if (college.city != null || college.pincode != null)
+                    _buildDetailRow(
+                      "Location",
+                      "${college.city ?? ''} ${college.pincode ?? ''}",
+                      null,
+                      isDark,
+                    ),
+                  if (college.phone != null)
+                    _buildDetailRow("Phone", "+91 ${college.phone}", null, isDark),
+                ],
+              ),
+            ),
+            // const Divider(),
+
+          ],
+        );
+
+
+    // return _buildStaticContentSection(
+        //   isDark: isDark,
+        //   title: _currentTab == CollegeTab.posts
+        //       ? ""
+        //       : "s",
+        //   items: _currentTab == CollegeTab.posts
+        //       ? [
+        //     // "98th Convocation Ceremony held on 15 Jan 2026",
+        //     // "New AI & Data Science research center inaugurated",
+        //     // "Campus placement 2025-26 – 1200+ offers received",
+        //     // "NAAC A++ re-accreditation achieved",
+        //   ]
+        //       : [
+        //     // "Professor – Computer Science (Last date: 28 Feb 2026)",
+        //     // "Research Associate – Biotechnology (Contract)",
+        //     // "Section Officer – Administration",
+        //     // "Guest Faculty – Various Departments",
+        //   ],
+        // );
+    }
+  }
+
+  Widget _buildAlumniCard(User user, bool isDark) {
+    return Card(
+      margin: EdgeInsets.only(bottom: 14.h),
+      elevation: isDark ? 2 : 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+      // color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+      color: isDark
+          ? Color(0xffF1F2F6)
+          : Color(0xff9088F1),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16.r),
+        onTap: () {
+         /* ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Profile view for ${user.fullName ?? 'Alumnus'} – coming soon"),
+              duration: const Duration(seconds: 2),
+            ),
+          );*/
+
+          Navigator.push(context,  MaterialPageRoute(builder: (context)=>StudenetDetailPage(id:user.id!)));
+        },
+        child: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: Row(
+            children: [
+              // Profile Picture
+              Container(
+                width: 64.w,
+                height: 64.h,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: linkedinBlue.withOpacity(0.4), width: 2.w),
+                ),
+                child: ClipOval(
+                  child: user.profilePic != null && user.profilePic!.isNotEmpty
+                      ? Image.network(
+                    user.profilePic!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => _defaultAvatar(),
+                  )
+                      : _defaultAvatar(),
+                ),
+              ),
+
+              SizedBox(width: 16.w),
+
+              // // Name & Info
+              // Expanded(
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Text(
+              //         user.fullName ?? "Unknown Alumni",
+              //         style: GoogleFonts.roboto(
+              //           fontSize: 17.sp,
+              //           fontWeight: FontWeight.w600,
+              //           color: isDark ?  Colors.black:
+              //                Color(0xffDEDDEC)
+              //
+              //         ),
+              //         maxLines: 1,
+              //         overflow: TextOverflow.ellipsis,
+              //       ),
+              //       SizedBox(height: 4.h),
+              //       Text(
+              //         user.userType ?? "Alumnus",
+              //         style: GoogleFonts.roboto(
+              //           fontSize: 14.sp,
+              //           color: isDark?  Color(0xFF201F1F):
+              //                Color(0xffDEDDEC)
+              //
+              //         ),
+              //       ),
+              //       if (user.email != null && user.email!.isNotEmpty) ...[
+              //         SizedBox(height: 4.h),
+              //         Text(
+              //           user.email!,
+              //           style: GoogleFonts.roboto(
+              //             fontSize: 13.sp,
+              //             color: isDark
+              //                   ? Color(0xFF666666)
+              //                 : Color(0xffDEDDEC)
+              //
+              //           ),
+              //           maxLines: 1,
+              //           overflow: TextOverflow.ellipsis,
+              //         ),
+              //       ],
+              //     ],
+              //   ),
+              // ),
+              //
+              // Icon(
+              //   Icons.arrow_forward_ios_rounded,
+              //   size: 18.sp,
+              //   color: Colors.grey[500],
+              // ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  // Widget _buildBody(BuildContext context, ReviewGetModel propertyDetail) {
-  //   final collage = propertyDetail.collage!;
-  //   final baseUrl = 'https://educatservicesindia.com';
-  //   final fullImageUrl = baseUrl + (collage.image ?? '');
+  Widget _defaultAvatar() {
+    return CircleAvatar(
+      backgroundColor: linkedinBlue.withOpacity(0.15),
+      child: Icon(
+        Icons.person,
+        color: linkedinBlue,
+        size: 32.sp,
+      ),
+    );
+  }
 
-  //   // return Stack(
-  //   //   children: [
-  //   //     Column(
-  //   //       children: [
-  //   //         Container(
-  //   //           height: 220.h,
-  //   //           width: double.infinity,
-  //   //           color: const Color(0xff9088F1),
-  //   //         ),
-  //   //         Expanded(
-  //   //           child: Container(
-  //   //             color: Colors.white,
-  //   //             child: Container(
-  //   //               width: double.infinity,
-  //   //               margin: EdgeInsets.only(top: 100.h),
-  //   //               child: Column(
-  //   //                 children: [
-  //   //                   // College Name
-  //   //                   Text(
-  //   //                     collage.name ?? '',
-  //   //                     style: GoogleFonts.roboto(
-  //   //                       fontSize: 16.sp,
-  //   //                       fontWeight: FontWeight.w600,
-  //   //                       color: Color(0xFF1B1B1B),
-  //   //                     ),
-  //   //                   ),
-  //   //                   SizedBox(height: 4.h),
-  //   //                   // Description
-  //   //                   Text(
-  //   //                     collage.description ?? '',
-  //   //                     style: GoogleFonts.roboto(
-  //   //                       fontSize: 12.sp,
-  //   //                       fontWeight: FontWeight.w600,
-  //   //                       color: const Color(0xff666666),
-  //   //                     ),
-  //   //                     textAlign: TextAlign.center,
-  //   //                   ),
-  //   //                   SizedBox(height: 8.h),
-  //   //                   // College Details
-  //   //                   Text(
-  //   //                     "City: ${collage.city ?? ''} | Pincode: ${collage.pincode ?? ''}",
-  //   //                     style: GoogleFonts.roboto(
-  //   //                       fontSize: 12.sp,
-  //   //                       fontWeight: FontWeight.w600,
-  //   //                       color: const Color(0xff666666),
-  //   //                     ),
-  //   //                   ),
-  //   //                   SizedBox(height: 10.h),
-  //   //                   // Tags and Rating (adjusted for college)
-  //   //                   Container(
-  //   //                     margin: EdgeInsets.only(
-  //   //                       left: 10.w,
-  //   //                       top: 10.h,
-  //   //                       right: 10.w,
-  //   //                     ),
-  //   //                     child: Row(
-  //   //                       mainAxisAlignment: MainAxisAlignment.center,
-  //   //                       children: [
-  //   //                         Container(
-  //   //                           padding: EdgeInsets.only(left: 5.w, right: 5.w),
-  //   //                           height: 30.h,
-  //   //                           decoration: BoxDecoration(
-  //   //                             borderRadius: BorderRadius.circular(20),
-  //   //                             color: const Color(0xffDEDDEC),
-  //   //                           ),
-  //   //                           child: Center(
-  //   //                             child: Text(
-  //   //                               "${collage.type ?? 'College'}",
-  //   //                               style: GoogleFonts.roboto(
-  //   //                                 fontSize: 12.sp,
-  //   //                                 fontWeight: FontWeight.w600,
-  //   //                                 color: Color(0xFF1B1B1B),
-  //   //                               ),
-  //   //                             ),
-  //   //                           ),
-  //   //                         ),
-  //   //                         SizedBox(width: 20.w),
-  //   //                         Container(
-  //   //                           padding: EdgeInsets.only(left: 5.w, right: 5.w),
-  //   //                           height: 30.h,
-  //   //                           decoration: BoxDecoration(
-  //   //                             borderRadius: BorderRadius.circular(20),
-  //   //                             color: const Color(0xffDEDDEC),
-  //   //                           ),
-  //   //                           child: Center(
-  //   //                             child: Row(
-  //   //                               children: [
-  //   //                                 Icon(
-  //   //                                   Icons.star,
-  //   //                                   size: 14.sp,
-  //   //                                   color: const Color(0xff9088F1),
-  //   //                                 ),
-  //   //                                 SizedBox(width: 5.w),
-  //   //                                 Text(
-  //   //                                   "${collage.rating ?? 0} (${collage.totalReviews ?? 0} Reviews)",
-  //   //                                   style: GoogleFonts.roboto(
-  //   //                                     fontSize: 12.sp,
-  //   //                                     fontWeight: FontWeight.w600,
-  //   //                                     color: Color(0xFF1B1B1B),
-  //   //                                   ),
-  //   //                                 ),
-  //   //                               ],
-  //   //                             ),
-  //   //                           ),
-  //   //                         ),
-  //   //                       ],
-  //   //                     ),
-  //   //                   ),
-  //   //                   SizedBox(height: 10.h),
-  //   //                   const Divider(),
-  //   //                   // Reviews Section
-  //   //                   Container(
-  //   //                     margin: EdgeInsets.only(left: 10.w, right: 10.w),
-  //   //                     child: Row(
-  //   //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //   //                       children: [
-  //   //                         Text(
-  //   //                           "Reviews & Testimonials",
-  //   //                           style: GoogleFonts.roboto(
-  //   //                             fontSize: 12.sp,
-  //   //                             fontWeight: FontWeight.w600,
-  //   //                             color: const Color(0xff666666),
-  //   //                           ),
-  //   //                         ),
-  //   //                         GestureDetector(
-  //   //                           onTap: () {
-  //   //                             Navigator.push(
-  //   //                                 context,
-  //   //                                 MaterialPageRoute(
-  //   //                                     builder: (context) => AllReviewPage(
-  //   //                                           id: collage.id!,
-  //   //                                         )));
-  //   //                           },
-  //   //                           child: Text(
-  //   //                             "View All",
-  //   //                             style: GoogleFonts.roboto(
-  //   //                               fontSize: 12.sp,
-  //   //                               fontWeight: FontWeight.w600,
-  //   //                               color: const Color(0xff9088F1),
-  //   //                             ),
-  //   //                           ),
-  //   //                         ),
-  //   //                       ],
-  //   //                     ),
-  //   //                   ),
-  //   //                   SizedBox(height: 10.h),
-  //   //                   // Reviews List
-  //   //                   Expanded(
-  //   //                     child: ListView.builder(
-  //   //                       padding: EdgeInsets.symmetric(horizontal: 10.w),
-  //   //                       itemCount: propertyDetail.reviews?.length ?? 0,
-  //   //                       itemBuilder: (context, index) {
-  //   //                         final review = propertyDetail.reviews![index];
-  //   //                         return Card(
-  //   //                           margin: EdgeInsets.only(bottom: 10.h),
-  //   //                           child: Padding(
-  //   //                             padding: EdgeInsets.all(10.w),
-  //   //                             child: Column(
-  //   //                               crossAxisAlignment: CrossAxisAlignment.start,
-  //   //                               children: [
-  //   //                                 Row(
-  //   //                                   children: [
-  //   //                                     Icon(
-  //   //                                       Icons.star,
-  //   //                                       color: const Color(0xff9088F1),
-  //   //                                       size: 16.sp,
-  //   //                                     ),
-  //   //                                     SizedBox(width: 5.w),
-  //   //                                     Text(
-  //   //                                       "${review.rating}/5",
-  //   //                                       style: GoogleFonts.roboto(
-  //   //                                         fontSize: 12.sp,
-  //   //                                         fontWeight: FontWeight.w600,
-  //   //                                       ),
-  //   //                                     ),
-  //   //                                   ],
-  //   //                                 ),
-  //   //                                 SizedBox(height: 5.h),
-  //   //                                 Text(
-  //   //                                   review.description ?? '',
-  //   //                                   style: GoogleFonts.roboto(
-  //   //                                     fontSize: 12.sp,
-  //   //                                     color: const Color(0xff666666),
-  //   //                                   ),
-  //   //                                 ),
-  //   //                                 SizedBox(height: 5.h),
-  //   //                                 Text(
-  //   //                                   "Posted on ${review.createdAt?.toString().split(' ')[0] ?? ''}",
-  //   //                                   style: GoogleFonts.roboto(
-  //   //                                     fontSize: 10.sp,
-  //   //                                     color: Colors.grey,
-  //   //                                   ),
-  //   //                                 ),
-  //   //                               ],
-  //   //                             ),
-  //   //                           ),
-  //   //                         );
-  //   //                       },
-  //   //                     ),
-  //   //                   ),
-  //   //                 ],
-  //   //               ),
-  //   //             ),
-  //   //           ),
-  //   //         ),
-  //   //       ],
-  //   //     ),
+  Widget _buildStaticContentSection({
+    required String title,
+    required List<String> items,
+    required bool isDark,
+  }) {
+    return Padding(
+      padding: EdgeInsets.all(24.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [ 
+          Text(
+            title,
+            style: GoogleFonts.roboto(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w700,
+              color: isDark ?Colors.black87: Colors.white ,
+            ),
+          ),
+          SizedBox(height: 16.h), 
+          ...items.map((item) => Padding(
+            padding: EdgeInsets.only(bottom: 12.h),
+            child: Text(
+              "• $item",
+              style: GoogleFonts.roboto(
+                fontSize: 15.sp,
+                color: isDark ? Colors.black87: Colors.white70 ,
+              ),
+            ),
+          )),
+          SizedBox(height: 20.h),
+          Text(
+            "(Dynamic content will appear when API provides data)",
+            style: GoogleFonts.roboto(
+              fontSize: 13.sp,
+              color: Colors.grey[500],
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-  //   //     Positioned(
-  //   //       top: 60.h,
-  //   //       left: 20.w,
-  //   //       right: 20.w,
-  //   //       child: Row(
-  //   //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //   //         children: [
-  //   //           // Left circle
-  //   //           GestureDetector(
-  //   //             onTap: () {
-  //   //               Navigator.pop(context);
-  //   //             },
-  //   //             child: Container(
-  //   //               height: 50.h,
-  //   //               width: 50.w,
-  //   //               decoration: BoxDecoration(
-  //   //                 borderRadius: BorderRadius.circular(30),
-  //   //                 color: Colors.white,
-  //   //               ),
-  //   //               child: const Icon(Icons.arrow_back_ios_new),
-  //   //             ),
-  //   //           ),
-  //   //           // Title
-  //   //           Text(
-  //   //             "College Review",
-  //   //             style: GoogleFonts.roboto(
-  //   //               fontSize: 16.sp,
-  //   //               fontWeight: FontWeight.w600,
-  //   //               color: Colors.white,
-  //   //             ),
-  //   //           ),
-  //   //           // Right circle
-  //   //           Container(
-  //   //             height: 50.h,
-  //   //             width: 50.w,
-  //   //             decoration: BoxDecoration(
-  //   //               borderRadius: BorderRadius.circular(30),
-  //   //               color: Colors.white,
-  //   //             ),
-  //   //             child: const Icon(Icons.search),
-  //   //           ),
-  //   //         ],
-  //   //       ),
-  //   //     ),
-  //   //     // College Image
-  //   //     Positioned(
-  //   //       left: 0,
-  //   //       right: 0,
-  //   //       top: 140.h,
-  //   //       child: Container(
-  //   //         height: 182.h,
-  //   //         width: 182.w,
-  //   //         decoration: BoxDecoration(
-  //   //           borderRadius: BorderRadius.circular(30),
-  //   //           color: Colors.white,
-  //   //         ),
-  //   //         child: ClipRRect(
-  //   //           borderRadius: BorderRadius.circular(30),
-  //   //           child: Image.network(
-  //   //             fullImageUrl,
-  //   //             fit: BoxFit.cover,
-  //   //             errorBuilder: (context, error, stackTrace) =>
-  //   //                 Image.asset("assets/girlpic.png"),
-  //   //           ),
-  //   //         ),
-  //   //       ),
-  //   //     ),
-  //   //   ],
-  //   // );
-  //   // return Scaffold(
-  //   //   body: Stack(
-  //   //     children: [
-  //   //       Column(
-  //   //         children: [
-  //   //           Container(
-  //   //             height: 220.h,
-  //   //             width: double.infinity,
-  //   //             color: const Color(0xff9088F1),
-  //   //           ),
-  //   //           Expanded(
-  //   //             child: Container(
-  //   //               color: Colors.white,
-  //   //               child: Container(
-  //   //                 width: double.infinity,
-  //   //                 margin: EdgeInsets.only(top: 100.h),
-  //   //                 child: SingleChildScrollView(
-  //   //                   child: Column(children: [
-  //   //                     SizedBox(
-  //   //                       height: 10.h,
-  //   //                     ),
-  //   //                     Text(
-  //   //                       "userProfile.data.fullName",
-  //   //                       style: GoogleFonts.roboto(
-  //   //                         fontSize: 24.sp,
-  //   //                         fontWeight: FontWeight.w600,
-  //   //                         color: Color(0xFF1B1B1B),
-  //   //                       ),
-  //   //                     ),
-  //   //                     Text(
-  //   //                       // profile.totalExperience ?? 'No experience listed',
-  //   //                       "Total Experience ",
-  //   //                       style: GoogleFonts.roboto(
-  //   //                         fontSize: 15.sp,
-  //   //                         fontWeight: FontWeight.w600,
-  //   //                         color: const Color(0xff666666),
-  //   //                       ),
-  //   //                     ),
-  //   //                     Padding(
-  //   //                       padding: EdgeInsets.only(left: 15.w, right: 15.w),
-  //   //                       child: Text(
-  //   //                         textAlign: TextAlign.center,
-  //   //                         'College: {profile.usersField} - Company: {profile.companiesWorked?.toString()',
-  //   //                         style: GoogleFonts.roboto(
-  //   //                           fontSize: 15.sp,
-  //   //                           fontWeight: FontWeight.w600,
-  //   //                           color: const Color(0xff666666),
-  //   //                         ),
-  //   //                       ),
-  //   //                     ),
-  //   //                     SizedBox(
-  //   //                       height: 15.h,
-  //   //                     ),
-  //   //                     Container(
-  //   //                       margin: EdgeInsets.only(left: 10.w, right: 10.w),
-  //   //                       child: Row(
-  //   //                         mainAxisAlignment: MainAxisAlignment.center,
-  //   //                         children: [
-  //   //                           Container(
-  //   //                             padding: EdgeInsets.only(
-  //   //                                 left: 12.w,
-  //   //                                 right: 12.w,
-  //   //                                 top: 8.h,
-  //   //                                 bottom: 8.h),
-  //   //                             decoration: BoxDecoration(
-  //   //                               borderRadius: BorderRadius.circular(20.r),
-  //   //                               color: Color(0xffDEDDEC),
-  //   //                             ),
-  //   //                             child: Text(
-  //   //                               "Placement Expert",
-  //   //                               style: GoogleFonts.roboto(
-  //   //                                 fontSize: 14.sp,
-  //   //                                 fontWeight: FontWeight.w600,
-  //   //                                 color: Color(0xFF1B1B1B),
-  //   //                               ),
-  //   //                             ),
-  //   //                           ),
-  //   //                           SizedBox(width: 15.w),
-  //   //                           Container(
-  //   //                             padding: EdgeInsets.only(
-  //   //                                 left: 12.w,
-  //   //                                 right: 12.w,
-  //   //                                 top: 8.h,
-  //   //                                 bottom: 8.h),
-  //   //                             decoration: BoxDecoration(
-  //   //                               borderRadius: BorderRadius.circular(20.r),
-  //   //                               color: const Color(0xffDEDDEC),
-  //   //                             ),
-  //   //                             child: Text(
-  //   //                               "Career Coach",
-  //   //                               style: GoogleFonts.roboto(
-  //   //                                 fontSize: 14.sp,
-  //   //                                 fontWeight: FontWeight.w600,
-  //   //                                 color: Color(0xFF1B1B1B),
-  //   //                               ),
-  //   //                             ),
-  //   //                           ),
-  //   //                           SizedBox(width: 15.w),
-  //   //                           Container(
-  //   //                             padding: EdgeInsets.only(
-  //   //                                 left: 12.w,
-  //   //                                 right: 12.w,
-  //   //                                 top: 8.h,
-  //   //                                 bottom: 8.h),
-  //   //                             decoration: BoxDecoration(
-  //   //                               borderRadius: BorderRadius.circular(20.r),
-  //   //                               color: const Color(0xffDEDDEC),
-  //   //                             ),
-  //   //                             child: Row(
-  //   //                               children: [
-  //   //                                 Icon(
-  //   //                                   Icons.star,
-  //   //                                   size: 16.sp,
-  //   //                                   color: const Color(0xff9088F1),
-  //   //                                 ),
-  //   //                                 SizedBox(width: 5.w),
-  //   //                                 Text(
-  //   //                                   "4.5 Review",
-  //   //                                   style: GoogleFonts.roboto(
-  //   //                                     fontSize: 14.sp,
-  //   //                                     fontWeight: FontWeight.w600,
-  //   //                                     color: Color(0xFF1B1B1B),
-  //   //                                   ),
-  //   //                                 ),
-  //   //                               ],
-  //   //                             ),
-  //   //                           ),
-  //   //                         ],
-  //   //                       ),
-  //   //                     ),
-  //   //                     Container(
-  //   //                       margin: EdgeInsets.only(
-  //   //                           left: 10.w, top: 20.h, right: 10.w),
-  //   //                       child: Row(
-  //   //                         mainAxisAlignment: MainAxisAlignment.center,
-  //   //                         children: [
-  //   //                           Container(
-  //   //                             padding: EdgeInsets.only(
-  //   //                                 left: 15.w,
-  //   //                                 right: 15.w,
-  //   //                                 top: 15.h,
-  //   //                                 bottom: 15.h),
-  //   //                             decoration: BoxDecoration(
-  //   //                               borderRadius: BorderRadius.circular(20.r),
-  //   //                               color: Color(0xFFDCF881),
-  //   //                             ),
-  //   //                             child: Text(
-  //   //                               "Placement Expert",
-  //   //                               style: GoogleFonts.roboto(
-  //   //                                 fontSize: 14.sp,
-  //   //                                 fontWeight: FontWeight.w600,
-  //   //                                 color: Color(0xFF1B1B1B),
-  //   //                               ),
-  //   //                             ),
-  //   //                           ),
-  //   //                           SizedBox(width: 20.w),
-  //   //                           GestureDetector(
-  //   //                             onTap: () {},
-  //   //                             child: Container(
-  //   //                               height: 50.h,
-  //   //                               width: 140.w,
-  //   //                               decoration: BoxDecoration(
-  //   //                                 borderRadius: BorderRadius.circular(20.r),
-  //   //                                 color: Colors.white,
-  //   //                                 border:
-  //   //                                     Border.all(color: Color(0xff9088F1)),
-  //   //                               ),
-  //   //                               child: Center(
-  //   //                                 child: Text(
-  //   //                                   "Message",
-  //   //                                   style: GoogleFonts.roboto(
-  //   //                                     fontSize: 14.sp,
-  //   //                                     fontWeight: FontWeight.w600,
-  //   //                                     color: const Color(0xff9088F1),
-  //   //                                   ),
-  //   //                                 ),
-  //   //                               ),
-  //   //                             ),
-  //   //                           ),
-  //   //                         ],
-  //   //                       ),
-  //   //                     ),
-  //   //                     SizedBox(
-  //   //                       height: 30.h,
-  //   //                     ),
-  //   //                     Divider(),
-  //   //                     Container(
-  //   //                       margin: EdgeInsets.only(left: 20.w, top: 15.h),
-  //   //                       child: Row(
-  //   //                         mainAxisAlignment: MainAxisAlignment.start,
-  //   //                         children: [
-  //   //                           Column(
-  //   //                             crossAxisAlignment: CrossAxisAlignment.start,
-  //   //                             children: [
-  //   //                               Text(
-  //   //                                 "About {userProfile.data.fullName}",
-  //   //                                 style: GoogleFonts.roboto(
-  //   //                                   fontSize: 20.sp,
-  //   //                                   fontWeight: FontWeight.w600,
-  //   //                                   color: Color(0xFF1B1B1B),
-  //   //                                 ),
-  //   //                               ),
-  //   //                               SizedBox(height: 3.h),
-  //   //                               Text(
-  //   //                                 " userProfile.data.description",
-  //   //                                 style: GoogleFonts.roboto(
-  //   //                                   fontSize: 16.sp,
-  //   //                                   fontWeight: FontWeight.w600,
-  //   //                                   color: const Color(0xff666666),
-  //   //                                 ),
-  //   //                               ),
-  //   //                               SizedBox(height: 3.h),
-  //   //                               SizedBox(
-  //   //                                 width: 400.w,
-  //   //                                 child: Text(
-  //   //                                   '{userProfile.data.usersField ?? '
-  //   //                                   '} - Company: {userProfile.data.serviceType?.toString() ?? }',
-  //   //                                   style: GoogleFonts.roboto(
-  //   //                                     fontSize: 15.sp,
-  //   //                                     fontWeight: FontWeight.w600,
-  //   //                                     color: Color(0xff666666),
-  //   //                                   ),
-  //   //                                 ),
-  //   //                               ),
-  //   //                               SizedBox(height: 3.h),
-  //   //                               SizedBox(
-  //   //                                 width: 400.w,
-  //   //                                 child: Text(
-  //   //                                   "userProfile.data.serviceType,",
-  //   //                                   style: GoogleFonts.roboto(
-  //   //                                     fontSize: 15.sp,
-  //   //                                     fontWeight: FontWeight.w600,
-  //   //                                     color: Color(0xff666666),
-  //   //                                   ),
-  //   //                                 ),
-  //   //                               ),
-  //   //                             ],
-  //   //                           ),
-  //   //                         ],
-  //   //                       ),
-  //   //                     ),
-  //   //                     SizedBox(
-  //   //                       height: 10.h,
-  //   //                     ),
-  //   //                     Divider(),
-  //   //                     // Educations section
-  //   //                     Container(
-  //   //                         margin: EdgeInsets.only(left: 20.w, top: 15.h),
-  //   //                         child: Row(
-  //   //                             mainAxisAlignment: MainAxisAlignment.start,
-  //   //                             children: [
-  //   //                               Column(
-  //   //                                 crossAxisAlignment:
-  //   //                                     CrossAxisAlignment.start,
-  //   //                                 children: [
-  //   //                                   Text(
-  //   //                                     "Educations",
-  //   //                                     style: GoogleFonts.roboto(
-  //   //                                       fontSize: 20.sp,
-  //   //                                       fontWeight: FontWeight.w600,
-  //   //                                       color: Color(0xFF1B1B1B),
-  //   //                                     ),
-  //   //                                   ),
-  //   //                                   SizedBox(height: 5.h),
-  //   //                                   Text(
-  //   //                                     "userProfile.data.totalExperience",
-  //   //                                     style: GoogleFonts.roboto(
-  //   //                                       fontSize: 12.sp,
-  //   //                                       fontWeight: FontWeight.w600,
-  //   //                                       color: const Color(0xff666666),
-  //   //                                     ),
-  //   //                                   ),
-  //   //                                   Text(
-  //   //                                     "  userProfile.data.serviceType,",
-  //   //                                     style: GoogleFonts.roboto(
-  //   //                                       fontSize: 12.sp,
-  //   //                                       fontWeight: FontWeight.w600,
-  //   //                                       color: const Color(0xff666666),
-  //   //                                     ),
-  //   //                                   ),
-  //   //                                 ],
-  //   //                               ),
-  //   //                             ])),
-  //   //                     SizedBox(
-  //   //                       height: 10.h,
-  //   //                     ),
-  //   //                     Divider(),
-  //   //                     Container(
-  //   //                       margin: EdgeInsets.only(left: 20.w, top: 15.h),
-  //   //                       child: Row(
-  //   //                           mainAxisAlignment: MainAxisAlignment.start,
-  //   //                           children: [
-  //   //                             Column(
-  //   //                               crossAxisAlignment: CrossAxisAlignment.start,
-  //   //                               children: [
-  //   //                                 Text(
-  //   //                                   "Skills",
-  //   //                                   style: GoogleFonts.roboto(
-  //   //                                     fontSize: 20.sp,
-  //   //                                     fontWeight: FontWeight.w600,
-  //   //                                     color: Color(0xFF1B1B1B),
-  //   //                                   ),
-  //   //                                 ),
-  //   //                                 SizedBox(height: 10.h),
-  //   //                                 // if (userProfile.data.skills != null &&
-  //   //                                 //     userProfile.data.skills.isNotEmpty)
-  //   //                                 // Wrap(
-  //   //                                 //   spacing: 10.w,
-  //   //                                 //   runSpacing: 5.h,
-  //   //                                 //   children: userProfile.data.skills
-  //   //                                 //       .map<Widget>((skill) => Container(
-  //   //                                 //             padding: EdgeInsets.symmetric(
-  //   //                                 //                 horizontal: 12.w,
-  //   //                                 //                 vertical: 8.h),
-  //   //                                 //             decoration: BoxDecoration(
-  //   //                                 //               borderRadius:
-  //   //                                 //                   BorderRadius.circular(20.r),
-  //   //                                 //               color: const Color(0xffDEDDEC),
-  //   //                                 //             ),
-  //   //                                 //             child: Center(
-  //   //                                 //               child: Text(
-  //   //                                 //                 skill.toString(),
-  //   //                                 //                 style: GoogleFonts.roboto(
-  //   //                                 //                   fontSize: 14.sp,
-  //   //                                 //                   fontWeight: FontWeight.w600,
-  //   //                                 //                   color: Color(0xFF1B1B1B),
-  //   //                                 //                 ),
-  //   //                                 //               ),
-  //   //                                 //             ),
-  //   //                                 //           ))
-  //   //                                 //       .toList(),
-  //   //                                 // )
-  //   //                                 // else
-  //   //                                 //   Text(
-  //   //                                 //     'No skills listed',
-  //   //                                 //     style: GoogleFonts.roboto(
-  //   //                                 //       fontSize: 15.sp,
-  //   //                                 //       fontWeight: FontWeight.w600,
-  //   //                                 //       color: const Color(0xff666666),
-  //   //                                 //     ),
-  //   //                                 //   ),
-  //   //                               ],
-  //   //                             ),
-  //   //                           ]),
-  //   //                     ),
-  //   //                     SizedBox(height: 20.h),
-  //   //                   ]),
-  //   //                 ),
-  //   //               ),
-  //   //             ),
-  //   //           ),
-  //   //         ],
-  //   //       ),
-  //   //       Positioned(
-  //   //         top: 60.h,
-  //   //         left: 20.w,
-  //   //         right: 20.w,
-  //   //         child: Row(
-  //   //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //   //           children: [
-  //   //             GestureDetector(
-  //   //               onTap: () {},
-  //   //               child: Container(
-  //   //                   height: 50.h,
-  //   //                   width: 45.w,
-  //   //                   decoration: BoxDecoration(
-  //   //                     shape: BoxShape.circle,
-  //   //                     color: Colors.white,
-  //   //                   ),
-  //   //                   child: Padding(
-  //   //                     padding: EdgeInsets.all(8.0),
-  //   //                     child: Icon(Icons.arrow_back_ios),
-  //   //                   )),
-  //   //             ),
-  //   //             Text(
-  //   //               "Collage Details",
-  //   //               style: GoogleFonts.roboto(
-  //   //                 fontSize: 20.sp,
-  //   //                 fontWeight: FontWeight.w600,
-  //   //                 color: Colors.white,
-  //   //               ),
-  //   //             ),
-  //   //             Container(
-  //   //               height: 50.h,
-  //   //               width: 50.w,
-  //   //               decoration: BoxDecoration(
-  //   //                 borderRadius: BorderRadius.circular(30),
-  //   //                 color: Colors.white,
-  //   //               ),
-  //   //               child: const Icon(Icons.search),
-  //   //             ),
-  //   //           ],
-  //   //         ),
-  //   //       ),
-  //   //       // Positioned(
-  //   //       //   left: 0,
-  //   //       //   right: 0,
-  //   //       //   top: 140.h,
-  //   //       //   child: Center(
-  //   //       //     child: ClipOval(
-  //   //       //       child: userProfile.data.profilePic != null
-  //   //       //           ? Image.network(
-  //   //       //               userProfile.data.profilePic!,
-  //   //       //               height: 182.h,
-  //   //       //               width: 182.w,
-  //   //       //               fit: BoxFit.cover,
-  //   //       //               errorBuilder: (context, error, stackTrace) =>
-  //   //       //                   Image.asset("assets/girlpic.png",
-  //   //       //                       height: 182.h, width: 182.w, fit: BoxFit.cover),
-  //   //       //             )
-  //   //       //           : Image.asset("assets/girlpic.png",
-  //   //       //               height: 182.h, width: 182.w, fit: BoxFit.cover),
-  //   //       //     ),
-  //   //       //   ),
-  //   //       // ),
-  //   //     ],
-  //   //   ),
-  //   // );
-  // }
+  Widget _buildDetailRow(
+      String label,
+      String? dynamicValue,
+      String? staticFallback,
+      bool isDark,
+      ) {
+    final value = dynamicValue ?? staticFallback ?? "Not available";
+    final isWebsite = label == "Website" && value.contains("http");
+
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 110.w,
+            child: Text(
+              label,
+              style: GoogleFonts.roboto(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[700],
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: isWebsite
+                  ? () {
+                var url = value.trim();
+                if (!url.startsWith('http')) url = 'https://$url';
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (_) => WebViewPage(url: url)),
+                );
+              }
+                  : null,
+              child: Text(
+                value,
+                style: GoogleFonts.roboto(
+                  fontSize: 15.sp,
+                  color: isWebsite ? linkedinBlue : (isDark ? Colors.black87: Colors.white70 ),
+                  decoration: isWebsite ? TextDecoration.underline : null,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

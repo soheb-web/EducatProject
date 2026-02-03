@@ -11,6 +11,9 @@ class Auth {
   static Future<void> updateUserProfile({
     required String userType,
     required String fullName,
+
+     int? college_id,
+
     required List<String> interest,
     required List<String> skills,
     File? resumeFile,
@@ -33,6 +36,7 @@ class Auth {
       final Map<String, dynamic> body = {
         'user_type': userType,
         'full_name': fullName,
+        'college_id': college_id,
         'highest_qualification': qualification,
         'college_or_institute_name': collageName,
         'language_known': language,
@@ -130,6 +134,8 @@ class Auth {
     File? resumeFile,
     File? certificate,
     required String fullName,
+     int? college_id,
+     int? company_id,
     required String jobRol,
     required String jobLocation,
     required String companyName,
@@ -153,6 +159,8 @@ class Auth {
         'user_type': userType,
         'total_experience': totalExperience,
         //'skills_id': skills_id,
+        'company_id':company_id,
+        'college_id':college_id,
         'language_known': languageKnown,
         'linkedin_user': linkedinUser,
         'description': description,

@@ -28,6 +28,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
     return Scaffold(
       backgroundColor:
           themeMode == ThemeMode.dark ? Color(0xFFFFFFFF) : Color(0xFF1B1B1B),
+
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(left: 20.w, right: 20.w),

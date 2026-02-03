@@ -693,7 +693,6 @@ class _FindCollegePageState extends ConsumerState<FindCollegePage> {
     developer.log('Final query params: $params', name: 'FindCollegePage');
     return params;
   }
-
   void _updateQueryParams() {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
@@ -701,14 +700,12 @@ class _FindCollegePageState extends ConsumerState<FindCollegePage> {
       ref.read(queryParamsProvider.notifier).state = params;
     });
   }
-
   void _onSearchChanged(String value) {
     setState(() {
       _searchText = value;
     });
     _updateQueryParams();
   }
-
   @override
   void initState() {
     super.initState();
@@ -802,7 +799,7 @@ class _FindCollegePageState extends ConsumerState<FindCollegePage> {
                 isDense: true,
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                hintText: "Search...",
+                hintText: "Search College",
                 hintStyle:
                     GoogleFonts.roboto(color: Colors.white70, fontSize: 16.sp),
                 filled: true,
@@ -938,31 +935,8 @@ class _FindCollegePageState extends ConsumerState<FindCollegePage> {
               ),
               child: collegeProvider.when(
                 data: (model) {
-                  // var colleges = model.data ?? [];
-                  // // Client-side filter when search text is present
-                  // if (_searchText.trim().isNotEmpty) {
-                  //   final searchLower = _searchText.trim().toLowerCase();
-                  //   colleges = colleges.where((college) {
-                  //     final nameLower = (college.name ?? '').toLowerCase();
-                  //     final descLower =
-                  //         (college.description ?? '').toLowerCase();
-                  //     return nameLower.contains(searchLower) ||
-                  //         descLower.contains(searchLower);
-                  //   }).toList();
-                  // }
-                  // if (colleges.isEmpty) {
-                  //   return Center(
-                  //     child: Text(
-                  //       _searchText.isNotEmpty
-                  //           ? "No colleges found for '$_searchText'"
-                  //           : "No colleges found",
-                  //       style: GoogleFonts.roboto(
-                  //           color: Colors.white70, fontSize: 18.sp),
-                  //     ),
-                  //   );
-                  // }
-                  final List allColleges = model.data ?? [];
 
+                  final List allColleges = model.data ?? [];
                   /// 🟥 API empty
                   if (allColleges.isEmpty) {
                     return SizedBox.expand(
@@ -994,6 +968,7 @@ class _FindCollegePageState extends ConsumerState<FindCollegePage> {
                           descLower.contains(searchLower);
                     }).toList();
                   }
+
 
                   /// 🟥 Filter ke baad empty
                   if (filteredColleges.isEmpty) {

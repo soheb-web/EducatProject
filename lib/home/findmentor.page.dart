@@ -1150,7 +1150,7 @@ class _FindMentorPageState extends ConsumerState<FindMentorPage> {
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w700,
                                 ),
-                                maxLines: 1,
+                                maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               SizedBox(height: 10.h),

@@ -33,6 +33,7 @@ import '../Model/MentorSendBody.dart';
 import '../Model/MyListModel.dart';
 import '../Model/PaymentCreateModel.dart';
 import '../Model/PaymentVerifyModel.dart';
+import '../Model/ReviewGetCompanyModel.dart';
 import '../Model/VerifyResponseModel.dart';
 import '../Model/bodyNewModel.dart';
 import '../Model/service.model.dart';
@@ -65,6 +66,9 @@ abstract class APIStateNetwork {
 
   @GET('/reviews-Get/{id}')
   Future<ReviewGetModel> getReview(@Path('id') String id);
+
+  @GET('/reviews-Get/{id}')
+  Future<ReviewGetCompanyModel> getReviewCompany(@Path('id') String id);
 
   @GET('/mentor/Transaction/{id}')
   Future<TransactionGetModel> getTransaction(@Path('id') String id);

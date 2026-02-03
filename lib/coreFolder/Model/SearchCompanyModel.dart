@@ -12,7 +12,7 @@
 
 // class SearchCompanyModel {
 //   bool? status;
-//   List<Datum>? data;
+//   List<DatumCompany>? data;
 //   SearchCompanyModel({
 //     this.status,
 //     this.data,
@@ -22,7 +22,7 @@
 //         status: json["status"],
 //         data: json["data"] == null
 //             ? []
-//             : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+//             : List<DatumCompany>.from(json["data"]!.map((x) => DatumCompany.fromJson(x))),
 //       );
 //   Map<String, dynamic> toJson() => {
 //         "status": status,
@@ -32,7 +32,7 @@
 //       };
 // }
 
-// class Datum {
+// class DatumCompany {
 //   int? id;
 //   String? collageName;
 //   String? slug;
@@ -56,7 +56,7 @@
 //   DateTime? createdAt;
 //   DateTime? updatedAt;
 
-//   Datum({
+//   DatumCompany({
 //     this.id,
 //     this.collageName,
 //     this.slug,
@@ -81,7 +81,7 @@
 //     this.updatedAt,
 //   });
 
-//   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+//   factory DatumCompany.fromJson(Map<String, dynamic> json) => DatumCompany(
 //         id: json["id"],
 //         collageName: json["collage_name"],
 //         slug: json["slug"],
@@ -168,7 +168,7 @@ String searchCompanyModelToJson(SearchCompanyModel data) =>
 
 class SearchCompanyModel {
   bool? status;
-  List<Datum>? data;
+  List<DatumCompany>? data;
 
   SearchCompanyModel({
     this.status,
@@ -180,8 +180,8 @@ class SearchCompanyModel {
         status: json["status"],
         data: json["data"] == null
             ? []
-            : List<Datum>.from(
-                json["data"].map((x) => Datum.fromJson(x)),
+            : List<DatumCompany>.from(
+                json["data"].map((x) => DatumCompany.fromJson(x)),
               ),
       );
 
@@ -217,7 +217,7 @@ List<String> parseStringList(dynamic value) {
 
 /// ================== DATA MODEL ==================
 
-class Datum {
+class DatumCompany {
   int? id;
   String? collageName;
   String? slug;
@@ -241,7 +241,7 @@ class Datum {
   DateTime? createdAt;
   DateTime? updatedAt;
 
-  Datum({
+  DatumCompany({
     this.id,
     this.collageName,
     this.slug,
@@ -266,7 +266,7 @@ class Datum {
     this.updatedAt,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory DatumCompany.fromJson(Map<String, dynamic> json) => DatumCompany(
         id: json["id"],
         collageName: json["collage_name"],
         slug: json["slug"],

@@ -43,7 +43,9 @@ import '../coreFolder/Controller/homeDataController.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   int index;
+
   HomePage(this.index, {super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -64,6 +66,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     MyListing(),
     ProfilePage(),
   ];
+
   String limitString(String text, int limit) {
     if (text.length <= limit) return text;
     return '${text.substring(0, limit)}..';
@@ -117,8 +120,10 @@ class _HomePageState extends ConsumerState<HomePage> {
               });
             },
             type: BottomNavigationBarType.fixed,
-            elevation: 0, // IMPORTANT: shadow hum khud de rahe
-            backgroundColor: Colors.transparent, // Container ka color use ho
+            elevation: 0,
+            // IMPORTANT: shadow hum khud de rahe
+            backgroundColor: Colors.transparent,
+            // Container ka color use ho
             selectedItemColor: themeMode == ThemeMode.light
                 ? const Color(0xFF4988C4)
                 : const Color(0xFF1C4D8D),
@@ -626,12 +631,14 @@ class _HomePageState extends ConsumerState<HomePage> {
 // Extracted HomePage content into a separate widget
 class HomePageContent extends ConsumerStatefulWidget {
   const HomePageContent({super.key});
+
   @override
   _HomePageContentState createState() => _HomePageContentState();
 }
 
 class _HomePageContentState extends ConsumerState<HomePageContent> {
   String filterQuery = "";
+
   String limitString(String text, int limit) {
     if (text.length <= limit) return text;
     return '${text.substring(0, limit)}..';
@@ -1722,6 +1729,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
                         SizedBox(
                           height: 20.h,
                         ),
@@ -1833,6 +1841,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             children: [
+
                                               Container(
                                                 width: 40.w,
                                                 height: 40.h,
@@ -1880,6 +1889,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                                                   textAlign: TextAlign.center,
                                                 ),
                                               ),
+
                                               Center(
                                                 child: Text(
                                                   textAlign: TextAlign.center,
@@ -1896,6 +1906,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                                                   ),
                                                 ),
                                               ),
+
                                             ],
                                           ),
                                         ),
@@ -2562,6 +2573,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
 }
 
 // Rest of the code (HomePageBody, UserTabs, Upertabs, MyContainer, NewContainer) remains unchanged
+
 class HomePageBody extends ConsumerStatefulWidget {
   final Function callBack;
   const HomePageBody({super.key, required this.callBack});
@@ -2575,84 +2587,82 @@ class _HomePageBodyState extends ConsumerState<HomePageBody> {
   Widget build(BuildContext context) {
     final getHomeStudentData = ref.watch(getHomeStudentDataProvider);
     final themeMode = ref.watch(themeProvider);
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // SizedBox(height: 10.h),
 
-
         Container(
           decoration: BoxDecoration(
               color: Color(0xff1C4D8D),
-            borderRadius: BorderRadius.circular(20.sp)
-          ),
-padding: EdgeInsets.all(20.sp),
+              borderRadius: BorderRadius.circular(20.sp)),
+          padding: EdgeInsets.all(20.sp),
           margin: EdgeInsets.all(20.sp),
-
-
-
-
-
-          child: Row(children: [
-
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                Text(
-                  "Don’t find the right mentor ?",
-                  style: GoogleFonts.roboto(
-                    color:Colors.white,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 10.h,),
-              
-                Text(
-                  "Upload your custom request and let the mentors bid on it",
-                  style: GoogleFonts.roboto(
-                    color:Colors.grey,
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              
-              ],),
-            ),
-SizedBox(width: 10.w,),
-
-            GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateListPage()));
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5.sp),
-                  color: Color(0xffD9A218),
-                ),
-              padding: EdgeInsets.all(10.sp),
-
-                child: Text(
-                  "Upload Request",
-                  style: GoogleFonts.roboto(
-                    color:Colors.white,
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+          // height: 200.h,
+          // width: double.infinity,
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Don’t find the right mentor ?",
+                      style: GoogleFonts.roboto(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    Text(
+                      "Upload your custom request and let the mentors bid on it",
+                      style: GoogleFonts.roboto(
+                        color: Colors.grey,
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
               ),
-            )
-
-          ],),
+              SizedBox(
+                width: 10.w,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CreateListPage()));
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.sp),
+                    color: Color(0xffD9A218),
+                  ),
+                  padding: EdgeInsets.all(10.sp),
+                  child: Text(
+                    "Upload Request",
+                    style: GoogleFonts.roboto(
+                      color: Colors.white,
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
 
         Container(
@@ -3219,6 +3229,7 @@ class MyContainer extends ConsumerWidget {
   final String title;
   final String email;
   final String description;
+
   const MyContainer({
     super.key,
     required this.image,

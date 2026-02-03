@@ -1339,7 +1339,7 @@ class _FindCompanyPageState extends ConsumerState<FindCompanyPage> {
                 isDense: true,
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                hintText: "Search..",
+                hintText: "Search Company",
                 hintStyle:
                     GoogleFonts.roboto(color: Colors.white70, fontSize: 16.sp),
                 filled: true,

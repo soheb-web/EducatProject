@@ -1147,7 +1147,7 @@ class _FindSkillPageState extends ConsumerState<FindSkillPage> {
                 isDense: true,
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 10.w, vertical: 12.h),
-                hintText: "Search...",
+                hintText: "Search Trending Course",
                 hintStyle:
                     GoogleFonts.roboto(color: Colors.white70, fontSize: 16.sp),
                 filled: true,

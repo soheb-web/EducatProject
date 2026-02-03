@@ -167,6 +167,8 @@ class GetUserProfileModel {
 
 class Data {
   int? id;
+  int? college_id;
+  int? company_id;
   String? fullName;
   String? email;
   String? phoneNumber;
@@ -202,6 +204,8 @@ class Data {
 
   Data({
     this.id,
+    this.college_id,
+    this.company_id,
     this.fullName,
     this.email,
     this.phoneNumber,
@@ -238,6 +242,8 @@ class Data {
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         id: json["id"],
+    college_id: json["college_id"],
+    company_id: json["company_id"],
         fullName: json["full_name"],
         email: json["email"],
         phoneNumber: json["phone_number"],
@@ -283,6 +289,8 @@ class Data {
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "college_id": college_id,
+        "company_id": company_id,
         "full_name": fullName,
         "email": email,
         "phone_number": phoneNumber,

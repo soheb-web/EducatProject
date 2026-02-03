@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:educationapp/apiService.dart';
 import 'package:educationapp/coreFolder/Controller/getMentorReveiwController.dart';
 import 'package:educationapp/coreFolder/Controller/getRequestStudentController.dart';
-import 'package:educationapp/coreFolder/Controller/reviewController.dart';
 import 'package:educationapp/coreFolder/Controller/themeController.dart';
 import 'package:educationapp/coreFolder/Model/sendRequestBodyModel.dart';
 import 'package:educationapp/coreFolder/network/api.state.dart';
@@ -17,8 +16,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
-
 import '../coreFolder/Controller/profileController.dart';
+import 'AddReviewPage.dart';
+import 'MentorReviewViewAll.dart';
 
 class MentorDetailPage extends ConsumerStatefulWidget {
   final int id;
@@ -782,6 +782,69 @@ class _MentorDetailPageState extends ConsumerState<MentorDetailPage> {
                                         color: Colors.grey.shade400,
                                         thickness: 1.w,
                                       ),
+
+
+
+
+
+                                      GestureDetector(
+                                        onTap: (){
+                                          Navigator.push(
+                                              context,
+                                              CupertinoPageRoute(
+                                                builder: (context) =>
+                                                    AddReviewPage(
+                                                      id:  widget.id
+                                                          .toString(),),
+                                              ));
+
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.all(4.sp),
+                                          height: 40.h,
+                                          width: 110.w,
+                                          decoration: BoxDecoration(
+                                            color:
+          Color(0xff9088F1),
+border: Border.all(color: Color(0xff9088F1),),
+                                            borderRadius: BorderRadius.circular(10),
+
+                                          ),
+                                          margin: EdgeInsets.only(top: 15.h),
+                                          child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "Add Review",
+                                                style: GoogleFonts.roboto(
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                  color:
+                                                     Colors.white
+                                                ),
+                                              ),
+
+
+                                              SizedBox(width: 5.w,),
+
+
+                                             Container(
+
+                                               decoration: BoxDecoration(
+                                                 color: Color(0xff9088F1),
+
+                                                 borderRadius: BorderRadius.circular(30),
+
+
+                                               ),
+
+                                               child:
+                                              Icon(Icons.arrow_forward_ios,size: 16.sp,)
+                                             )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                       Container(
                                         margin: EdgeInsets.only(top: 15.h),
                                         child: Row(
@@ -799,15 +862,25 @@ class _MentorDetailPageState extends ConsumerState<MentorDetailPage> {
                                                         : Color(0xff9088F1),
                                               ),
                                             ),
+
+
                                             GestureDetector(
                                               onTap: () {
+                                                // Navigator.push(
+                                                //     context,
+                                                //     CupertinoPageRoute(
+                                                //       builder: (context) =>
+                                                //           MentoraddReviewPage(
+                                                //               id: widget.id
+                                                //                   .toString()),
+                                                //     ));
                                                 Navigator.push(
                                                     context,
                                                     CupertinoPageRoute(
                                                       builder: (context) =>
-                                                          MentoraddReviewPage(
-                                                              id: widget.id
-                                                                  .toString()),
+                                                          Mentorreviewviewall(
+                                                               id:  widget.id
+                                                                   .toString(),),
                                                     ));
                                               },
                                               child: Row(
@@ -841,6 +914,7 @@ class _MentorDetailPageState extends ConsumerState<MentorDetailPage> {
                                       SizedBox(
                                         height: 15.h,
                                       ),
+
                                       getMentorReviewProvider.when(
                                         data: (snp) {
                                           if (snp.reviews!.isEmpty) {
@@ -859,7 +933,7 @@ class _MentorDetailPageState extends ConsumerState<MentorDetailPage> {
                                           }
                                           // 👇 Take only top 5
                                           final limitedReviews =
-                                              snp.reviews!.take(5).toList();
+                                              snp.reviews!.take(2).toList();
 
                                           return ListView.builder(
                                             reverse: true,
@@ -877,6 +951,7 @@ class _MentorDetailPageState extends ConsumerState<MentorDetailPage> {
                                                               .toString() ??
                                                           "") ??
                                                       0.0;
+
                                               final int rating =
                                                   avg.clamp(0, 5).toInt();
 
@@ -903,7 +978,7 @@ class _MentorDetailPageState extends ConsumerState<MentorDetailPage> {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             20.r),
-                                                    // color: Color(0xFFF1F2F6),
+
                                                     color: themeMode ==
                                                             ThemeMode.dark
                                                         ? Color(0xffF1F2F6)
@@ -917,6 +992,24 @@ class _MentorDetailPageState extends ConsumerState<MentorDetailPage> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
+
+                                                      Text(
+                                                        review.userName ??
+                                                            "N/A",
+                                                        style:
+                                                        GoogleFonts.roboto(
+                                                          fontWeight: FontWeight.w500,
+                                                          fontSize: 17.sp,
+                                                          color: themeMode ==
+                                                              ThemeMode
+                                                                  .light
+                                                              ? Color(
+                                                              0xffDEDDEC)
+                                                              : Color(
+                                                              0xff9088F1),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 5.h,),
                                                       Row(
                                                         children: [
                                                           ...List.generate(
@@ -940,7 +1033,10 @@ class _MentorDetailPageState extends ConsumerState<MentorDetailPage> {
                                                           ),
                                                         ],
                                                       ),
-                                                      SizedBox(height: 5.h),
+                                                      SizedBox(height: 10.h),
+
+
+
                                                       Text(
                                                         review.description ??
                                                             '',
@@ -956,24 +1052,21 @@ class _MentorDetailPageState extends ConsumerState<MentorDetailPage> {
                                                                   0xFF666666),
                                                         ),
                                                       ),
+
+                                                      SizedBox(
+                                                        height: 10.h,
+                                                      ),
+
                                                       Text(
-                                                        review.userName ??
-                                                            "N/A",
-                                                        style:
-                                                            GoogleFonts.roboto(
-                                                          fontSize: 17.sp,
-                                                          color: themeMode ==
-                                                                  ThemeMode
-                                                                      .light
-                                                              ? Color(
-                                                                  0xffDEDDEC)
-                                                              : Color(
-                                                                  0xff9088F1),
+                                                        "Posted on ${review.createdAt?.toString().split(' ')[0] ?? ''}",
+                                                        style: GoogleFonts.roboto(
+                                                          fontSize: 14.sp,
+                                                          color:
+                                                          themeMode == ThemeMode.light
+                                                              ? Color(0xffDEDDEC)
+                                                              : Color(0xFF201F1F),
                                                         ),
                                                       ),
-                                                      // SizedBox(
-                                                      //   height: 10.h,
-                                                      // )
                                                     ],
                                                   ),
                                                 ),
@@ -992,6 +1085,7 @@ class _MentorDetailPageState extends ConsumerState<MentorDetailPage> {
                                           child: CircularProgressIndicator(),
                                         ),
                                       ),
+
                                       SizedBox(
                                         height: 10.h,
                                       )
