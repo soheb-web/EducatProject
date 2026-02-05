@@ -668,8 +668,9 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
           final String followersText =
               "${formatCount(college.totalFollowers)} followers";
           // Alumni field backend में नहीं है → static fallback या N/A
+          // final String alumniText = "214K alumni";
           final String alumniText =
-              "214K alumni"; // ← backend से total_alumni आए तो यहाँ dynamic कर दो
+              "${formatCount(college.users!.length ?? 0)} alumni";
 
           return Stack(
             children: [
@@ -1008,12 +1009,12 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                                                     .followUnfollow(body);
 
                                                 if (response.status == true) {
-                                                  Fluttertoast.showToast(
-                                                    msg: response.action ??
-                                                        "Success",
-                                                    backgroundColor:
-                                                        Colors.green,
-                                                  );
+                                                  // Fluttertoast.showToast(
+                                                  //   msg: response.action ??
+                                                  //       "Success",
+                                                  //   backgroundColor:
+                                                  //       Colors.green,
+                                                  // );
 
                                                   ref.invalidate(
                                                       reviewCollegeProvider(

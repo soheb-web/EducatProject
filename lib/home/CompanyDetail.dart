@@ -402,9 +402,10 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
           final String industry = company.type ?? "Company";
           final String followersText =
               "${formatCount(company.totalFollowers)} followers";
-          // Alumni अभी backend में नहीं है → static fallback
+
+          // final String alumniText =  "214K alumni";
           final String alumniText =
-              "214K alumni"; // ← backend से total_alumni आए तो dynamic कर दो
+              "${formatCount(company.users!.length ?? 0)} alumni";
 
           return Stack(
             children: [
@@ -659,14 +660,13 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                                         body);
 
                                                 if (response.status == true) {
-                                                  Fluttertoast.showToast(
-                                                    msg: response.action ??
-                                                        "Followed successfully",
-                                                    backgroundColor:
-                                                        Colors.green,
-                                                    textColor: Colors.white,
-                                                  );
-
+                                                  // Fluttertoast.showToast(
+                                                  //   msg: response.action ??
+                                                  //       "Followed successfully",
+                                                  //   backgroundColor:
+                                                  //       Colors.green,
+                                                  //   textColor: Colors.white,
+                                                  // );
                                                   ref.invalidate(
                                                       reviewCompanyProvider(
                                                           widget.id));
