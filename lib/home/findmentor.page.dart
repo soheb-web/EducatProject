@@ -1009,13 +1009,15 @@ class _FindMentorPageState extends ConsumerState<FindMentorPage> {
                       value: selectedSkill,
                       hint: "Skill",
                       items: skills,
+
                       displayMap: dropdown.mentors?.skills,
                       onChanged: (v) {
                         setState(() => selectedSkill = v);
                         _updateQueryParams();
                       },
+
                     ),
-                    SizedBox(width: 12.w),
+                    // SizedBox(width: 12.w),
                     _buildDropdownFilter(
                       value: selectedIndustry,
                       hint: "Industry",
@@ -1024,8 +1026,9 @@ class _FindMentorPageState extends ConsumerState<FindMentorPage> {
                         setState(() => selectedIndustry = v);
                         _updateQueryParams();
                       },
+
                     ),
-                    SizedBox(width: 12.w),
+                    // SizedBox(width: 12.w),
                     _buildDropdownFilter(
                       value: selectedExperience,
                       hint: "Experience",
@@ -1035,6 +1038,7 @@ class _FindMentorPageState extends ConsumerState<FindMentorPage> {
                         setState(() => selectedExperience = v);
                         _updateQueryParams();
                       },
+
                     ),
                   ],
                 );
@@ -1252,15 +1256,19 @@ class _FindMentorPageState extends ConsumerState<FindMentorPage> {
     );
   }
 
-  Widget _buildDropdownFilter({
+  Widget _buildDropdownFilter( {
     required String? value,
     required String hint,
     required List<String> items,
     Map<String, dynamic>? displayMap,
     required void Function(String?) onChanged,
   }) {
+    final themeMode = ref.watch(themeProvider);
+    final bool isDark = themeMode == ThemeMode.dark;
+
     return Expanded(
       child: Container(
+        margin: EdgeInsets.only(right: 10.w,left: 10.w),
         height: 40.h,
         padding: EdgeInsets.symmetric(horizontal: 14.sp),
         decoration: BoxDecoration(
@@ -1268,13 +1276,14 @@ class _FindMentorPageState extends ConsumerState<FindMentorPage> {
           borderRadius: BorderRadius.circular(25),
         ),
         child: DropdownButton<String>(
+          borderRadius: BorderRadius.circular(12.r), // optional: rounded corners menu को
           value: value,
           hint: Text(
             hint,
-            style: GoogleFonts.roboto(color: Colors.white, fontSize: 12.sp),
+            style: GoogleFonts.roboto(  fontSize: 12.sp),
           ),
           isExpanded: true,
-          dropdownColor: const Color(0xFF1B1B1B),
+          dropdownColor:  isDark ? Colors.white: Color(0xFF1B1B1B) ,
           icon: const Icon(Icons.keyboard_arrow_down_rounded,
               color: Colors.white),
           underline: const SizedBox(),
@@ -1283,7 +1292,7 @@ class _FindMentorPageState extends ConsumerState<FindMentorPage> {
               value: item,
               child: Text(
                 displayMap?[item] ?? item,
-                style: GoogleFonts.roboto(color: Colors.white, fontSize: 10.sp),
+                style: GoogleFonts.roboto( color:isDark ? Color(0xFF1B1B1B) : Colors.white, fontSize: 10.sp),
               ),
             );
           }).toList(),

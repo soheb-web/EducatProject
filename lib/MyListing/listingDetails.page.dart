@@ -1783,7 +1783,7 @@ class __ListingDetailsContentState extends ConsumerState<_ListingDetailsContent>
     );
   }
 
-  Future<void> _handleApply(WidgetRef ref) async {
+  /*Future<void> _handleApply(WidgetRef ref) async {
     final profile = ref.read(userProfileController);
 
     if (profile.value == null || profile.value!.data == null) {
@@ -1839,7 +1839,82 @@ class __ListingDetailsContentState extends ConsumerState<_ListingDetailsContent>
         setState(() => isApplying = false);
       }
     }
+  }*/
+
+  Future<void> _handleApply(WidgetRef ref) async {
+    final profileAsync = ref.read(userProfileController);
+
+    // Profile loaded नहीं है तो return
+    if (profileAsync.value == null || profileAsync.value!.data == null) {
+      Fluttertoast.showToast(msg: "Profile not loaded");
+      return;
+    }
+
+    final profileData = profileAsync.value!.data!;
+
+    // ← नई condition: User type Mentor होना चाहिए
+    if (profileData.userType != "Mentor") {
+      Fluttertoast.showToast(
+        msg: "Only Mentors can apply to this request.",
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.orange,
+        textColor: Colors.white,
+      );
+      return;
+    }
+
+    // Coins check
+    final String? userCoinsStr = profileData.coins;
+    final double userCoins = double.tryParse(userCoinsStr ?? "0") ?? 0.0;
+
+    final double feeInRupees = double.tryParse(widget.item.budget ?? "0") ?? 0.0;
+
+    if (userCoins < feeInRupees) {
+      Fluttertoast.showToast(
+        msg: "Insufficient coins! You need $feeInRupees coins (₹$feeInRupees)",
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+      return;
+    }
+
+    // Apply body
+    final body = ApplybodyModel(
+      body: "A mentor has applied to your request. Check details now!",
+      title: "Mentor Application",
+      userId: widget.item.studentId,
+      studentIistsId: widget.item.id,
+      coin: (double.tryParse(widget.item.budget ?? '0') ?? 0).toInt(),
+    );
+
+    setState(() => isApplying = true);
+
+    try {
+      final service = APIStateNetwork(createDio());
+      final response = await service.applyOrSendNotification(body);
+
+      if (response.response.data['success'] == true) {
+        Fluttertoast.showToast(
+          msg: "Applied successfully!",
+          backgroundColor: Colors.green,
+        );
+        ref.invalidate(myListingController);
+      } else {
+        Fluttertoast.showToast(
+          msg: response.response.data['message'] ?? "Application failed",
+        );
+      } 
+    } catch (e, st) {
+      log("Apply Error: $e\nStackTrace: $st");
+      Fluttertoast.showToast(msg: "Something went wrong. Try again.");
+    } finally {
+      if (mounted) {
+        setState(() => isApplying = false);
+      }
+    }
   }
+
 
   // ── Original helper widgets (exact copy) ────────────────────────────────
 

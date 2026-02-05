@@ -14,13 +14,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
+import '../coreFolder/Model/switchBodyMentor.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   ProfilePage({
     super.key,
   });
-
   @override
   ConsumerState<ProfilePage> createState() => _ProfilePageState();
 }
@@ -28,13 +27,12 @@ class ProfilePage extends ConsumerStatefulWidget {
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   File? selectbgImage;
   final ImagePicker _picker = ImagePicker();
-
+  bool isSwitched = false;   // ← ये state को कंट्रोल करता है
   Future<void> pickAndUploadImage(ImageSource source) async {
     final XFile? pickedFile = await _picker.pickImage(
       source: source,
       imageQuality: 70,
     );
-
     if (pickedFile != null) {
       final file = File(pickedFile.path);
 
@@ -45,7 +43,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       await uploadImageBackground(file);
     }
   }
-
+  bool isLoadingSwitch = false;
   void showImagePicker() {
     showCupertinoModalPopup(
       context: context,
@@ -89,6 +87,34 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       log("Upload Error: $e");
     }
   }
+
+
+  // Future<void> sendConnectRequest( {required String userType}) async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   try {
+  //     final body = SwitchBodyMentor(user_type:userType );
+  //     final service = APIStateNetwork(createDio());
+  //     final response = await service.swichMentor(body);
+  //
+  //     if (response.status == true) {
+  //
+  //       Fluttertoast.showToast(msg: response.message);
+  //
+  //     } else {
+  //       Fluttertoast.showToast(msg: response.message);
+  //     }
+  //   } catch (e, st) {
+  //     log("${e.toString()} \n $st");
+  //     Fluttertoast.showToast(msg: "No Request sent");
+  //   } finally {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   }
+  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -236,16 +262,210 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  profileData.fullName ?? "No Name",
-                                  style: GoogleFonts.roboto(
-                                    fontSize: 24.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: themeMode == ThemeMode.dark
-                                        ? Color(0xFF1B1B1B)
-                                        : Colors.white,
-                                  ),
+
+
+
+
+
+
+                                // Row(
+                                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                //   crossAxisAlignment: CrossAxisAlignment.center,
+                                //   children: [
+                                //     Expanded(
+                                //       child: Text(
+                                //         profileData.fullName ?? "No Name",
+                                //         style: GoogleFonts.roboto(
+                                //           fontSize: 24.sp,
+                                //           fontWeight: FontWeight.w600,
+                                //           color: themeMode == ThemeMode.dark
+                                //               ? Color(0xFF1B1B1B)
+                                //               : Colors.white,
+                                //         ),
+                                //       ),
+                                //     ),
+                                //
+                                //     if (userType != "Student") ...[
+                                //       if (userType == "Professional" || userType == "Mentor") ...[
+                                //
+                                //
+                                //
+                                //         Row(
+                                //           children: [
+                                //             Switch(
+                                //               value: profileData.userType == "Mentor",  // provider से live value
+                                //               onChanged: isLoadingSwitch
+                                //                   ? null
+                                //                   : (bool wantToEnableMentor) async {
+                                //                 setState(() => isLoadingSwitch = true);
+                                //
+                                //                 // अगर switch को ON करना चाहते हैं (Professional → Mentor)
+                                //                 if (wantToEnableMentor) {
+                                //                   // पहले चेक: अगर पहले से Mentor है तो toast + return
+                                //                   if (profileData.userType == "Mentor") {
+                                //                     Fluttertoast.showToast(msg: "You are already a Mentor");
+                                //                     setState(() => isLoadingSwitch = false);
+                                //                     return;
+                                //                   }
+                                //
+                                //                   // Professional है → API call करो
+                                //                   try {
+                                //                     final newUserType = "Mentor";
+                                //                     final body = SwitchBodyMentor(user_type: newUserType);
+                                //                     final service = APIStateNetwork(createDio());
+                                //                     final response = await service.swichMentor(body);
+                                //
+                                //                     if (response.success == true) {
+                                //                       Fluttertoast.showToast(msg: response.message ?? "Switched to Mentor successfully");
+                                //                       ref.invalidate(userProfileController); // refresh → value update
+                                //                     } else {
+                                //                       Fluttertoast.showToast(
+                                //                         msg: response.message ?? "Failed to switch",
+                                //                         toastLength: Toast.LENGTH_LONG,
+                                //                       );
+                                //
+                                //                       // अगर backend "already Mentor" कहे (edge case)
+                                //                       if (response.message?.toLowerCase().contains("already mentor") ?? false) {
+                                //                         ref.invalidate(userProfileController);
+                                //                       }
+                                //                     }
+                                //                   } catch (e) {
+                                //                     Fluttertoast.showToast(msg: "Error: ${e.toString()}");
+                                //                   }
+                                //                 }
+                                //
+                                //                 // अगर switch को OFF करना चाहते हैं (Mentor → Professional)
+                                //                 else {
+                                //                   // हमेशा block करो (API call मत करो)
+                                //                   Fluttertoast.showToast(
+                                //                     msg: "You are already a Mentor. Cannot switch back to Professional.",
+                                //                     toastLength: Toast.LENGTH_LONG,
+                                //                   );
+                                //                   // switch को forcefully on रखो (क्योंकि value provider से आ रहा है)
+                                //                   // कोई setState की जरूरत नहीं, क्योंकि value provider पर depend है
+                                //                 }
+                                //
+                                //                 setState(() => isLoadingSwitch = false);
+                                //               },
+                                //               activeColor: const Color(0xFF16A34A),
+                                //               activeTrackColor: const Color(0xFF16A34A).withOpacity(0.4),
+                                //               inactiveThumbColor: Colors.grey[400],
+                                //               inactiveTrackColor: Colors.grey[300],
+                                //             ),
+                                //
+                                //             Text("Switch To Mentor",style: TextStyle(
+                                //               color: Colors.black
+                                //             ),)
+                                //           ],
+                                //         ),
+                                //
+                                //
+                                //       ],
+                                //     ],
+                                //
+                                //
+                                //   ],
+                                // ),
+
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    // Left: Name (Expanded ताकि लंबा नाम भी फिट हो)
+                                    Expanded(
+                                      child: Text(
+                                        profileData.fullName ?? "No Name",
+                                        style: GoogleFonts.roboto(
+                                          fontSize: 24.sp,
+                                          fontWeight: FontWeight.w700,          // थोड़ा bold
+                                          color: themeMode == ThemeMode.dark
+                                              ? Color(0xFF1B1B1B)
+                                              : Colors.white,
+                                          letterSpacing: 0.2,                   // थोड़ा spacing बेहतर लगता है
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+
+                                    // Right: Switch + Label (Mentor mode वाले users के लिए)
+                                    if (userType != "Student" && (userType == "Professional" || userType == "Mentor")) ...[
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          // Dynamic label + icon (Mentor mode को highlight करने के लिए)
+                                          Text(
+                                            profileData.userType == "Mentor" ? "Mentor Mode" : "Switch to Mentor",
+                                            style: GoogleFonts.roboto(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: profileData.userType == "Mentor"
+                                                  ? const Color(0xFF16A34A)           // green when active
+                                                  : Colors.grey[600],
+                                            ),
+                                          ),
+
+                                          SizedBox(width: 8.w),
+
+                                          // Switch
+                                          Switch(
+                                            value: profileData.userType == "Mentor",
+                                            onChanged: isLoadingSwitch
+                                                ? null
+                                                : (bool wantToEnableMentor) async {
+                                              setState(() => isLoadingSwitch = true);
+
+                                              if (wantToEnableMentor) {
+                                                if (profileData.userType == "Mentor") {
+                                                  Fluttertoast.showToast(msg: "You are already a Mentor");
+                                                  setState(() => isLoadingSwitch = false);
+                                                  return;
+                                                }
+
+                                                try {
+                                                  final newUserType = "Mentor";
+                                                  final body = SwitchBodyMentor(user_type: newUserType);
+                                                  final service = APIStateNetwork(createDio());
+                                                  final response = await service.swichMentor(body);
+
+                                                  if (response.success == true) {
+                                                    Fluttertoast.showToast(msg: response.message ?? "Switched to Mentor successfully");
+                                                    ref.invalidate(userProfileController);
+                                                  } else {
+                                                    Fluttertoast.showToast(
+                                                      msg: response.message ?? "Failed to switch",
+                                                      toastLength: Toast.LENGTH_LONG,
+                                                    );
+
+                                                    if (response.message?.toLowerCase().contains("already mentor") ?? false) {
+                                                      ref.invalidate(userProfileController);
+                                                    }
+                                                  }
+                                                } catch (e) {
+                                                  Fluttertoast.showToast(msg: "Error: ${e.toString()}");
+                                                }
+                                              } else {
+                                                Fluttertoast.showToast(
+                                                  msg: "You are already a Mentor. Cannot switch back to Professional.",
+                                                  toastLength: Toast.LENGTH_LONG,
+                                                );
+                                              }
+
+                                              setState(() => isLoadingSwitch = false);
+                                            },
+                                            activeColor: const Color(0xFF16A34A),
+                                            activeTrackColor: const Color(0xFF16A34A).withOpacity(0.4),
+                                            inactiveThumbColor: Colors.grey[400],
+                                            inactiveTrackColor: Colors.grey[300],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ],
                                 ),
+
+
                                 if (userType != "Student") ...[
                                   SizedBox(
                                     height: 8.h,
@@ -336,22 +556,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                           fontWeight: FontWeight.w500,
                                           color: Color(0xff9088F1)),
                                     )),
-                                // Wrap(
-                                //   spacing: 10.w,
-                                //   runSpacing: 5.h,
-                                //   children: (profileData.skills ?? [])
-                                //       .map<Widget>((skill) => Text(
-                                //             skill.toString(),
-                                //             style: GoogleFonts.roboto(
-                                //               fontSize: 16.sp,
-                                //               fontWeight: FontWeight.w600,
-                                //               color: themeMode == ThemeMode.dark
-                                //                   ? Color(0xff666666)
-                                //                   : Colors.white,
-                                //             ),
-                                //           ))
-                                //       .toList(),
-                                // ),
+
+
+
+
+
                                 SizedBox(height: 20.h),
                                 Divider(
                                   color: Colors.grey.shade400,
@@ -1007,6 +1216,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       ),
     );
   }
+
 }
 
 Widget _buildLanguageSection({
@@ -1210,4 +1420,6 @@ class MentorReview extends ConsumerWidget {
       ),
     );
   }
+
+
 }

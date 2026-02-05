@@ -393,7 +393,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                 ),
               ),
-            if (userType == "Student")
+
+            // if (userType == "Student")
+
               ListTile(
                 dense: true,
                 onTap: () {
@@ -646,6 +648,8 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
 
   bool isAccept = false;
   String? requestLenght;
+  String? wallet;
+  String? yourBid;
   late WebSocketChannel channel;
   late int userId;
   String status = 'Connecting...';
@@ -1030,7 +1034,10 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                 Padding(
                   padding: EdgeInsets.only(left: 20.w, right: 20.w),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                     children: [
+
                       if (userType == "Student")
                         InkWell(
                           onTap: () {
@@ -1120,7 +1127,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                             ),
                           ),
                         ),
-                      SizedBox(width: 15.w),
+                      // SizedBox(width: 15.w),
                       if (userType == "Student")
                         InkWell(
                           onTap: () {
@@ -1195,8 +1202,23 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                             ),
                           ),
                         ),
-                      SizedBox(width: 15.w),
-                      if (userType == "Professional" || userType == "Mentor")
+                      // SizedBox(width: 15.w),
+
+
+
+
+
+
+                    ],
+                  ),
+                ),
+
+                if (userType == "Professional" || userType == "Mentor")
+                  Container(
+                    margin: EdgeInsets.only(left: 20.w,right: 20.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                         InkWell(
                           onTap: () {
                             Navigator.push(
@@ -1207,7 +1229,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                           },
                           child: Container(
                             height: 130.h,
-                            width: 150.w,
+                            width: 120.w,
                             decoration: BoxDecoration(
                               color: const Color(0xff9088F1),
                               borderRadius: BorderRadius.circular(20.r),
@@ -1238,7 +1260,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                                   padding: EdgeInsets.only(left: 15.w),
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "New Requests",
@@ -1262,9 +1284,144 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                             ),
                           ),
                         ),
-                    ],
+                        SizedBox(width: 10.w,),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => RequestPage(),
+                                ));
+                          },
+                          child: Container(
+                            height: 130.h,
+                            width: 120.w,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF485C07),
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 15.h),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 15.w),
+                                  child: Container(
+                                    width: 50.w,
+                                    height: 50.h,
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(255, 0, 0, 0)
+                                          .withOpacity(0.1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Image.asset(
+                                      "assets/mask1.png",
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10.h),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 15.w),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Wallet",
+                                        style: GoogleFonts.roboto(
+                                            fontSize: 11.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.white),
+                                      ),
+                                      wallet==null?SizedBox():
+                                      Text(
+
+                                        wallet!,
+                                        style: GoogleFonts.roboto(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFF1B1B1B)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10.w,),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => RequestPage(),
+                                ));
+                          },
+                          child: Container(
+                            height: 130.h,
+                            width: 120.w,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1C4D8D),
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 15.h),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 15.w),
+                                  child: Container(
+                                    width: 50.w,
+                                    height: 50.h,
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(255, 0, 0, 0)
+                                          .withOpacity(0.1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Image.asset(
+                                      "assets/mask1.png",
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10.h),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 15.w),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Your Bid",
+                                        style: GoogleFonts.roboto(
+                                            fontSize: 11.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.white),
+                                      ),
+                                      yourBid==null?SizedBox():
+                                      Text(
+
+                                        yourBid!,
+                                        style: GoogleFonts.roboto(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFF1B1B1B)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
                   ),
-                ),
                 SizedBox(height: 20.h),
                 // userType != "Professional"
                 //     ?
@@ -1289,6 +1446,14 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                           SizedBox(height: 20.h),
                           getHomeMentorData.when(
                             data: (mentorData) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                setState(() {
+                                  wallet =
+                                      mentorData.data!.coins.toString();
+                                  yourBid =
+                                      mentorData.data!.notification_count.toString();
+                                });
+                              });
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -1724,6 +1889,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                       ),
                     ),
                   )
+
                 else
                   SingleChildScrollView(
                     child: Column(
@@ -2563,6 +2729,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                       ],
                     ),
                   ),
+
               ],
             ),
           ),

@@ -1131,7 +1131,9 @@ class _FindSkillPageState extends ConsumerState<FindSkillPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xff9088F1),
-      body: Column(
+      body:
+
+      Column(
         children: [
           SizedBox(height: 30.h),
           _appBar(),
@@ -1401,6 +1403,7 @@ class _FindSkillPageState extends ConsumerState<FindSkillPage> {
           ),
         ],
       ),
+
     );
   }
 
@@ -1451,12 +1454,16 @@ class _FindSkillPageState extends ConsumerState<FindSkillPage> {
     );
   }
 
+
   Widget _buildDropdown({
     required String? value,
     required String hint,
     required List<String> items,
     required ValueChanged<String?> onChanged,
   }) {
+    final themeMode = ref.watch(themeProvider);
+    final bool isDark = themeMode == ThemeMode.dark;
+
     return Container(
       height: 44.h,
       padding: EdgeInsets.symmetric(horizontal: 12.w),
@@ -1465,11 +1472,12 @@ class _FindSkillPageState extends ConsumerState<FindSkillPage> {
         borderRadius: BorderRadius.circular(30.r),
       ),
       child: DropdownButton<String>(
+        borderRadius: BorderRadius.circular(12.r), // optional: rounded corners menu को
         value: value,
         hint: Text(hint,
             style: GoogleFonts.roboto(color: Colors.white70, fontSize: 13.sp)),
         isExpanded: true,
-        dropdownColor: const Color(0xFF1B1B1B),
+        dropdownColor:  isDark ? Colors.white: Color(0xFF1B1B1B) ,
         icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white70),
         underline: const SizedBox(),
         items: items.map((item) {
@@ -1477,13 +1485,15 @@ class _FindSkillPageState extends ConsumerState<FindSkillPage> {
             value: item,
             child: Text(item,
                 style:
-                    GoogleFonts.roboto(color: Colors.white, fontSize: 13.sp)),
+                    GoogleFonts.roboto( color:isDark ? Color(0xFF1B1B1B) : Colors.white, fontSize: 13.sp)),
           );
         }).toList(),
         onChanged: onChanged,
       ),
     );
   }
+
+
 }
 
 class SkillTab extends StatelessWidget {

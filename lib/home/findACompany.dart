@@ -1381,6 +1381,7 @@ class _FindCompanyPageState extends ConsumerState<FindCompanyPage> {
             child: dropDownData.when(
               data: (dropdown) {
                 final skills = <String>["All"];
+
                 if (dropdown.companies?.skills != null) {
                   skills.addAll(dropdown.companies!.skills!
                       .map((e) => e?.toString() ?? ''));
@@ -1405,21 +1406,23 @@ class _FindCompanyPageState extends ConsumerState<FindCompanyPage> {
                             (val) {
                       setState(() => selectedSkill = val);
                       _updateQueryParams();
-                    })),
+                    },
+                            themeMode
+                        )),
                     SizedBox(width: 8.w),
                     Expanded(
                         child: _buildDropdown(
                             "Industry", selectedIndustry, industries, (val) {
                       setState(() => selectedIndustry = val);
                       _updateQueryParams();
-                    })),
+                    },themeMode)),
                     SizedBox(width: 8.w),
                     Expanded(
                         child: _buildDropdown(
                             "Location", selectedLocation, locations, (val) {
                       setState(() => selectedLocation = val);
                       _updateQueryParams();
-                    })),
+                    },themeMode)),
                   ],
                 );
               },
@@ -1625,12 +1628,58 @@ class _FindCompanyPageState extends ConsumerState<FindCompanyPage> {
     );
   }
 
-  Widget _buildDropdown(String hint, String? value, List<String> items,
-      void Function(String?) onChanged) {
+  Widget _buildDropdown(
+      String hint,
+      String? value,
+      List<String> items,
+      void Function(String?) onChanged,
+      ThemeMode themeMode,
+      ) {
+    final bool isDark = themeMode == ThemeMode.dark;
+
     return Container(
       height: 44.h,
       padding: EdgeInsets.symmetric(horizontal: 12.w),
       decoration: BoxDecoration(
+        border: Border.all( color:isDark ?Colors.white: Color(0xFF1B1B1B) ),
+        borderRadius: BorderRadius.circular(30.r),
+      ),
+      child: DropdownButton<String>(
+        value: value,
+        hint: Text(
+          hint,
+          style: GoogleFonts.roboto( color:isDark ?Colors.white: Color(0xFF1B1B1B)  , fontSize: 13.sp),
+        ),
+        isExpanded: true,
+        dropdownColor:  isDark ? Colors.white: Color(0xFF1B1B1B) ,
+        // elevation: 0,                 // optional: shadow हटाने के लिए
+        borderRadius: BorderRadius.circular(12.r), // optional: rounded corners menu को
+        icon:  Icon(Icons.keyboard_arrow_down, color: isDark ?Colors.white: Color(0xFF1B1B1B) ),
+        underline: const SizedBox(),
+        items: items.map((String item) {
+          return DropdownMenuItem<String>(
+            value: item,
+            child: Text(
+              item,
+              style: GoogleFonts.roboto(
+                color:isDark ? Color(0xFF1B1B1B) : Colors.white,
+                // color: isDark ? Colors.white : Color(0xFF1B1B1B),
+                fontSize: 13.sp,
+              ),
+            ),
+          );
+        }).toList(),
+        onChanged: onChanged,
+      ),
+    );
+  }
+ /* Widget _buildDropdown(String hint, String? value, List<String> items,
+      void Function(String?) onChanged, ThemeMode themeMode) {
+    return Container(
+      height: 44.h,
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
+      decoration: BoxDecoration(
+
         border: Border.all(color: Colors.white70),
         borderRadius: BorderRadius.circular(30.r),
       ),
@@ -1644,15 +1693,17 @@ class _FindCompanyPageState extends ConsumerState<FindCompanyPage> {
         underline: const SizedBox(),
         items: items
             .map((item) => DropdownMenuItem(
+
                 value: item,
                 child: Text(item,
                     style: GoogleFonts.roboto(
-                        color: Colors.white, fontSize: 13.sp))))
+                        color: Colors.white, fontSize: 13.sp)))
+        )
             .toList(),
         onChanged: onChanged,
       ),
     );
-  }
+  }*/
 }
 
 class CompanyTab extends StatelessWidget {

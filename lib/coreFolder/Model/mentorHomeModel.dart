@@ -36,6 +36,7 @@ class Data {
   String? userType;
   dynamic location;
   dynamic? coins;
+  dynamic notification_count;
   int? profileCompletion;
   List<AcceptedStudent>? acceptedStudents;
   List<Message>? messages;
@@ -48,6 +49,7 @@ class Data {
     this.userType,
     this.location,
     this.coins,
+    this.notification_count,
     this.profileCompletion,
     this.acceptedStudents,
     this.messages,
@@ -61,6 +63,7 @@ class Data {
     userType: json["user_type"],
     location: json["location"],
     coins: json["coins"],
+    notification_count: json["notification_count"],
     profileCompletion: json["profile_completion"],
     acceptedStudents: json["accepted_students"] == null ? [] : List<AcceptedStudent>.from(json["accepted_students"]!.map((x) => AcceptedStudent.fromJson(x))),
     messages: json["messages"] == null ? [] : List<Message>.from(json["messages"]!.map((x) => Message.fromJson(x))),
@@ -74,6 +77,7 @@ class Data {
     "user_type": userType,
     "location": location,
     "coins": coins,
+    "notification_count": notification_count,
     "profile_completion": profileCompletion,
     "accepted_students": acceptedStudents == null ? [] : List<dynamic>.from(acceptedStudents!.map((x) => x.toJson())),
     "messages": messages == null ? [] : List<dynamic>.from(messages!.map((x) => x.toJson())),

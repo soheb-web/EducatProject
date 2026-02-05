@@ -15,11 +15,13 @@ class SaveReviewPage extends ConsumerStatefulWidget {
   int? id;
   final Review? review;
   final bool isViewOnly;
-  SaveReviewPage({
+
+  SaveReviewPage( {
     super.key,
     this.id,
     this.review,
     this.isViewOnly = false,
+
   });
 
   @override
@@ -30,6 +32,13 @@ class _SaveReviewPageState extends ConsumerState<SaveReviewPage> {
   int selectedRating = 0;
   final TextEditingController _descriptionController = TextEditingController();
   final _titleController = TextEditingController();
+bool flag=false;
+
+
+@override
+  void initState() {
+  super.initState();
+  }
 
   @override
   void dispose() {
@@ -39,16 +48,14 @@ class _SaveReviewPageState extends ConsumerState<SaveReviewPage> {
   }
 
   Map<String, int> featureRatings = {
-    "Labs": 0,
-    "Faculty & Teaching": 0,
-    "Research": 0,
-    "Startup Innovation": 0,
-    "Sports facilities": 0,
     "Placements": 0,
-    "Management": 0,
-    "Canteens & Hygiene": 0,
-    "Ragging Prohibition": 0,
-    "Co-circular activities": 0,
+    "Lab facilities": 0,
+    "Professors & Teaching Quality": 0,
+    "Infrastructure": 0,
+    "Sports & Extracurriculars": 0,
+    "Recognition & Ranking": 0,
+    "Pass Percentage": 0,
+    "Career Guidance": 0,
   };
 
   bool _isLoading = false;

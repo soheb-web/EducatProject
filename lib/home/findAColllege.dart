@@ -713,14 +713,12 @@ class _FindCollegePageState extends ConsumerState<FindCollegePage> {
       ref.read(queryParamsProvider.notifier).state = {};
     });
   }
-
   @override
   void dispose() {
     _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final dropDownData = ref.watch(getDropDownProvider);
@@ -1053,6 +1051,9 @@ class _FindCollegePageState extends ConsumerState<FindCollegePage> {
     required List<String> items,
     required void Function(String?) onChanged,
   }) {
+    final themeMode = ref.watch(themeProvider);
+    final bool isDark = themeMode == ThemeMode.dark;
+
     return Container(
       height: 44.h,
       padding: EdgeInsets.symmetric(horizontal: 12.w),
@@ -1061,13 +1062,14 @@ class _FindCollegePageState extends ConsumerState<FindCollegePage> {
         borderRadius: BorderRadius.circular(30.r),
       ),
       child: DropdownButton<String>(
+        borderRadius: BorderRadius.circular(12.r), // optional: rounded corners menu को
         value: value,
         hint: Text(
           hint,
-          style: GoogleFonts.roboto(color: Colors.white70, fontSize: 13.sp),
+          style: GoogleFonts.roboto( fontSize: 13.sp),
         ),
         isExpanded: true,
-        dropdownColor: const Color(0xFF1B1B1B),
+        dropdownColor:  isDark ? Colors.white: Color(0xFF1B1B1B) ,
         icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white70),
         underline: const SizedBox(),
         items: items.map((String item) {
@@ -1075,7 +1077,7 @@ class _FindCollegePageState extends ConsumerState<FindCollegePage> {
             value: item,
             child: Text(
               item,
-              style: GoogleFonts.roboto(color: Colors.white, fontSize: 13.sp),
+              style: GoogleFonts.roboto( color:isDark ? Color(0xFF1B1B1B) : Colors.white, fontSize: 13.sp),
             ),
           );
         }).toList(),

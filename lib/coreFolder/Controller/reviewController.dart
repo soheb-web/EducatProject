@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import '../Model/ReviewGetCompanyModel.dart';
 import '../network/api.state.dart';
 import '../Model/ReviewGetModel.dart';
@@ -9,8 +8,6 @@ final reviewCollegeProvider =
     FutureProvider.autoDispose.family<ReviewGetModel, int>((ref, id) async {
   final dio = await createDio();
   final service = APIStateNetwork(dio);
-
-
   return await service.getReview(id.toString());
 });
 

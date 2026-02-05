@@ -7,9 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive/hive.dart';
 
 import '../coreFolder/Controller/reviewController.dart';
 import '../coreFolder/Model/ReviewGetModel.dart';
+import 'SaveReviewPageCompany.dart';
 import 'ShowReviewCompanyDetailsPage.dart';
 import 'saveReview.page.dart';
 
@@ -27,6 +29,7 @@ class AllReviewPage extends ConsumerStatefulWidget {
 class _AllReviewPageState extends ConsumerState<AllReviewPage> {
   @override
   Widget build(BuildContext context) {
+    var box = Hive.box('userdata');
     final reviewAsync =
         widget.flag?
     ref.watch(reviewCollegeProvider(widget.id)):
@@ -44,9 +47,9 @@ class _AllReviewPageState extends ConsumerState<AllReviewPage> {
         reviewAsync.when(
           data: (reviewData) =>
 
-              widget.flag?_buildBodyCollege(context,reviewData as ReviewGetModel)
+              widget.flag?_buildBodyCollege(context,reviewData as ReviewGetModel,box)
 
-                  :_buildBodyCompany(context,reviewData as ReviewGetCompanyModel),
+                  :_buildBodyCompany(context,reviewData as ReviewGetCompanyModel,box),
 
               // _buildBody(context,  reviewData),
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -63,7 +66,8 @@ class _AllReviewPageState extends ConsumerState<AllReviewPage> {
 
 
 
-  Widget _buildBodyCollege(BuildContext context, ReviewGetModel reviewData, ) {
+  Widget _buildBodyCollege(BuildContext context, ReviewGetModel reviewData, Box box, ) {
+    final userType = box.get('userType');
     final collage = reviewData.collage!;
     final id = reviewData.collage!.id!;
     final totalReviews = collage.totalReviews ?? 0;
@@ -103,6 +107,7 @@ class _AllReviewPageState extends ConsumerState<AllReviewPage> {
                     ),
                   ),
                 ),
+
                 Text(
                   "All Reviews",
                   style: GoogleFonts.roboto(
@@ -111,12 +116,15 @@ class _AllReviewPageState extends ConsumerState<AllReviewPage> {
                     color: Colors.white,
                   ),
                 ),
+
+
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => SaveReviewPage(
+
                                   id: id,
                                 )));
                   },
@@ -138,7 +146,10 @@ class _AllReviewPageState extends ConsumerState<AllReviewPage> {
                       ),
                     ),
                   ),
-                ),
+                )
+,
+
+
               ],
             ),
           ),
@@ -438,7 +449,8 @@ SizedBox(width: 10.w,),
     );
   }
 
-  Widget _buildBodyCompany(BuildContext context, ReviewGetCompanyModel reviewData) {
+  Widget _buildBodyCompany(BuildContext context, ReviewGetCompanyModel reviewData, Box box) {
+    final userType = box.get('userType');
     final collage = reviewData.collage!;
     final id = reviewData.collage!.id!;
     final totalReviews = collage.totalReviews ?? 0;
@@ -486,34 +498,67 @@ SizedBox(width: 10.w,),
                     color: Colors.white,
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SaveReviewPage(
-                                  id: id,
-                                )));
-                  },
-                  child: Container(
-                    padding: EdgeInsets.only(
-                        left: 15.w, right: 15.w, top: 12.h, bottom: 12.h),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: const Color(0xFFDCF881),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Add Reviews",
-                        style: GoogleFonts.roboto(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xff1B1B1B),
+
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //             builder: (context) => SaveReviewPage(
+                //                   id: id,
+                //                 )));
+                //   },
+                //   child: Container(
+                //     padding: EdgeInsets.only(
+                //         left: 15.w, right: 15.w, top: 12.h, bottom: 12.h),
+                //     decoration: BoxDecoration(
+                //       borderRadius: BorderRadius.circular(20),
+                //       color: const Color(0xFFDCF881),
+                //     ),
+                //     child: Center(
+                //       child: Text(
+                //         "Add Reviews",
+                //         style: GoogleFonts.roboto(
+                //           fontSize: 12.sp,
+                //           fontWeight: FontWeight.w600,
+                //           color: const Color(0xff1B1B1B),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+
+
+                widget.flag==false&&userType != "Student"?
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SaveReviewPageCompany(
+                                id: id,
+                              )));
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(
+                          left: 15.w, right: 15.w, top: 12.h, bottom: 12.h),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: const Color(0xFFDCF881),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Add Reviews",
+                          style: GoogleFonts.roboto(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xff1B1B1B),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
+                  ):SizedBox(),
+
               ],
             ),
           ),

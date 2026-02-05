@@ -48,6 +48,7 @@ import '../Model/TransactionGetModel.dart';
 import '../Model/searchMentorModel.dart';
 import '../Model/GetCoinModel.dart';
 import '../Model/profileGetModel.dart';
+import '../Model/switchBodyMentor.dart';
 part 'api.state.g.dart';
 
 //@RestApi(baseUrl: 'https://educatservicesindia.com/admin/api')
@@ -166,6 +167,23 @@ abstract class APIStateNetwork {
   Future<SendRequestResModel> studentSendRequest(
       @Body() SendRequestBodyModel body);
 
+
+
+  @POST("/update-user-type")
+  Future<SwitchResponseModel> swichMentor(
+      @Body() SwitchBodyMentor body);
+
+
+  @POST("/college/follow-unfollow")
+  Future<FollowUnfollowResponseModel> followUnfollow(
+      @Body() FollowUnfollowModel body);
+
+  @POST("/company/follow-unfollow")
+  Future<FollowUnfollowResponseModel> followUnfollowCompany(
+      @Body() FollowUnfollowCompanyModel body);
+
+
+
   @GET("/request/GetStudent")
   Future<GetStudentRequestResModel> getRequestStudent();
 
@@ -253,3 +271,11 @@ abstract class APIStateNetwork {
   @GET("/all/student/mentor")
   Future<MentorproposalResModel> mentorProposal();
 }
+
+
+
+
+
+
+
+
