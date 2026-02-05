@@ -199,7 +199,7 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                                   style: GoogleFonts.roboto(
                                       fontSize: 15.sp, color: Colors.grey[600]),
                                 ),
-                              ),*//*
+                              ),*/ /*
 
 
 
@@ -565,11 +565,11 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
   }
 */
 
-
 import 'dart:developer';
 
 import 'package:educationapp/coreFolder/Controller/themeController.dart';
 import 'package:educationapp/coreFolder/Model/switchBodyMentor.dart';
+import 'package:educationapp/home/followCollagePage.dart';
 import 'package:educationapp/home/showReviewDetails.page.dart';
 import 'package:educationapp/home/webView.page.dart';
 import 'package:flutter/cupertino.dart';
@@ -607,9 +607,11 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Andhra_University_Entrance_Gate.jpg/1280px-Andhra_University_Entrance_Gate.jpg";
   static const String staticLogoUrl =
       "https://www.andhrauniversity.edu.in/img/au-logo.png";
-  static const String staticCentenaryText = "Celebrating 100 years of Excellence...";
+  static const String staticCentenaryText =
+      "Celebrating 100 years of Excellence...";
 
   bool isLoadingFollow = false;
+  bool isAnimating = false;
   bool isFollowing = false;
 
   static const staticIndustry = "Higher Education";
@@ -663,10 +665,11 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
           final logoUrl = college.image ?? staticLogoUrl;
 
           final String industry = college.type ?? "Higher Education";
-          final String followersText = "${formatCount(
-              college.totalFollowers)} followers";
+          final String followersText =
+              "${formatCount(college.totalFollowers)} followers";
           // Alumni field backend में नहीं है → static fallback या N/A
-          final String alumniText = "214K alumni"; // ← backend से total_alumni आए तो यहाँ dynamic कर दो
+          final String alumniText =
+              "214K alumni"; // ← backend से total_alumni आए तो यहाँ dynamic कर दो
 
           return Stack(
             children: [
@@ -695,8 +698,8 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: isDark ? Colors.white : const Color(0xFF121212),
-                        borderRadius:  BorderRadius.vertical(top: Radius
-                            .circular(32.r)),
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(32.r)),
                       ),
                       child: SingleChildScrollView(
                         child: Column(
@@ -715,13 +718,14 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                                       style: GoogleFonts.roboto(
                                         fontSize: 26.sp,
                                         fontWeight: FontWeight.w700,
-                                        color: isDark ? Colors.black87 : Colors
-                                            .white,
+                                        color: isDark
+                                            ? Colors.black87
+                                            : Colors.white,
                                       ),
                                     ),
                                   ),
-                                  Icon(Icons.verified, color: linkedinBlue,
-                                      size: 24.sp),
+                                  Icon(Icons.verified,
+                                      color: linkedinBlue, size: 24.sp),
                                 ],
                               ),
                             ),
@@ -731,13 +735,69 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                             // Dynamic Info Line
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 24.w),
-                              child: Text(
-                                "$industry • $followersText • $alumniText",
-                                style: GoogleFonts.roboto(
-                                  fontSize: 15.sp,
-                                  color: isDark ? Colors.grey[400] : Colors
-                                      .grey[600],
-                                ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "$industry  •",
+                                    style: GoogleFonts.roboto(
+                                      fontSize: 15.sp,
+                                      color: isDark
+                                          ? Colors.grey[400]
+                                          : Colors.grey[600],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10.w,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      final CollageName = college.name ?? "";
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                FollowCollagePage(
+                                                    widget.id, CollageName),
+                                          ));
+                                    },
+                                    child: Text(
+                                      "$followersText • ",
+                                      style: GoogleFonts.roboto(
+                                        fontSize: 15.sp,
+                                        color: isDark
+                                            ? Colors.grey[400]
+                                            : Colors.grey[600],
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10.w,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      final CollageName = college.name ?? "";
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              Colloegeuserpage(
+                                            widget.id,
+                                            CollageName,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      "$alumniText",
+                                      style: GoogleFonts.roboto(
+                                        fontSize: 15.sp,
+                                        color: isDark
+                                            ? Colors.grey[400]
+                                            : Colors.grey[600],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
 
@@ -748,74 +808,292 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                               padding: EdgeInsets.symmetric(horizontal: 24.w),
                               child: Row(
                                 children: [
+                                  // Expanded(
+                                  //   child: ElevatedButton.icon(
+                                  //     icon: const Icon(Icons.add, size: 18),
+                                  //     label: Text(
+                                  //         isFollowing ? "Following" : "Follow"),
+                                  //     onPressed: isLoadingFollow
+                                  //         ? null
+                                  //         : () async {
+                                  //             setState(
+                                  //                 () => isLoadingFollow = true);
+
+                                  //             try {
+                                  //               final body =
+                                  //                   FollowUnfollowModel(
+                                  //                       college_id:
+                                  //                           college.id!);
+                                  //               final service = APIStateNetwork(
+                                  //                   createDio());
+                                  //               final response = await service
+                                  //                   .followUnfollow(body);
+
+                                  //               if (response.status == true) {
+                                  //                 Fluttertoast.showToast(
+                                  //                   msg: response.action ??
+                                  //                       "Followed successfully",
+                                  //                   backgroundColor:
+                                  //                       Colors.green,
+                                  //                   textColor: Colors.white,
+                                  //                 );
+                                  //                 ref.invalidate(
+                                  //                     reviewCollegeProvider(
+                                  //                         widget.id));
+                                  //                 setState(
+                                  //                     () => isFollowing = true);
+                                  //               } else {
+                                  //                 Fluttertoast.showToast(
+                                  //                   msg: response.action ??
+                                  //                       "Failed to follow",
+                                  //                   toastLength:
+                                  //                       Toast.LENGTH_LONG,
+                                  //                   backgroundColor: Colors.red,
+                                  //                 );
+
+                                  //                 if (response.action
+                                  //                         ?.toLowerCase()
+                                  //                         .contains(
+                                  //                             "already") ??
+                                  //                     false) {
+                                  //                   ref.invalidate(
+                                  //                       reviewCollegeProvider(
+                                  //                           widget.id));
+                                  //                   setState(() =>
+                                  //                       isFollowing = true);
+                                  //                 }
+                                  //               }
+                                  //             } catch (e, stack) {
+                                  //               log("Follow Error: $e\n$stack");
+                                  //               Fluttertoast.showToast(
+                                  //                 msg: "Something went wrong",
+                                  //                 backgroundColor: Colors.red,
+                                  //               );
+                                  //             } finally {
+                                  //               if (mounted)
+                                  //                 setState(() =>
+                                  //                     isLoadingFollow = false);
+                                  //             }
+                                  //           },
+                                  //     style: ElevatedButton.styleFrom(
+                                  //       backgroundColor: isFollowing
+                                  //           ? Colors.grey[700]
+                                  //           : linkedinBlue,
+                                  //       foregroundColor: Colors.white,
+                                  //       shape: RoundedRectangleBorder(
+                                  //           borderRadius:
+                                  //               BorderRadius.circular(30.r)),
+                                  //       padding: EdgeInsets.symmetric(
+                                  //           vertical: 12.h),
+                                  //       elevation: 0,
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  // Expanded(
+                                  //   child: ElevatedButton.icon(
+                                  //     // Loading ke waqt hum icon ko checkmark ya add hi rehne denge
+                                  //     icon: Icon(
+                                  //       isFollowing ? Icons.check : Icons.add,
+                                  //       size: 18,
+                                  //       color: isLoadingFollow
+                                  //           ? Colors.white70
+                                  //           : Colors.white,
+                                  //     ),
+                                  //     label: Text(
+                                  //       // Loading ke waqt text change nahi hoga, bas thoda fade dikhega
+                                  //       isFollowing ? "Following" : "Follow",
+                                  //       style: TextStyle(
+                                  //         color: isLoadingFollow
+                                  //             ? Colors.white70
+                                  //             : Colors.white,
+                                  //       ),
+                                  //     ),
+                                  //     onPressed: isLoadingFollow
+                                  //         ? null
+                                  //         : () async {
+                                  //             // 1. Pehle hi state change kar do (Optimistic Update)
+                                  //             final previousState = isFollowing;
+                                  //             setState(() {
+                                  //               isLoadingFollow = true;
+                                  //               isFollowing =
+                                  //                   !isFollowing; // Turant change dikhega
+                                  //             });
+
+                                  //             try {
+                                  //               final body =
+                                  //                   FollowUnfollowModel(
+                                  //                       college_id:
+                                  //                           college.id!);
+                                  //               final service = APIStateNetwork(
+                                  //                   createDio());
+                                  //               final response = await service
+                                  //                   .followUnfollow(body);
+
+                                  //               if (response.status == true) {
+                                  //                 Fluttertoast.showToast(
+                                  //                   msg: response.action ??
+                                  //                       "Success",
+                                  //                   backgroundColor:
+                                  //                       Colors.green,
+                                  //                 );
+                                  //                 // Background mein data refresh hone do
+                                  //                 ref.invalidate(
+                                  //                     reviewCollegeProvider(
+                                  //                         widget.id));
+                                  //               } else {
+                                  //                 // Agar API mana kar de, toh wapas purane state pe jao
+                                  //                 setState(() => isFollowing =
+                                  //                     previousState);
+                                  //                 Fluttertoast.showToast(
+                                  //                   msg: response.action ??
+                                  //                       "Failed",
+                                  //                   backgroundColor: Colors.red,
+                                  //                 );
+                                  //               }
+                                  //             } catch (e) {
+                                  //               // Error ki surat mein bhi wapas purane state pe jao
+                                  //               setState(() => isFollowing =
+                                  //                   previousState);
+                                  //               Fluttertoast.showToast(
+                                  //                 msg: "Something went wrong",
+                                  //                 backgroundColor: Colors.red,
+                                  //               );
+                                  //             } finally {
+                                  //               if (mounted) {
+                                  //                 setState(() =>
+                                  //                     isLoadingFollow = false);
+                                  //               }
+                                  //             }
+                                  //           },
+                                  //     style: ElevatedButton.styleFrom(
+                                  //       // Background color bhi turant change hoga
+                                  //       backgroundColor: isFollowing
+                                  //           ? Colors.grey[700]
+                                  //           : linkedinBlue,
+                                  //       disabledBackgroundColor: isFollowing
+                                  //           ? Colors.grey[600]
+                                  //           : linkedinBlue.withOpacity(0.8),
+                                  //       foregroundColor: Colors.white,
+                                  //       shape: RoundedRectangleBorder(
+                                  //           borderRadius:
+                                  //               BorderRadius.circular(30.r)),
+                                  //       padding: EdgeInsets.symmetric(
+                                  //           vertical: 12.h),
+                                  //       elevation: 0,
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   Expanded(
-                                    child: ElevatedButton.icon(
-                                      icon: const Icon(Icons.add, size: 18),
-                                      label: Text(
-                                          isFollowing ? "Following" : "Follow"),
-                                      onPressed: isLoadingFollow
+                                    child: GestureDetector(
+                                      onTap: isLoadingFollow
                                           ? null
                                           : () async {
-                                        setState(() => isLoadingFollow = true);
+                                              final previousState = isFollowing;
 
-                                        try {
-                                          final body = FollowUnfollowModel(
-                                              college_id: college.id!);
-                                          final service = APIStateNetwork(
-                                              createDio());
-                                          final response = await service
-                                              .followUnfollow(body);
+                                              setState(() {
+                                                isLoadingFollow = true;
+                                                isFollowing =
+                                                    !isFollowing; // optimistic update
+                                                isAnimating = true;
+                                              });
 
-                                          if (response.status == true) {
-                                            Fluttertoast.showToast(
-                                              msg: response.action ??
-                                                  "Followed successfully",
-                                              backgroundColor: Colors.green,
-                                              textColor: Colors.white,
-                                            );
-                                            ref.invalidate(
-                                                reviewCollegeProvider(
-                                                    widget.id));
-                                            setState(() => isFollowing = true);
-                                          } else {
-                                            Fluttertoast.showToast(
-                                              msg: response.action ??
-                                                  "Failed to follow",
-                                              toastLength: Toast.LENGTH_LONG,
-                                              backgroundColor: Colors.red,
-                                            );
+                                              try {
+                                                final body =
+                                                    FollowUnfollowModel(
+                                                        college_id:
+                                                            college.id!);
+                                                final service = APIStateNetwork(
+                                                    createDio());
+                                                final response = await service
+                                                    .followUnfollow(body);
 
-                                            if (response.action
-                                                ?.toLowerCase()
-                                                .contains("already") ?? false) {
-                                              ref.invalidate(
-                                                  reviewCollegeProvider(
-                                                      widget.id));
-                                              setState(() =>
-                                              isFollowing = true);
-                                            }
-                                          }
-                                        } catch (e, stack) {
-                                          log("Follow Error: $e\n$stack");
-                                          Fluttertoast.showToast(
-                                            msg: "Something went wrong",
-                                            backgroundColor: Colors.red,
-                                          );
-                                        } finally {
-                                          if (mounted) setState(() =>
-                                          isLoadingFollow = false);
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: isFollowing ? Colors
-                                            .grey[700] : linkedinBlue,
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                30.r)),
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 12.h),
-                                        elevation: 0,
+                                                if (response.status == true) {
+                                                  Fluttertoast.showToast(
+                                                    msg: response.action ??
+                                                        "Success",
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                  );
+
+                                                  ref.invalidate(
+                                                      reviewCollegeProvider(
+                                                          widget.id));
+                                                } else {
+                                                  setState(() => isFollowing =
+                                                      previousState);
+
+                                                  Fluttertoast.showToast(
+                                                    msg: response.action ??
+                                                        "Failed",
+                                                    backgroundColor: Colors.red,
+                                                  );
+                                                }
+                                              } catch (e) {
+                                                setState(() => isFollowing =
+                                                    previousState);
+
+                                                Fluttertoast.showToast(
+                                                  msg: "Something went wrong",
+                                                  backgroundColor: Colors.red,
+                                                );
+                                              } finally {
+                                                if (mounted) {
+                                                  setState(() {
+                                                    isLoadingFollow = false;
+                                                    isAnimating = false;
+                                                  });
+                                                }
+                                              }
+                                            },
+                                      child: AnimatedScale(
+                                        scale: isAnimating ? 0.96 : 1,
+                                        duration:
+                                            const Duration(milliseconds: 120),
+                                        child: AnimatedOpacity(
+                                          duration:
+                                              const Duration(milliseconds: 200),
+                                          opacity: isLoadingFollow ? 0.7 : 1,
+                                          child: AnimatedContainer(
+                                            duration: const Duration(
+                                                milliseconds: 250),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 12.h),
+                                            decoration: BoxDecoration(
+                                              color: isFollowing
+                                                  ? Colors.grey[700]
+                                                  : linkedinBlue,
+                                              borderRadius:
+                                                  BorderRadius.circular(30.r),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                AnimatedRotation(
+                                                  turns:
+                                                      isLoadingFollow ? 0.1 : 0,
+                                                  duration: const Duration(
+                                                      milliseconds: 300),
+                                                  child: Icon(
+                                                    isFollowing
+                                                        ? Icons.check
+                                                        : Icons.add,
+                                                    size: 18,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 6.w),
+                                                Text(
+                                                  isFollowing
+                                                      ? "Following"
+                                                      : "Follow",
+                                                  style: const TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -823,47 +1101,45 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                                   Expanded(
                                     child: OutlinedButton.icon(
                                       icon: const Icon(Icons.send, size: 18),
-                                      label: const Text("Message"),
+                                      label: const Text("Connect"),
                                       onPressed: () {},
                                       style: OutlinedButton.styleFrom(
                                         foregroundColor: linkedinBlue,
                                         side: const BorderSide(
                                             color: linkedinBlue, width: 1.5),
                                         shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                30.r)),
+                                            borderRadius:
+                                                BorderRadius.circular(30.r)),
                                         padding: EdgeInsets.symmetric(
                                             vertical: 12.h),
                                       ),
                                     ),
                                   ),
-
-
                                   SizedBox(width: 8.w),
-                                                            IconButton(
-                                                              icon: Icon(Icons.more_horiz,
-                                                                  color: Colors.grey[700], size: 28.sp),
-                                                              // onPressed: () {},
-                                                              onPressed: () {
-                                                                showModalBottomSheet(
-                                                                  context: context,
-                                                                  backgroundColor: isDark
-                                                                      ? Color(0xffF1F2F6)
-                                                                      : Color(0xff9088F1),
-                                                                  // important for custom rounded container
-                                                                  isScrollControlled: true,
-                                                                  // allows better height control
-                                                                  shape: const RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.vertical(
-                                                                        top: Radius.circular(24)),
-                                                                  ),
-                                                                  builder: (BuildContext sheetContext) {
-                                                                    return _buildMoreOptionsSheet(college);
-                                                                  },
-                                                                );
-                                                              },
-                                                            ),
-
+                                  IconButton(
+                                    icon: Icon(Icons.more_horiz,
+                                        color: Colors.grey[700], size: 28.sp),
+                                    // onPressed: () {},
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        backgroundColor: isDark
+                                            ? Color(0xffF1F2F6)
+                                            : Color(0xff9088F1),
+                                        // important for custom rounded container
+                                        isScrollControlled: true,
+                                        // allows better height control
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(24)),
+                                        ),
+                                        builder: (BuildContext sheetContext) {
+                                          return _buildMoreOptionsSheet(
+                                              college);
+                                        },
+                                      );
+                                    },
+                                  ),
                                 ],
                               ),
                             ),
@@ -876,23 +1152,26 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                                 children: [
                                   _buildTab(
-                                      "Home", _currentTab == CollegeTab.home,
+                                      "Home",
+                                      _currentTab == CollegeTab.home,
                                       isDark, () {
-                                    setState(() =>
-                                    _currentTab = CollegeTab.home);
+                                    setState(
+                                        () => _currentTab = CollegeTab.home);
                                   }),
                                   _buildTab(
-                                      "About", _currentTab == CollegeTab.about,
+                                      "About",
+                                      _currentTab == CollegeTab.about,
                                       isDark, () {
-                                    setState(() =>
-                                    _currentTab = CollegeTab.about);
+                                    setState(
+                                        () => _currentTab = CollegeTab.about);
                                   }),
-                                  _buildTab("Alumni",
+                                  _buildTab(
+                                      "Alumni",
                                       _currentTab == CollegeTab.alumni,
                                       isDark, () {
-                                        setState(() =>
-                                        _currentTab = CollegeTab.alumni);
-                                      }),
+                                    setState(
+                                        () => _currentTab = CollegeTab.alumni);
+                                  }),
                                 ],
                               ),
                             ),
@@ -949,7 +1228,8 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 4.w),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.35),
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.35),
                           blurRadius: 12,
                           offset: const Offset(0, 6)),
                     ],
@@ -958,12 +1238,11 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                     child: Image.network(
                       logoUrl,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                          Container(
-                            color: linkedinBlue,
-                            child: const Icon(
-                                Icons.school, color: Colors.white, size: 50),
-                          ),
+                      errorBuilder: (_, __, ___) => Container(
+                        color: linkedinBlue,
+                        child: const Icon(Icons.school,
+                            color: Colors.white, size: 50),
+                      ),
                     ),
                   ),
                 ),
@@ -971,7 +1250,6 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
             ],
           );
         },
-
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) {
           log("College Detail Error: $error\n$stack");
@@ -993,8 +1271,6 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
       ),
     );
   }
-
-
 
   Widget _buildTab(
     String text,
@@ -1039,8 +1315,6 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
   ) {
     switch (_currentTab) {
       case CollegeTab.home:
-      
-      
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1049,16 +1323,13 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   Text("Overview",
                       style: GoogleFonts.roboto(
                         color: isDark ? Colors.black87 : Colors.white,
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w700,
                       )),
-
                   SizedBox(height: 10.h),
-
                   Text(
                     college.description ?? "No description available.",
                     style: GoogleFonts.roboto(
@@ -1066,9 +1337,7 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                       color: isDark ? Colors.black87 : Colors.white70,
                     ),
                   ),
-
                   SizedBox(height: 28.h),
-
                 ],
               ),
             ),
@@ -1416,7 +1685,6 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
       //     ],
       //   );
 
-
       case CollegeTab.alumni:
         final users = snap.collage?.users ?? [];
 
@@ -1496,7 +1764,8 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                             // Force HTTPS if needed (common release issue)
                             String displayPic = profilePic ?? '';
                             if (displayPic.startsWith('http://')) {
-                              displayPic = displayPic.replaceFirst('http://', 'https://');
+                              displayPic = displayPic.replaceFirst(
+                                  'http://', 'https://');
                             }
 
                             return Padding(
@@ -1507,24 +1776,26 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                                   GestureDetector(
                                     onTap: userId != null
                                         ? () {
-                                      if (user.userType == "Mentor") {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                MentorDetailPage(id: userId),
-                                          ),
-                                        );
-                                      } else {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                StudenetDetailPage(id: userId),
-                                          ),
-                                        );
-                                      }
-                                    }
+                                            if (user.userType == "Mentor") {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MentorDetailPage(
+                                                          id: userId),
+                                                ),
+                                              );
+                                            } else {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      StudenetDetailPage(
+                                                          id: userId),
+                                                ),
+                                              );
+                                            }
+                                          }
                                         : null,
                                     child: Container(
                                       width: 64.w,
@@ -1540,43 +1811,43 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                                         clipBehavior: Clip.hardEdge,
                                         child: (displayPic.isNotEmpty)
                                             ? Image.network(
-                                          displayPic,
-                                          width: 64.w,
-                                          height: 64.h,
-                                          fit: BoxFit.cover,
-                                          loadingBuilder:
-                                              (context, child, loadingProgress) {
-                                            if (loadingProgress == null) {
-                                              return child;
-                                            }
-                                            return Center(
-                                              child: SizedBox(
-                                                width: 32.w,
-                                                height: 32.h,
-                                                child:
-                                                CircularProgressIndicator(
-                                                  strokeWidth: 2.w,
-                                                  value: loadingProgress
-                                                      .expectedTotalBytes !=
-                                                      null
-                                                      ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                      (loadingProgress
-                                                          .expectedTotalBytes ??
-                                                          1)
-                                                      : null,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            // Optional: log for debugging
-                                            debugPrint(
-                                                "Image failed for ${fullName}: $error");
-                                            return _defaultAvatar();
-                                          },
-                                        )
+                                                displayPic,
+                                                width: 64.w,
+                                                height: 64.h,
+                                                fit: BoxFit.cover,
+                                                loadingBuilder: (context, child,
+                                                    loadingProgress) {
+                                                  if (loadingProgress == null) {
+                                                    return child;
+                                                  }
+                                                  return Center(
+                                                    child: SizedBox(
+                                                      width: 32.w,
+                                                      height: 32.h,
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        strokeWidth: 2.w,
+                                                        value: loadingProgress
+                                                                    .expectedTotalBytes !=
+                                                                null
+                                                            ? loadingProgress
+                                                                    .cumulativeBytesLoaded /
+                                                                (loadingProgress
+                                                                        .expectedTotalBytes ??
+                                                                    1)
+                                                            : null,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                errorBuilder: (context, error,
+                                                    stackTrace) {
+                                                  // Optional: log for debugging
+                                                  debugPrint(
+                                                      "Image failed for ${fullName}: $error");
+                                                  return _defaultAvatar();
+                                                },
+                                              )
                                             : _defaultAvatar(),
                                       ),
                                     ),
@@ -1589,8 +1860,9 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                                       style: GoogleFonts.roboto(
                                         fontSize: 13.sp,
                                         fontWeight: FontWeight.w500,
-                                        color:
-                                        isDark ? Colors.black87 : Colors.white,
+                                        color: isDark
+                                            ? Colors.black87
+                                            : Colors.white,
                                       ),
                                       textAlign: TextAlign.center,
                                       maxLines: 1,
@@ -1646,7 +1918,7 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
             SizedBox(height: 200.h), // keep your bottom spacing
           ],
         );
-        
+
       case CollegeTab.about:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1695,10 +1967,8 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                 ],
               ),
             ),
-
           ],
         );
-
     }
   }
 
@@ -1774,7 +2044,7 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? Color(0xffF1F2F6) : Color(0xff9088F1),
-        borderRadius:  BorderRadius.vertical(top: Radius.circular(24.r)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.15),
@@ -1805,42 +2075,46 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                "Page Options",
+                  "Page Options",
                   style: GoogleFonts.roboto(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w500,
-                    color: isDark
-                        ? Color(0xff9088F1)
-                        : Color(0xffDEDDEC),
+                    color: isDark ? Color(0xff9088F1) : Color(0xffDEDDEC),
                   ),
                 ),
               ],
             ),
           ),
           // your menu items here...
-          _buildSheetItem(icon: Icons.open_in_browser, title: "Visit website", onTap: () {
-
-            var url = college.website!.trim();
-            if (!url.startsWith('http')) url = 'https://$url';
-            Navigator.push(
-              context,
-              CupertinoPageRoute(
-                  builder: (_) => WebViewPage(url: url)),
-            );
-
-          }),
-          _buildSheetItem(icon: Icons.share_rounded, title: "Share this page", onTap: () {
-            Navigator.pop(context);          // close bottom sheet
-            _shareToWhatsApp(college);       // call the function
-          }),
-          _buildSheetItem(icon: Icons.send, title: "Send Message", onTap: () {}, isDestructive: true),
+          _buildSheetItem(
+              icon: Icons.open_in_browser,
+              title: "Visit website",
+              onTap: () {
+                var url = college.website!.trim();
+                if (!url.startsWith('http')) url = 'https://$url';
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (_) => WebViewPage(url: url)),
+                );
+              }),
+          _buildSheetItem(
+              icon: Icons.share_rounded,
+              title: "Share this page",
+              onTap: () {
+                Navigator.pop(context); // close bottom sheet
+                _shareToWhatsApp(college); // call the function
+              }),
+          _buildSheetItem(
+              icon: Icons.send,
+              title: "Send Message",
+              onTap: () {},
+              isDestructive: true),
 
           SizedBox(height: 8.h),
         ],
       ),
     );
   }
-
 
   Future<void> _shareToWhatsApp(Collage college) async {
     final String collegeName = college.name ?? "this college";
@@ -1851,8 +2125,7 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
     final String pageLink = "https://yourapp.com/college/$collegeId";
     // Alternative example: "https://play.google.com/store/apps/details?id=com.your.educationapp";
 
-    final String message =
-        "Check out $collegeName!\n"
+    final String message = "Check out $collegeName!\n"
         "Reviews, alumni network, details & more.\n\n"
         "$pageLink\n\n"
         "Shared from Education App";
@@ -1870,7 +2143,8 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("WhatsApp not installed or cannot open")),
+            const SnackBar(
+                content: Text("WhatsApp not installed or cannot open")),
           );
         }
       }
@@ -1883,7 +2157,6 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
       }
     }
   }
-
 
   Widget _buildSheetItem({
     required IconData icon,
@@ -1909,9 +2182,7 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
     return ListTile(
       leading: Icon(
         icon,
-          color: isDark
-              ? Color(0xff9088F1)
-              : Color(0xffDEDDEC),
+        color: isDark ? Color(0xff9088F1) : Color(0xffDEDDEC),
         size: 22.sp,
       ),
       title: Text(
@@ -1919,41 +2190,39 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
         style: GoogleFonts.roboto(
           fontSize: 16.sp,
           fontWeight: FontWeight.w500,
-            color: isDark
-                ? Color(0xff9088F1)
-                : Color(0xffDEDDEC),
+          color: isDark ? Color(0xff9088F1) : Color(0xffDEDDEC),
         ),
       ),
       subtitle: subtitle != null
           ? Text(
-        subtitle,
-        style: GoogleFonts.roboto(
-          fontSize: 13.sp,
-            color: isDark
-                ? Color(0xff9088F1)
-                : Color(0xffDEDDEC),
-        ),
-      )
+              subtitle,
+              style: GoogleFonts.roboto(
+                fontSize: 13.sp,
+                color: isDark ? Color(0xff9088F1) : Color(0xffDEDDEC),
+              ),
+            )
           : null,
       trailing: trailingIcon != null
           ? Icon(
-        trailingIcon,
-        color: color!.withOpacity(0.7),
-        size: 22.sp,
-      )
+              trailingIcon,
+              color: color!.withOpacity(0.7),
+              size: 22.sp,
+            )
           : null,
       contentPadding: EdgeInsets.symmetric(horizontal: 12.w),
       minLeadingWidth: 40.w,
       horizontalTitleGap: 16.w,
       dense: true,
       visualDensity: const VisualDensity(vertical: -1),
-      onTap: isDisabled ? null : () {
-        // Optional: close bottom sheet automatically
-        if (onTap != null) {
-          onTap();
-          // Navigator.pop(context);   ← uncomment if you want auto-close
-        }
-      },
+      onTap: isDisabled
+          ? null
+          : () {
+              // Optional: close bottom sheet automatically
+              if (onTap != null) {
+                onTap();
+                // Navigator.pop(context);   ← uncomment if you want auto-close
+              }
+            },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
     );
   }

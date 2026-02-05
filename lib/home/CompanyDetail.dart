@@ -310,11 +310,6 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
   }
 */
 
-
-
-
-
-
 import 'dart:developer';
 
 import 'package:educationapp/coreFolder/Controller/themeController.dart';
@@ -360,6 +355,7 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
 
   bool isLoadingFollow = false;
   bool isFollowing = false;
+  bool isAnimating = false;
 
   String formatCount(int? count) {
     if (count == null || count == 0) return "0";
@@ -398,14 +394,17 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
           }
 
           // Follow status sync from backend
-          isFollowing = company.isFollowed == "follow" || company.isFollowed == true;
+          isFollowing =
+              company.isFollowed == "follow" || company.isFollowed == true;
 
           final logo = company.image ?? fallbackLogo;
 
           final String industry = company.type ?? "Company";
-          final String followersText = "${formatCount(company.totalFollowers)} followers";
+          final String followersText =
+              "${formatCount(company.totalFollowers)} followers";
           // Alumni अभी backend में नहीं है → static fallback
-          final String alumniText = "214K alumni"; // ← backend से total_alumni आए तो dynamic कर दो
+          final String alumniText =
+              "214K alumni"; // ← backend से total_alumni आए तो dynamic कर दो
 
           return Stack(
             children: [
@@ -452,11 +451,14 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                       style: GoogleFonts.roboto(
                                         fontSize: 26.sp,
                                         fontWeight: FontWeight.w700,
-                                        color: isDark ? Colors.black87 : Colors.white,
+                                        color: isDark
+                                            ? Colors.black87
+                                            : Colors.white,
                                       ),
                                     ),
                                   ),
-                                  Icon(Icons.verified, color: accentColor, size: 24.sp),
+                                  Icon(Icons.verified,
+                                      color: accentColor, size: 24.sp),
                                 ],
                               ),
                             ),
@@ -469,21 +471,22 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                               child: Row(
                                 // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-
                                   Text(
                                     "$industry • ",
                                     style: GoogleFonts.roboto(
                                       fontSize: 15.sp,
-                                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                      color: isDark
+                                          ? Colors.grey[400]
+                                          : Colors.grey[600],
                                     ),
                                   ),
-                                  SizedBox(width: 10.w,),
-
+                                  SizedBox(
+                                    width: 10.w,
+                                  ),
                                   GestureDetector(
-
-                                    onTap: (){
-                                      final companyName =company.name  ?? "";
-                                    /*  Navigator.push(
+                                    onTap: () {
+                                      final companyName = company.name ?? "";
+                                      /*  Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context)
@@ -495,39 +498,52 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                           ),
                                         );*/
 
-
-
                                       Navigator.push(
                                         context,
                                         CupertinoPageRoute(
-                                          builder: (_) =>
-                                              FollowCompanyPage(   widget.id,
-                                                companyName,),
+                                          builder: (_) => FollowCompanyPage(
+                                            widget.id,
+                                            companyName,
+                                          ),
                                         ),
                                       );
-
                                     },
                                     child: Container(
                                       child: Text(
                                         "$followersText • ",
                                         style: GoogleFonts.roboto(
                                           fontSize: 15.sp,
-                                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                          color: isDark
+                                              ? Colors.grey[400]
+                                              : Colors.grey[600],
                                         ),
                                       ),
                                     ),
                                   ),
-
-                                  SizedBox(width: 10.w,),
-
-                                  Text(
-                                    "$alumniText",
-                                    style: GoogleFonts.roboto(
-                                      fontSize: 15.sp,
-                                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                  SizedBox(
+                                    width: 10.w,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      final companyName = company.name ?? "";
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ComapnyUsersPage(
+                                                    widget.id, companyName),
+                                          ));
+                                    },
+                                    child: Text(
+                                      "$alumniText",
+                                      style: GoogleFonts.roboto(
+                                        fontSize: 15.sp,
+                                        color: isDark
+                                            ? Colors.grey[400]
+                                            : Colors.grey[600],
+                                      ),
                                     ),
                                   ),
-
                                 ],
                               ),
                             ),
@@ -539,56 +555,208 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                               padding: EdgeInsets.symmetric(horizontal: 24.w),
                               child: Row(
                                 children: [
+                                  // Expanded(
+                                  //   child: ElevatedButton.icon(
+                                  //     icon: const Icon(Icons.add, size: 18),
+                                  //     label: Text(
+                                  //         isFollowing ? "Following" : "Follow"),
+                                  //     onPressed: isLoadingFollow
+                                  //         ? null
+                                  //         : () async {
+                                  //             setState(
+                                  //                 () => isLoadingFollow = true);
+
+                                  //             try {
+                                  //               final body =
+                                  //                   FollowUnfollowCompanyModel(
+                                  //                       company_id: company
+                                  //                           .id!); // Assuming model accepts college_id
+                                  //               final service = APIStateNetwork(
+                                  //                   createDio());
+                                  //               final response = await service
+                                  //                   .followUnfollowCompany(
+                                  //                       body);
+
+                                  //               if (response.status == true) {
+                                  //                 Fluttertoast.showToast(
+                                  //                   msg: response.action ??
+                                  //                       "Followed successfully",
+                                  //                   backgroundColor:
+                                  //                       Colors.green,
+                                  //                   textColor: Colors.white,
+                                  //                 );
+                                  //                 ref.invalidate(
+                                  //                     reviewCompanyProvider(
+                                  //                         widget.id));
+                                  //                 setState(
+                                  //                     () => isFollowing = true);
+                                  //               } else {
+                                  //                 Fluttertoast.showToast(
+                                  //                   msg: response.action ??
+                                  //                       "Failed to follow",
+                                  //                   toastLength:
+                                  //                       Toast.LENGTH_LONG,
+                                  //                   backgroundColor: Colors.red,
+                                  //                 );
+
+                                  //                 if (response.action
+                                  //                         ?.toLowerCase()
+                                  //                         .contains(
+                                  //                             "already") ??
+                                  //                     false) {
+                                  //                   ref.invalidate(
+                                  //                       reviewCompanyProvider(
+                                  //                           widget.id));
+                                  //                   setState(() =>
+                                  //                       isFollowing = true);
+                                  //                 }
+                                  //               }
+                                  //             } catch (e, stack) {
+                                  //               log("Follow Error: $e\n$stack");
+                                  //               Fluttertoast.showToast(
+                                  //                 msg: "Something went wrong",
+                                  //                 backgroundColor: Colors.red,
+                                  //               );
+                                  //             } finally {
+                                  //               if (mounted)
+                                  //                 setState(() =>
+                                  //                     isLoadingFollow = false);
+                                  //             }
+                                  //           },
+                                  //     style: ElevatedButton.styleFrom(
+                                  //       backgroundColor: isFollowing
+                                  //           ? Colors.grey[700]
+                                  //           : accentColor,
+                                  //       foregroundColor: Colors.white,
+                                  //       shape: RoundedRectangleBorder(
+                                  //           borderRadius:
+                                  //               BorderRadius.circular(30.r)),
+                                  //       padding: EdgeInsets.symmetric(
+                                  //           vertical: 12.h),
+                                  //       elevation: 0,
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   Expanded(
-                                    child: ElevatedButton.icon(
-                                      icon: const Icon(Icons.add, size: 18),
-                                      label: Text(isFollowing ? "Following" : "Follow"),
-                                      onPressed: isLoadingFollow
+                                    child: GestureDetector(
+                                      onTap: isLoadingFollow
                                           ? null
                                           : () async {
-                                        setState(() => isLoadingFollow = true);
+                                              setState(() {
+                                                isLoadingFollow = true;
+                                                isAnimating = true;
+                                              });
 
-                                        try {
-                                          final body = FollowUnfollowCompanyModel(company_id: company.id!); // Assuming model accepts college_id
-                                          final service = APIStateNetwork(createDio());
-                                          final response = await service.followUnfollowCompany(body);
+                                              try {
+                                                final body =
+                                                    FollowUnfollowCompanyModel(
+                                                        company_id:
+                                                            company.id!);
+                                                final service = APIStateNetwork(
+                                                    createDio());
+                                                final response = await service
+                                                    .followUnfollowCompany(
+                                                        body);
 
-                                          if (response.status == true) {
-                                            Fluttertoast.showToast(
-                                              msg: response.action ?? "Followed successfully",
-                                              backgroundColor: Colors.green,
-                                              textColor: Colors.white,
-                                            );
-                                            ref.invalidate(reviewCompanyProvider(widget.id));
-                                            setState(() => isFollowing = true);
-                                          } else {
-                                            Fluttertoast.showToast(
-                                              msg: response.action ?? "Failed to follow",
-                                              toastLength: Toast.LENGTH_LONG,
-                                              backgroundColor: Colors.red,
-                                            );
+                                                if (response.status == true) {
+                                                  Fluttertoast.showToast(
+                                                    msg: response.action ??
+                                                        "Followed successfully",
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                    textColor: Colors.white,
+                                                  );
 
-                                            if (response.action?.toLowerCase().contains("already") ?? false) {
-                                              ref.invalidate(reviewCompanyProvider(widget.id));
-                                              setState(() => isFollowing = true);
-                                            }
-                                          }
-                                        } catch (e, stack) {
-                                          log("Follow Error: $e\n$stack");
-                                          Fluttertoast.showToast(
-                                            msg: "Something went wrong",
-                                            backgroundColor: Colors.red,
-                                          );
-                                        } finally {
-                                          if (mounted) setState(() => isLoadingFollow = false);
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: isFollowing ? Colors.grey[700] : accentColor,
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
-                                        padding: EdgeInsets.symmetric(vertical: 12.h),
-                                        elevation: 0,
+                                                  ref.invalidate(
+                                                      reviewCompanyProvider(
+                                                          widget.id));
+                                                  setState(
+                                                      () => isFollowing = true);
+                                                } else {
+                                                  Fluttertoast.showToast(
+                                                    msg: response.action ??
+                                                        "Failed to follow",
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                    backgroundColor: Colors.red,
+                                                  );
+
+                                                  if (response.action
+                                                          ?.toLowerCase()
+                                                          .contains(
+                                                              "already") ??
+                                                      false) {
+                                                    ref.invalidate(
+                                                        reviewCompanyProvider(
+                                                            widget.id));
+                                                    setState(() =>
+                                                        isFollowing = true);
+                                                  }
+                                                }
+                                              } catch (e, stack) {
+                                                log("Follow Error: $e\n$stack");
+                                                Fluttertoast.showToast(
+                                                  msg: "Something went wrong",
+                                                  backgroundColor: Colors.red,
+                                                );
+                                              } finally {
+                                                if (mounted) {
+                                                  setState(() {
+                                                    isLoadingFollow = false;
+                                                    isAnimating = false;
+                                                  });
+                                                }
+                                              }
+                                            },
+                                      child: AnimatedScale(
+                                        scale: isAnimating ? 0.96 : 1,
+                                        duration:
+                                            const Duration(milliseconds: 120),
+                                        child: AnimatedOpacity(
+                                          duration:
+                                              const Duration(milliseconds: 200),
+                                          opacity: isLoadingFollow ? 0.7 : 1,
+                                          child: AnimatedContainer(
+                                            duration: const Duration(
+                                                milliseconds: 250),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 12.h),
+                                            decoration: BoxDecoration(
+                                              color: isFollowing
+                                                  ? Colors.grey[700]
+                                                  : accentColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(30.r),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                AnimatedRotation(
+                                                  turns:
+                                                      isLoadingFollow ? 0.1 : 0,
+                                                  duration: const Duration(
+                                                      milliseconds: 300),
+                                                  child: Icon(
+                                                    isFollowing
+                                                        ? Icons.check
+                                                        : Icons.add,
+                                                    size: 18,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 6.w),
+                                                Text(
+                                                  isFollowing
+                                                      ? "Following"
+                                                      : "Follow",
+                                                  style: const TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -596,29 +764,38 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                   Expanded(
                                     child: OutlinedButton.icon(
                                       icon: const Icon(Icons.send, size: 18),
-                                      label: const Text("Message"),
+                                      label: const Text("Connect"),
                                       onPressed: () {},
                                       style: OutlinedButton.styleFrom(
                                         foregroundColor: accentColor,
-                                        side: const BorderSide(color: accentColor, width: 1.5),
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
-                                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                                        side: const BorderSide(
+                                            color: accentColor, width: 1.5),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30.r)),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 12.h),
                                       ),
                                     ),
                                   ),
                                   SizedBox(width: 8.w),
                                   IconButton(
-                                    icon: Icon(Icons.more_horiz, color: Colors.grey[700], size: 28.sp),
+                                    icon: Icon(Icons.more_horiz,
+                                        color: Colors.grey[700], size: 28.sp),
                                     onPressed: () {
                                       showModalBottomSheet(
                                         context: context,
-                                        backgroundColor: isDark ? Color(0xffF1F2F6) : Color(0xff9088F1),
+                                        backgroundColor: isDark
+                                            ? Color(0xffF1F2F6)
+                                            : Color(0xff9088F1),
                                         isScrollControlled: true,
                                         shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(24)),
                                         ),
                                         builder: (BuildContext sheetContext) {
-                                          return _buildMoreOptionsSheet(company);
+                                          return _buildMoreOptionsSheet(
+                                              company);
                                         },
                                       );
                                     },
@@ -636,14 +813,26 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                 scrollDirection: Axis.horizontal,
                                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                                 children: [
-                                  _buildTab("Home", _currentTab == CompanyTab.home, isDark, () {
-                                    setState(() => _currentTab = CompanyTab.home);
+                                  _buildTab(
+                                      "Home",
+                                      _currentTab == CompanyTab.home,
+                                      isDark, () {
+                                    setState(
+                                        () => _currentTab = CompanyTab.home);
                                   }),
-                                  _buildTab("About", _currentTab == CompanyTab.about, isDark, () {
-                                    setState(() => _currentTab = CompanyTab.about);
+                                  _buildTab(
+                                      "About",
+                                      _currentTab == CompanyTab.about,
+                                      isDark, () {
+                                    setState(
+                                        () => _currentTab = CompanyTab.about);
                                   }),
-                                  _buildTab("Alumni", _currentTab == CompanyTab.alumni, isDark, () {
-                                    setState(() => _currentTab = CompanyTab.alumni);
+                                  _buildTab(
+                                      "Alumni",
+                                      _currentTab == CompanyTab.alumni,
+                                      isDark, () {
+                                    setState(
+                                        () => _currentTab = CompanyTab.alumni);
                                   }),
                                 ],
                               ),
@@ -672,7 +861,8 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                         child: CircleAvatar(
                           radius: 22.r,
                           backgroundColor: Colors.white.withOpacity(0.92),
-                          child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black87, size: 22),
+                          child: const Icon(Icons.arrow_back_ios_new_rounded,
+                              color: Colors.black87, size: 22),
                         ),
                       ),
                       SizedBox(width: 16.w),
@@ -700,7 +890,10 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 4.w),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.35), blurRadius: 12, offset: const Offset(0, 6)),
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.35),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6)),
                     ],
                   ),
                   child: ClipOval(
@@ -709,7 +902,8 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Container(
                         color: accentColor,
-                        child: const Icon(Icons.business, color: Colors.white, size: 50),
+                        child: const Icon(Icons.business,
+                            color: Colors.white, size: 50),
                       ),
                     ),
                   ),
@@ -718,7 +912,6 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
             ],
           );
         },
-
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) {
           log("Company Detail Error: $error\n$stack");
@@ -729,7 +922,8 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                 Text("Error loading company: $error"),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () => ref.refresh(reviewCompanyProvider(widget.id)),
+                  onPressed: () =>
+                      ref.refresh(reviewCompanyProvider(widget.id)),
                   child: const Text("Retry"),
                 ),
               ],
@@ -742,8 +936,6 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
 
 // बाकी सारे helper functions (_buildTab, _buildTabContent, _defaultAvatar, _buildDetailRow, _buildMoreOptionsSheet, _shareToWhatsApp, _buildSheetItem)
 // वही रहेंगे जो तुम्हारे पास थे — कोई बदलाव नहीं किया उनमें
-
-
 
   Widget _buildTab(String text, bool active, bool isDark, VoidCallback onTap) {
     return GestureDetector(
@@ -1240,7 +1432,8 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                             // Force HTTPS if needed (common release issue)
                             String displayPic = profilePic ?? '';
                             if (displayPic.startsWith('http://')) {
-                              displayPic = displayPic.replaceFirst('http://', 'https://');
+                              displayPic = displayPic.replaceFirst(
+                                  'http://', 'https://');
                             }
 
                             return Padding(
@@ -1251,24 +1444,26 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                   GestureDetector(
                                     onTap: userId != null
                                         ? () {
-                                      if (user.userType == "Mentor") {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                MentorDetailPage(id: userId),
-                                          ),
-                                        );
-                                      } else {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                StudenetDetailPage(id: userId),
-                                          ),
-                                        );
-                                      }
-                                    }
+                                            if (user.userType == "Mentor") {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MentorDetailPage(
+                                                          id: userId),
+                                                ),
+                                              );
+                                            } else {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      StudenetDetailPage(
+                                                          id: userId),
+                                                ),
+                                              );
+                                            }
+                                          }
                                         : null,
                                     child: Container(
                                       width: 64.w,
@@ -1284,43 +1479,43 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                         clipBehavior: Clip.hardEdge,
                                         child: (displayPic.isNotEmpty)
                                             ? Image.network(
-                                          displayPic,
-                                          width: 64.w,
-                                          height: 64.h,
-                                          fit: BoxFit.cover,
-                                          loadingBuilder:
-                                              (context, child, loadingProgress) {
-                                            if (loadingProgress == null) {
-                                              return child;
-                                            }
-                                            return Center(
-                                              child: SizedBox(
-                                                width: 32.w,
-                                                height: 32.h,
-                                                child:
-                                                CircularProgressIndicator(
-                                                  strokeWidth: 2.w,
-                                                  value: loadingProgress
-                                                      .expectedTotalBytes !=
-                                                      null
-                                                      ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                      (loadingProgress
-                                                          .expectedTotalBytes ??
-                                                          1)
-                                                      : null,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            // Optional: log for debugging
-                                            debugPrint(
-                                                "Image failed for ${fullName}: $error");
-                                            return _defaultAvatar();
-                                          },
-                                        )
+                                                displayPic,
+                                                width: 64.w,
+                                                height: 64.h,
+                                                fit: BoxFit.cover,
+                                                loadingBuilder: (context, child,
+                                                    loadingProgress) {
+                                                  if (loadingProgress == null) {
+                                                    return child;
+                                                  }
+                                                  return Center(
+                                                    child: SizedBox(
+                                                      width: 32.w,
+                                                      height: 32.h,
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        strokeWidth: 2.w,
+                                                        value: loadingProgress
+                                                                    .expectedTotalBytes !=
+                                                                null
+                                                            ? loadingProgress
+                                                                    .cumulativeBytesLoaded /
+                                                                (loadingProgress
+                                                                        .expectedTotalBytes ??
+                                                                    1)
+                                                            : null,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                errorBuilder: (context, error,
+                                                    stackTrace) {
+                                                  // Optional: log for debugging
+                                                  debugPrint(
+                                                      "Image failed for ${fullName}: $error");
+                                                  return _defaultAvatar();
+                                                },
+                                              )
                                             : _defaultAvatar(),
                                       ),
                                     ),
@@ -1333,8 +1528,9 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                       style: GoogleFonts.roboto(
                                         fontSize: 13.sp,
                                         fontWeight: FontWeight.w500,
-                                        color:
-                                        isDark ? Colors.black87 : Colors.white,
+                                        color: isDark
+                                            ? Colors.black87
+                                            : Colors.white,
                                       ),
                                       textAlign: TextAlign.center,
                                       maxLines: 1,
@@ -1391,7 +1587,6 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
           ],
         );
 
-
       case CompanyTab.about:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1434,7 +1629,6 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                 ],
               ),
             ),
-
           ],
         );
     }
@@ -1498,14 +1692,13 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
     );
   }
 
-
   Widget _buildMoreOptionsSheet(Collage college) {
     final isDark = ref.read(themeProvider) == ThemeMode.dark;
 
     return Container(
       decoration: BoxDecoration(
         color: isDark ? Color(0xffF1F2F6) : Color(0xff9088F1),
-        borderRadius:  BorderRadius.vertical(top: Radius.circular(24.r)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.15),
@@ -1540,39 +1733,42 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                   style: GoogleFonts.roboto(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w500,
-                    color: isDark
-                        ? Color(0xff9088F1)
-                        : Color(0xffDEDDEC),
+                    color: isDark ? Color(0xff9088F1) : Color(0xffDEDDEC),
                   ),
                 ),
               ],
             ),
           ),
           // your menu items here...
-          _buildSheetItem(icon: Icons.open_in_browser, title: "Visit website", onTap: () {
-
-            var url = college.website!.trim();
-            if (!url.startsWith('http')) url = 'https://$url';
-            Navigator.push(
-              context,
-              CupertinoPageRoute(
-                  builder: (_) => WebViewPage(url: url)),
-            );
-
-          }),
-          _buildSheetItem(icon: Icons.share_rounded, title: "Share this page", onTap: () {
-            Navigator.pop(context);          // close bottom sheet
-            _shareToWhatsApp(college);       // call the function
-          }),
-          _buildSheetItem(icon: Icons.send, title: "Send Message", onTap: () {}, isDestructive: true),
+          _buildSheetItem(
+              icon: Icons.open_in_browser,
+              title: "Visit website",
+              onTap: () {
+                var url = college.website!.trim();
+                if (!url.startsWith('http')) url = 'https://$url';
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (_) => WebViewPage(url: url)),
+                );
+              }),
+          _buildSheetItem(
+              icon: Icons.share_rounded,
+              title: "Share this page",
+              onTap: () {
+                Navigator.pop(context); // close bottom sheet
+                _shareToWhatsApp(college); // call the function
+              }),
+          _buildSheetItem(
+              icon: Icons.send,
+              title: "Send Message",
+              onTap: () {},
+              isDestructive: true),
 
           SizedBox(height: 8.h),
         ],
       ),
     );
   }
-
-
 
   Future<void> _shareToWhatsApp(Collage college) async {
     final String collegeName = college.name ?? "this college";
@@ -1583,8 +1779,7 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
     final String pageLink = "https://yourapp.com/college/$collegeId";
     // Alternative example: "https://play.google.com/store/apps/details?id=com.your.educationapp";
 
-    final String message =
-        "Check out $collegeName!\n"
+    final String message = "Check out $collegeName!\n"
         "Reviews, alumni network, details & more.\n\n"
         "$pageLink\n\n"
         "Shared from Education App";
@@ -1602,7 +1797,8 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("WhatsApp not installed or cannot open")),
+            const SnackBar(
+                content: Text("WhatsApp not installed or cannot open")),
           );
         }
       }
@@ -1615,7 +1811,6 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
       }
     }
   }
-
 
   Widget _buildSheetItem({
     required IconData icon,
@@ -1641,9 +1836,7 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
     return ListTile(
       leading: Icon(
         icon,
-        color: isDark
-            ? Color(0xff9088F1)
-            : Color(0xffDEDDEC),
+        color: isDark ? Color(0xff9088F1) : Color(0xffDEDDEC),
         size: 22.sp,
       ),
       title: Text(
@@ -1651,44 +1844,40 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
         style: GoogleFonts.roboto(
           fontSize: 16.sp,
           fontWeight: FontWeight.w500,
-          color: isDark
-              ? Color(0xff9088F1)
-              : Color(0xffDEDDEC),
+          color: isDark ? Color(0xff9088F1) : Color(0xffDEDDEC),
         ),
       ),
       subtitle: subtitle != null
           ? Text(
-        subtitle,
-        style: GoogleFonts.roboto(
-          fontSize: 13.sp,
-          color: isDark
-              ? Color(0xff9088F1)
-              : Color(0xffDEDDEC),
-        ),
-      )
+              subtitle,
+              style: GoogleFonts.roboto(
+                fontSize: 13.sp,
+                color: isDark ? Color(0xff9088F1) : Color(0xffDEDDEC),
+              ),
+            )
           : null,
       trailing: trailingIcon != null
           ? Icon(
-        trailingIcon,
-        color: color!.withOpacity(0.7),
-        size: 22.sp,
-      )
+              trailingIcon,
+              color: color!.withOpacity(0.7),
+              size: 22.sp,
+            )
           : null,
       contentPadding: EdgeInsets.symmetric(horizontal: 12.w),
       minLeadingWidth: 40.w,
       horizontalTitleGap: 16.w,
       dense: true,
       visualDensity: const VisualDensity(vertical: -1),
-      onTap: isDisabled ? null : () {
-        // Optional: close bottom sheet automatically
-        if (onTap != null) {
-          onTap();
-          // Navigator.pop(context);   ← uncomment if you want auto-close
-        }
-      },
+      onTap: isDisabled
+          ? null
+          : () {
+              // Optional: close bottom sheet automatically
+              if (onTap != null) {
+                onTap();
+                // Navigator.pop(context);   ← uncomment if you want auto-close
+              }
+            },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
     );
   }
-
-
 }

@@ -22,6 +22,7 @@ import 'package:educationapp/home/onlineMentor.page.dart';
 import 'package:educationapp/home/requestPage.dart';
 import 'package:educationapp/home/settingProfile.page.dart';
 import 'package:educationapp/home/trendingExprt.page.dart';
+import 'package:educationapp/home/yourBidsPage.dart';
 import 'package:educationapp/login/login.page.dart';
 import 'package:educationapp/notificationService.dart';
 import 'package:flutter/cupertino.dart';
@@ -396,33 +397,33 @@ class _HomePageState extends ConsumerState<HomePage> {
 
             // if (userType == "Student")
 
-              ListTile(
-                dense: true,
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const FindCompanyPage(),
-                      ));
-                },
-                leading: Image.asset(
-                  "assets/drawer4.png",
+            ListTile(
+              dense: true,
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const FindCompanyPage(),
+                    ));
+              },
+              leading: Image.asset(
+                "assets/drawer4.png",
+                color: themeMode == ThemeMode.light
+                    ? Colors.white
+                    : Color(0xff9088F1),
+              ),
+              title: Text(
+                "Explore Companies",
+                style: GoogleFonts.roboto(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  // color: const Color.fromARGB(255, 27, 27, 27),
                   color: themeMode == ThemeMode.light
                       ? Colors.white
-                      : Color(0xff9088F1),
-                ),
-                title: Text(
-                  "Explore Companies",
-                  style: GoogleFonts.roboto(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    // color: const Color.fromARGB(255, 27, 27, 27),
-                    color: themeMode == ThemeMode.light
-                        ? Colors.white
-                        : Color(0xFF1B1B1B),
-                  ),
+                      : Color(0xFF1B1B1B),
                 ),
               ),
+            ),
 
             // if (userType == "Student")
             //   ListTile(
@@ -649,7 +650,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
   bool isAccept = false;
   String? requestLenght;
   String? wallet;
-  String? yourBid;
+  int? yourBid;
   late WebSocketChannel channel;
   late int userId;
   String status = 'Connecting...';
@@ -855,6 +856,12 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
       );
     }
 
+    asyncProfile.whenData(
+      (data) {
+        wallet = (data.data!.coins ?? 0) as String?;
+      },
+    );
+
     return Scaffold(
       backgroundColor:
           themeMode == ThemeMode.dark ? Color(0xFFFFFFFF) : Color(0xFF05040F),
@@ -1035,9 +1042,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                   padding: EdgeInsets.only(left: 20.w, right: 20.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                     children: [
-
                       if (userType == "Student")
                         InkWell(
                           onTap: () {
@@ -1203,19 +1208,13 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                           ),
                         ),
                       // SizedBox(width: 15.w),
-
-
-
-
-
-
                     ],
                   ),
                 ),
 
                 if (userType == "Professional" || userType == "Mentor")
                   Container(
-                    margin: EdgeInsets.only(left: 20.w,right: 20.w),
+                    margin: EdgeInsets.only(left: 20.w, right: 20.w),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -1260,7 +1259,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                                   padding: EdgeInsets.only(left: 15.w),
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "New Requests",
@@ -1275,7 +1274,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                                         style: GoogleFonts.roboto(
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.w600,
-                                            color: Color(0xFF1B1B1B)),
+                                            color: Colors.white),
                                       ),
                                     ],
                                   ),
@@ -1284,13 +1283,15 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 10.w,),
+                        SizedBox(
+                          width: 10.w,
+                        ),
                         InkWell(
                           onTap: () {
                             Navigator.push(
                                 context,
                                 CupertinoPageRoute(
-                                  builder: (context) => RequestPage(),
+                                  builder: (context) => WalletPage(),
                                 ));
                           },
                           child: Container(
@@ -1326,7 +1327,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                                   padding: EdgeInsets.only(left: 15.w),
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "Wallet",
@@ -1335,15 +1336,15 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                                             fontWeight: FontWeight.w400,
                                             color: Colors.white),
                                       ),
-                                      wallet==null?SizedBox():
-                                      Text(
-
-                                        wallet!,
-                                        style: GoogleFonts.roboto(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w600,
-                                            color: Color(0xFF1B1B1B)),
-                                      ),
+                                      wallet == null
+                                          ? SizedBox()
+                                          : Text(
+                                              wallet!,
+                                              style: GoogleFonts.roboto(
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white),
+                                            ),
                                     ],
                                   ),
                                 ),
@@ -1351,13 +1352,15 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 10.w,),
+                        SizedBox(
+                          width: 10.w,
+                        ),
                         InkWell(
                           onTap: () {
                             Navigator.push(
                                 context,
                                 CupertinoPageRoute(
-                                  builder: (context) => RequestPage(),
+                                  builder: (context) => YourBidsPage(),
                                 ));
                           },
                           child: Container(
@@ -1393,7 +1396,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                                   padding: EdgeInsets.only(left: 15.w),
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "Your Bid",
@@ -1402,15 +1405,15 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                                             fontWeight: FontWeight.w400,
                                             color: Colors.white),
                                       ),
-                                      yourBid==null?SizedBox():
-                                      Text(
-
-                                        yourBid!,
-                                        style: GoogleFonts.roboto(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w600,
-                                            color: Color(0xFF1B1B1B)),
-                                      ),
+                                      yourBid == null
+                                          ? SizedBox()
+                                          : Text(
+                                              yourBid.toString(),
+                                              style: GoogleFonts.roboto(
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white),
+                                            ),
                                     ],
                                   ),
                                 ),
@@ -1418,7 +1421,6 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                             ),
                           ),
                         ),
-
                       ],
                     ),
                   ),
@@ -1448,10 +1450,11 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                             data: (mentorData) {
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 setState(() {
-                                  wallet =
-                                      mentorData.data!.coins.toString();
+                                  // wallet = mentorData.data!.coins.toString();
+                                  // yourBid = mentorData.data!.notification_count
+                                  //     .toString();
                                   yourBid =
-                                      mentorData.data!.notification_count.toString();
+                                      mentorData.data?.acceptedStudents?.length;
                                 });
                               });
                               return Column(
@@ -1889,13 +1892,11 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                       ),
                     ),
                   )
-
                 else
                   SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         SizedBox(
                           height: 20.h,
                         ),
@@ -2007,7 +2008,6 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             children: [
-
                                               Container(
                                                 width: 40.w,
                                                 height: 40.h,
@@ -2072,7 +2072,6 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                                                   ),
                                                 ),
                                               ),
-
                                             ],
                                           ),
                                         ),
@@ -2729,7 +2728,6 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                       ],
                     ),
                   ),
-
               ],
             ),
           ),
