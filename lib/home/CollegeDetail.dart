@@ -699,8 +699,6 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: isDark ? Colors.white : const Color(0xFF121212),
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(32.r)),
                       ),
                       child: SingleChildScrollView(
                         child: Column(
@@ -742,9 +740,10 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                                     "$industry  •",
                                     style: GoogleFonts.roboto(
                                       fontSize: 15.sp,
+                                      fontWeight: FontWeight.w500,
                                       color: isDark
-                                          ? Colors.grey[400]
-                                          : Colors.grey[600],
+                                          ? Colors.blueGrey
+                                          : Colors.blueGrey,
                                     ),
                                   ),
                                   SizedBox(
@@ -764,11 +763,12 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                                     child: Text(
                                       "$followersText • ",
                                       style: GoogleFonts.roboto(
-                                        fontSize: 15.sp,
-                                        color: isDark
-                                            ? Colors.grey[400]
-                                            : Colors.grey[600],
-                                      ),
+                                          fontSize: 15.sp,
+                                          // color: isDark
+                                          //     ? Colors.grey[400]
+                                          //     : Colors.grey[600],
+                                          color: Colors.blueGrey,
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   ),
                                   SizedBox(
@@ -791,11 +791,11 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                                     child: Text(
                                       "$alumniText",
                                       style: GoogleFonts.roboto(
-                                        fontSize: 15.sp,
-                                        color: isDark
-                                            ? Colors.grey[400]
-                                            : Colors.grey[600],
-                                      ),
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: isDark
+                                              ? Colors.blueGrey
+                                              : Colors.blueGrey),
                                     ),
                                   ),
                                 ],
@@ -1102,7 +1102,7 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                                   Expanded(
                                     child: OutlinedButton.icon(
                                       icon: const Icon(Icons.send, size: 18),
-                                      label: const Text("Connect"),
+                                      label: const Text("Contact"),
                                       onPressed: () {},
                                       style: OutlinedButton.styleFrom(
                                         foregroundColor: linkedinBlue,

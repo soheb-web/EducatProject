@@ -476,9 +476,10 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                     "$industry • ",
                                     style: GoogleFonts.roboto(
                                       fontSize: 15.sp,
+                                      fontWeight: FontWeight.w500,
                                       color: isDark
-                                          ? Colors.grey[400]
-                                          : Colors.grey[600],
+                                          ? Colors.blueGrey[400]
+                                          : Colors.blueGrey[600],
                                     ),
                                   ),
                                   SizedBox(
@@ -514,9 +515,10 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                         "$followersText • ",
                                         style: GoogleFonts.roboto(
                                           fontSize: 15.sp,
+                                          fontWeight: FontWeight.w500,
                                           color: isDark
-                                              ? Colors.grey[400]
-                                              : Colors.grey[600],
+                                              ? Colors.blueGrey[400]
+                                              : Colors.blueGrey[600],
                                         ),
                                       ),
                                     ),
@@ -539,9 +541,10 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                       "$alumniText",
                                       style: GoogleFonts.roboto(
                                         fontSize: 15.sp,
+                                        fontWeight: FontWeight.w500,
                                         color: isDark
-                                            ? Colors.grey[400]
-                                            : Colors.grey[600],
+                                            ? Colors.blueGrey[400]
+                                            : Colors.blueGrey[600],
                                       ),
                                     ),
                                   ),
@@ -764,7 +767,7 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                   Expanded(
                                     child: OutlinedButton.icon(
                                       icon: const Icon(Icons.send, size: 18),
-                                      label: const Text("Connect"),
+                                      label: const Text("Contact"),
                                       onPressed: () {},
                                       style: OutlinedButton.styleFrom(
                                         foregroundColor: accentColor,
