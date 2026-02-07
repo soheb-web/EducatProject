@@ -13,34 +13,66 @@ class WebViewPage extends StatefulWidget {
 
 class _WebViewPageState extends State<WebViewPage> {
   late final WebViewController _controller;
-  bool isLoading = true; // LOADER FLAG
+  bool isLoading = true;
+  bool hasError = false;
+  String? errorMsg;
+
   Timer? _timer;
 
   @override
   void initState() {
     super.initState();
 
-    // Start 5 second timeout for loader
-    _timer = Timer(const Duration(seconds: 5), () {
-      if (mounted) setState(() => isLoading = false);
+    _timer = Timer(const Duration(seconds: 8), () {
+      if (mounted && isLoading) {
+        setState(() {
+          isLoading = false;
+          hasError = true;
+          errorMsg = "Bahut time lag raha hai... check your internet?";
+        });
+      }
     });
 
     _controller = WebViewController()
-      ..setJavaScriptMode(
-        JavaScriptMode.unrestricted,
-      )
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (url) {
-            setState(() => isLoading = true);
+            if (mounted) {
+              setState(() {
+                isLoading = true;
+                hasError = false;
+              });
+            }
           },
           onPageFinished: (url) {
-            setState(() => isLoading = false);
+            if (mounted) {
+              setState(() => isLoading = false);
+            }
           },
+          onWebResourceError: (WebResourceError error) {
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+                hasError = true;
+                errorMsg = error.description.isNotEmpty
+                    ? error.description
+                    : "Page load nahi ho paya (code: ${error.errorCode})";
+              });
+            }
+          },
+          // Optional: agar sirf main frame ka error dikhana hai to
+          // onHttpError: (HttpResponseError error) { ... }
         ),
       )
-      ..loadRequest(Uri.parse(widget.url));
+      ..loadRequest(Uri.parse(widget.url));   // ← yahan widget.url use kar rahe hain
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -49,30 +81,51 @@ class _WebViewPageState extends State<WebViewPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text(
+        title: const Text(
           "Website",
           style: TextStyle(color: Color(0xFF1B1B1B)),
         ),
         automaticallyImplyLeading: false,
         leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_back,
-              color: Color(0xFF1B1B1B),
-            )),
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF1B1B1B)),
+        ),
       ),
       body: Stack(
         children: [
-          WebViewWidget(
-            controller: _controller,
-          ),
+          WebViewWidget(controller: _controller),
 
-          // LOADER
           if (isLoading)
-            const Center(
-              child: CircularProgressIndicator(),
+            const Center(child: CircularProgressIndicator()),
+
+          if (hasError)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+
+                    const SizedBox(height: 8),
+                    Text(
+                      errorMsg ?? "Internet check karein ya URL sahi daalein",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          hasError = false;
+                          isLoading = true;
+                        });
+                        _controller.reload();
+                      },
+                      child: const Text("ReTry"),
+                    ),
+                  ],
+                ),
+              ),
             ),
         ],
       ),

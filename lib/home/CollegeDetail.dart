@@ -1965,6 +1965,8 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                   if (college.phone != null)
                     _buildDetailRow(
                         "Phone", "+91 ${college.phone}", null, isDark),
+                  if (college.email != null)
+                    _buildDetailRow("Email", college.email, null, isDark),
                 ],
               ),
             ),
@@ -1990,8 +1992,8 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
     String? staticFallback,
     bool isDark,
   ) {
-    final value = dynamicValue ?? staticFallback ?? "Not available";
-    final isWebsite = label == "Website" && value.contains("http");
+    final value = dynamicValue ?? "Not available";
+    final isWebsite = label == "Website" && value.contains("http") || value.contains("https");
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10.h),
@@ -2014,7 +2016,7 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
               onTap: isWebsite
                   ? () {
                       var url = value.trim();
-                      if (!url.startsWith('http')) url = 'https://$url';
+                      // if (!url.startsWith('http')) url = 'https://$url';
                       Navigator.push(
                         context,
                         CupertinoPageRoute(
@@ -2105,11 +2107,11 @@ class _CollegeDetailPageState extends ConsumerState<CollegeDetailPage> {
                 Navigator.pop(context); // close bottom sheet
                 _shareToWhatsApp(college); // call the function
               }),
-          _buildSheetItem(
-              icon: Icons.send,
-              title: "Send Message",
-              onTap: () {},
-              isDestructive: true),
+          // _buildSheetItem(
+          //     icon: Icons.send,
+          //     title: "Send Message",
+          //     onTap: () {},
+          //     isDestructive: true),
 
           SizedBox(height: 8.h),
         ],
