@@ -44,7 +44,6 @@ import '../coreFolder/Controller/homeDataController.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   int index;
-
   HomePage(this.index, {super.key});
 
   @override
@@ -62,7 +61,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   final List<Widget> _pages = [
-    HomePageContent(), // Home page content (extracted below)
+    HomePageContent(),
     Chatinbox(),
     MyListing(),
     ProfilePage(),
@@ -122,9 +121,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             },
             type: BottomNavigationBarType.fixed,
             elevation: 0,
-            // IMPORTANT: shadow hum khud de rahe
             backgroundColor: Colors.transparent,
-            // Container ka color use ho
             selectedItemColor: themeMode == ThemeMode.light
                 ? const Color(0xFF4988C4)
                 : const Color(0xFF1C4D8D),
@@ -983,6 +980,7 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                     //     ),
                     //   ),
                     // ),
+
                     SizedBox(width: 20.w),
                   ],
                 ),
@@ -1211,7 +1209,6 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                     ],
                   ),
                 ),
-
                 if (userType == "Professional" || userType == "Mentor")
                   Container(
                     margin: EdgeInsets.only(left: 20.w, right: 20.w),
@@ -1425,8 +1422,6 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
                     ),
                   ),
                 SizedBox(height: 20.h),
-                // userType != "Professional"
-                //     ?
                 if (userType == "Professional" || userType == "Mentor")
                   Container(
                     // height: 500.h,

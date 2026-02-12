@@ -551,14 +551,13 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                 ],
                               ),
                             ),
-
                             SizedBox(height: 24.h),
-
                             // Follow / Message Buttons
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 24.w),
                               child: Row(
                                 children: [
+
                                   // Expanded(
                                   //   child: ElevatedButton.icon(
                                   //     icon: const Icon(Icons.add, size: 18),
@@ -569,7 +568,6 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                   //         : () async {
                                   //             setState(
                                   //                 () => isLoadingFollow = true);
-
                                   //             try {
                                   //               final body =
                                   //                   FollowUnfollowCompanyModel(
@@ -580,7 +578,6 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                   //               final response = await service
                                   //                   .followUnfollowCompany(
                                   //                       body);
-
                                   //               if (response.status == true) {
                                   //                 Fluttertoast.showToast(
                                   //                   msg: response.action ??
@@ -602,7 +599,6 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                   //                       Toast.LENGTH_LONG,
                                   //                   backgroundColor: Colors.red,
                                   //                 );
-
                                   //                 if (response.action
                                   //                         ?.toLowerCase()
                                   //                         .contains(
@@ -641,6 +637,7 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                                   //     ),
                                   //   ),
                                   // ),
+                                 
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: isLoadingFollow
@@ -1629,6 +1626,8 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                   _buildDetailRow("Location", company.city, null, isDark),
                   if (company.phone != null)
                     _buildDetailRow("Phone", company.phone, null, isDark),
+                  if (company.email != null)
+                    _buildDetailRow("Email", company.email, null, isDark),
                 ],
               ),
             ),
@@ -1648,9 +1647,11 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
 
   Widget _buildDetailRow(
       String label, String? value, String? fallback, bool isDark) {
-    final text = value ?? fallback ?? "Not available";
-    final isLink = label == "Website" && text.contains("http");
+    final text = value ?? "Not available";
+    // final isLink = label == "Website" && text.contains("http");
 
+    final isLink =
+        label == "Website" && text.contains("http") || text.contains("https");
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10.h),
       child: Row(
@@ -1671,7 +1672,7 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
               onTap: isLink
                   ? () {
                       var url = text.trim();
-                      if (!url.startsWith('http')) url = 'https://$url';
+                      // if (!url.startsWith('http')) url = 'https://$url';
                       Navigator.push(
                           context,
                           CupertinoPageRoute(
@@ -1743,17 +1744,21 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
             ),
           ),
           // your menu items here...
+
           _buildSheetItem(
               icon: Icons.open_in_browser,
               title: "Visit website",
               onTap: () {
                 var url = college.website!.trim();
-                if (!url.startsWith('http')) url = 'https://$url';
+                // if (!url.startsWith('http')) url = 'https://$url';
+                print(url);
                 Navigator.push(
                   context,
-                  CupertinoPageRoute(builder: (_) => WebViewPage(url: url)),
+                  CupertinoPageRoute(
+                      builder: (_) => WebViewPage(url: college.website ?? "")),
                 );
               }),
+
           _buildSheetItem(
               icon: Icons.share_rounded,
               title: "Share this page",
@@ -1761,11 +1766,11 @@ class _CompanyDetailPageState extends ConsumerState<CompanyDetailPage> {
                 Navigator.pop(context); // close bottom sheet
                 _shareToWhatsApp(college); // call the function
               }),
-          _buildSheetItem(
-              icon: Icons.send,
-              title: "Send Message",
-              onTap: () {},
-              isDestructive: true),
+          // _buildSheetItem(
+          //     icon: Icons.send,
+          //     title: "Send Message",
+          //     onTap: () {},
+          //     isDestructive: true),
 
           SizedBox(height: 8.h),
         ],

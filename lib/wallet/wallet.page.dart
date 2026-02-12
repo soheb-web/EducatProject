@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
-
 import '../coreFolder/Controller/buyCoinProvider.dart';
 import '../coreFolder/Controller/getCoinProvider.dart';
 import '../coreFolder/Controller/transactionGetProvider.dart';
@@ -124,14 +123,11 @@ class _WalletPageState extends ConsumerState<WalletPage> {
       }
 
       final int backendPaymentId = verifyResponse.payment!.id!;
-
       final payload = {
         'coins': selectCoins.toString(),
         'payment_id': backendPaymentId.toString(),
       };
-
       _handleBuyCoins(payload);
-
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -181,14 +177,12 @@ class _WalletPageState extends ConsumerState<WalletPage> {
 
   void _handleBuyCoins(Map<String, dynamic> payload) {
     setState(() => _isLoading = true);
-
     ref.read(buyCoinProvider(payload).future).then((_) {
       ref.invalidate(userProfileController);
       ref.invalidate(getCoinProvider);
       if (_userId != null) {
         ref.invalidate(transactionProvider(_userId!));
       }
-
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -380,7 +374,9 @@ class _WalletPageState extends ConsumerState<WalletPage> {
                                         height: 10.h,
                                       ),
                                       DropdownButtonFormField<String>(
-                                         dropdownColor:  isDark ? Colors.white: Color(0xFF1B1B1B) ,
+                                        dropdownColor: isDark
+                                            ? Colors.white
+                                            : Color(0xFF1B1B1B),
                                         isExpanded: true,
                                         padding: EdgeInsets.zero,
                                         hint: Center(
@@ -403,7 +399,6 @@ class _WalletPageState extends ConsumerState<WalletPage> {
                                                 color: textColor)),
                                         decoration: InputDecoration(
                                           border: OutlineInputBorder(
-
                                             borderRadius:
                                                 BorderRadius.circular(25.sp),
                                           ),
@@ -429,7 +424,6 @@ class _WalletPageState extends ConsumerState<WalletPage> {
                                             .map(
                                               (item) =>
                                                   DropdownMenuItem<String>(
-
                                                 value: item.price,
                                                 child: Row(
                                                   mainAxisAlignment:
@@ -439,26 +433,24 @@ class _WalletPageState extends ConsumerState<WalletPage> {
                                                     Text(
                                                       "₹ ${(double.tryParse(item.price ?? '0') ?? 0).toInt()}",
                                                       style: GoogleFonts.roboto(
-                                                        fontSize: 14.w,
-                                                        color: themeMode ==
-                                                                ThemeMode.dark
-
-                                                            ? Color(0xFF1B1B1B)
-                                                          :Colors.white
-                                                      ),
+                                                          fontSize: 14.w,
+                                                          color: themeMode ==
+                                                                  ThemeMode.dark
+                                                              ? Color(
+                                                                  0xFF1B1B1B)
+                                                              : Colors.white),
                                                     ),
                                                     if (item.discount != null)
                                                       Text(
                                                         "${(double.tryParse(item.discount ?? '0') ?? 0).toInt()}% Discount",
-                                                        style:
-                                                            GoogleFonts.roboto(
-                                                          fontSize: 14.w,
-                                                                color: themeMode ==
-                                                                    ThemeMode.dark
-
-                                                                    ? Color(0xFF1B1B1B)
-                                                                    :Colors.white
-                                                        ),
+                                                        style: GoogleFonts.roboto(
+                                                            fontSize: 14.w,
+                                                            color: themeMode ==
+                                                                    ThemeMode
+                                                                        .dark
+                                                                ? Color(
+                                                                    0xFF1B1B1B)
+                                                                : Colors.white),
                                                       ),
                                                   ],
                                                 ),
@@ -800,7 +792,7 @@ class _WalletPageState extends ConsumerState<WalletPage> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                      capitalizeFirst( trans.type??""),
+                                            capitalizeFirst(trans.type ?? ""),
                                             // trans.type!.toUpperCase() ?? 'Unknown',
                                             style: GoogleFonts.inter(
                                                 fontSize: 18.sp,
@@ -856,10 +848,12 @@ class _WalletPageState extends ConsumerState<WalletPage> {
       ),
     );
   }
+
   String capitalizeFirst(String text) {
     if (text.isEmpty) return text;
     return text[0].toUpperCase() + text.substring(1).toLowerCase();
   }
+
   static Future<String?> paymentCreateApi(String amount, String currency,
       String description, BuildContext context) async {
     try {

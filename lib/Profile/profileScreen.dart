@@ -484,16 +484,34 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                   SizedBox(
                                     height: 3.h,
                                   ),
-                                  Text(
-                                    "${profileData.jobCompanyName ?? "No company"} * ${profileData.jobLocation}",
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.roboto(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: themeMode == ThemeMode.dark
-                                          ? Color(0xff666666)
-                                          : Colors.white,
-                                    ),
+                                  Row(
+                                    children: [
+
+                                      Text(
+                                        "${profileData.jobCompanyName ?? "No company"} *",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.roboto(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: themeMode == ThemeMode.dark
+                                              ? Color(0xff666666)
+                                              : Colors.white,
+                                        ),
+                                      ),
+
+                                      Text(
+                                        "${profileData.jobLocation ?? ""}",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.roboto(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: themeMode == ThemeMode.dark
+                                              ? Color(0xff666666)
+                                              : Colors.white,
+                                        ),
+                                      )
+
+                                    ],
                                   ),
                                 ],
 
@@ -597,7 +615,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                       SizedBox(height: 3.h),
                                       if (userType != "Student")
                                         Text(
-                                          "${profileData.totalExperience} Yrs Exprience of ${profileData.jobRole}.",
+                                          "${profileData.totalExperience ?? ""} Yrs Exprience of ${profileData.jobRole ?? ""}",
                                           style: GoogleFonts.roboto(
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.w600,
