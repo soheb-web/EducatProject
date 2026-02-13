@@ -25,8 +25,6 @@ class SwitchBodyMentor {
 }
 
 
-
-
 // To parse this JSON data, do
 //
 //     final switchResponseModel = switchResponseModelFromJson(jsonString);
@@ -37,24 +35,49 @@ SwitchResponseModel switchResponseModelFromJson(String str) => SwitchResponseMod
 String switchResponseModelToJson(SwitchResponseModel data) => json.encode(data.toJson());
 
 class SwitchResponseModel {
-  bool? success;
-  String? message;
+    bool? success;
+    String? message;
+    Data? data;
 
-  SwitchResponseModel({
-    this.success,
-    this.message,
-  });
+    SwitchResponseModel({
+        this.success,
+        this.message,
+        this.data,
+    });
 
-  factory SwitchResponseModel.fromJson(Map<String, dynamic> json) => SwitchResponseModel(
-    success: json["success"],
-    message: json["message"],
-  );
+    factory SwitchResponseModel.fromJson(Map<String, dynamic> json) => SwitchResponseModel(
+        success: json["success"],
+        message: json["message"],
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+    );
 
-  Map<String, dynamic> toJson() => {
-    "success": success,
-    "message": message,
-  };
+    Map<String, dynamic> toJson() => {
+        "success": success,
+        "message": message,
+        "data": data?.toJson(),
+    };
 }
+
+class Data {
+    int? id;
+    String? userType;
+
+    Data({
+        this.id,
+        this.userType,
+    });
+
+    factory Data.fromJson(Map<String, dynamic> json) => Data(
+        id: json["id"],
+        userType: json["user_type"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "user_type": userType,
+    };
+}
+
 
 
 

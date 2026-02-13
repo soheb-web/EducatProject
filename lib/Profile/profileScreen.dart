@@ -27,7 +27,7 @@ class ProfilePage extends ConsumerStatefulWidget {
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   File? selectbgImage;
   final ImagePicker _picker = ImagePicker();
-  bool isSwitched = false;   // ← ये state को कंट्रोल करता है
+  bool isSwitched = false; // ← ये state को कंट्रोल करता है
   Future<void> pickAndUploadImage(ImageSource source) async {
     final XFile? pickedFile = await _picker.pickImage(
       source: source,
@@ -43,7 +43,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       await uploadImageBackground(file);
     }
   }
+
   bool isLoadingSwitch = false;
+  bool isMentor = false; // local state
+
   void showImagePicker() {
     showCupertinoModalPopup(
       context: context,
@@ -88,7 +91,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     }
   }
 
-
   // Future<void> sendConnectRequest( {required String userType}) async {
   //   setState(() {
   //     isLoading = true;
@@ -115,7 +117,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   //   }
   // }
 
-
   @override
   Widget build(BuildContext context) {
     var box = Hive.box('userdata');
@@ -139,6 +140,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               ),
             );
           }
+          isMentor = profileData.userType == "Mentor";
 
           return SingleChildScrollView(
             child: Column(
@@ -262,12 +264,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-
-
-
-
-
-
                                 // Row(
                                 //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 //   crossAxisAlignment: CrossAxisAlignment.center,
@@ -367,9 +363,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                 //   ],
                                 // ),
 
-
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     // Left: Name (Expanded ताकि लंबा नाम भी फिट हो)
@@ -378,11 +374,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                         profileData.fullName ?? "No Name",
                                         style: GoogleFonts.roboto(
                                           fontSize: 24.sp,
-                                          fontWeight: FontWeight.w700,          // थोड़ा bold
+                                          fontWeight:
+                                              FontWeight.w700, // थोड़ा bold
                                           color: themeMode == ThemeMode.dark
                                               ? Color(0xFF1B1B1B)
                                               : Colors.white,
-                                          letterSpacing: 0.2,                   // थोड़ा spacing बेहतर लगता है
+                                          letterSpacing:
+                                              0.2, // थोड़ा spacing बेहतर लगता है
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -390,81 +388,300 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                     ),
 
                                     // Right: Switch + Label (Mentor mode वाले users के लिए)
-                                    if (userType != "Student" && (userType == "Professional" || userType == "Mentor")) ...[
+                                    if (userType != "Student" &&
+                                        (userType == "Professional" ||
+                                            userType == "Mentor")) ...[
                                       Column(
                                         mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
                                         children: [
                                           // Dynamic label + icon (Mentor mode को highlight करने के लिए)
+                                          // Text(
+                                          //   profileData.userType == "Mentor"
+                                          //       ? "Mentor Mode"
+                                          //       : "Switch to Mentor",
+                                          //   style: GoogleFonts.roboto(
+                                          //     fontSize: 14.sp,
+                                          //     fontWeight: FontWeight.w500,
+                                          //     color: profileData.userType ==
+                                          //             "Mentor"
+                                          //         ? const Color(
+                                          //             0xFF16A34A) // green when active
+                                          //         : Colors.grey[600],
+                                          //   ),
+                                          // ),
+                                          // Switch(
+                                          //   value: profileData.userType ==
+                                          //       "Mentor",
+                                          //   onChanged: isLoadingSwitch
+                                          //       ? null
+                                          //       : (bool
+                                          //           wantToEnableMentor) async {
+                                          //           setState(() =>
+                                          //               isLoadingSwitch = true);
+                                          //           if (wantToEnableMentor) {
+                                          //             if (profileData
+                                          //                     .userType ==
+                                          //                 "Mentor") {
+                                          //               Fluttertoast.showToast(
+                                          //                   msg:
+                                          //                       "You are already a Mentor");
+                                          //               setState(() =>
+                                          //                   isLoadingSwitch =
+                                          //                       false);
+                                          //               return;
+                                          //             }
+                                          //             try {
+                                          //               final newUserType =
+                                          //                   "Mentor";
+                                          //               final body =
+                                          //                   SwitchBodyMentor(
+                                          //                       user_type:
+                                          //                           newUserType);
+                                          //               final service =
+                                          //                   APIStateNetwork(
+                                          //                       createDio());
+                                          //               final response =
+                                          //                   await service
+                                          //                       .swichMentor(
+                                          //                           body);
+                                          //               if (response.success ==
+                                          //                   true) {
+                                          //                 Fluttertoast.showToast(
+                                          //                     msg: response
+                                          //                             .message ??
+                                          //                         "Switched to Mentor successfully");
+                                          //                 ref.invalidate(
+                                          //                     userProfileController);
+                                          //               } else {
+                                          //                 Fluttertoast
+                                          //                     .showToast(
+                                          //                   msg: response
+                                          //                           .message ??
+                                          //                       "Failed to switch",
+                                          //                   toastLength: Toast
+                                          //                       .LENGTH_LONG,
+                                          //                 );
+                                          //                 if (response.message
+                                          //                         ?.toLowerCase()
+                                          //                         .contains(
+                                          //                             "already mentor") ??
+                                          //                     false) {
+                                          //                   ref.invalidate(
+                                          //                       userProfileController);
+                                          //                 }
+                                          //               }
+                                          //             } catch (e) {
+                                          //               Fluttertoast.showToast(
+                                          //                   msg:
+                                          //                       "Error: ${e.toString()}");
+                                          //             }
+                                          //           } else {
+                                          //             Fluttertoast.showToast(
+                                          //               msg:
+                                          //                   "You are already a Mentor. Cannot switch back to Professional.",
+                                          //               toastLength:
+                                          //                   Toast.LENGTH_LONG,
+                                          //             );
+                                          //           }
+                                          //           setState(() =>
+                                          //               isLoadingSwitch =
+                                          //                   false);
+                                          //         },
+                                          //   activeColor:
+                                          //       const Color(0xFF16A34A),
+                                          //   activeTrackColor:
+                                          //       const Color(0xFF16A34A)
+                                          //           .withOpacity(0.4),
+                                          //   inactiveThumbColor:
+                                          //       Colors.grey[400],
+                                          //   inactiveTrackColor:
+                                          //       Colors.grey[300],
+                                          // ),
+
+                                          // Text(
+                                          //   profileData.userType == "Mentor"
+                                          //       ? "Switch to Professional"
+                                          //       : "Switch to Mentor",
+                                          //   style: GoogleFonts.roboto(
+                                          //     fontSize: 14.sp,
+                                          //     fontWeight: FontWeight.w500,
+                                          //     color: profileData.userType ==
+                                          //             "Mentor"
+                                          //         ? Colors.orange
+                                          //         : const Color(0xFF16A34A),
+                                          //   ),
+                                          // ),
+                                          // SizedBox(width: 8.w),
+                                          // Switch(
+                                          //   value: profileData.userType ==
+                                          //       "Mentor",
+                                          //   onChanged: isLoadingSwitch
+                                          //       ? null
+                                          //       : (bool enableMentor) async {
+                                          //           setState(() =>
+                                          //               isLoadingSwitch = true);
+
+                                          //           try {
+                                          //             final newUserType =
+                                          //                 enableMentor
+                                          //                     ? "Mentor"
+                                          //                     : "Professional";
+
+                                          //             final body =
+                                          //                 SwitchBodyMentor(
+                                          //               user_type: newUserType,
+                                          //             );
+
+                                          //             final service =
+                                          //                 APIStateNetwork(
+                                          //                     createDio());
+
+                                          //             final response =
+                                          //                 await service
+                                          //                     .swichMentor(
+                                          //                         body);
+
+                                          //             if (response.success ==
+                                          //                 true) {
+                                          //               Fluttertoast.showToast(
+                                          //                   msg: response
+                                          //                           .message ??
+                                          //                       "User type updated successfully",
+                                          //                   toastLength: Toast
+                                          //                       .LENGTH_LONG);
+
+                                          //               // refresh profile
+                                          //               ref.invalidate(
+                                          //                   userProfileController);
+                                          //             } else {
+                                          //               Fluttertoast.showToast(
+                                          //                 msg: response
+                                          //                         .message ??
+                                          //                     "Failed to switch user type",
+                                          //                 toastLength:
+                                          //                     Toast.LENGTH_LONG,
+                                          //               );
+                                          //             }
+                                          //           } catch (e) {
+                                          //             Fluttertoast.showToast(
+                                          //               msg:
+                                          //                   "Error: ${e.toString()}",
+                                          //             );
+                                          //           }
+
+                                          //           setState(() =>
+                                          //               isLoadingSwitch =
+                                          //                   false);
+                                          //         },
+                                          //   activeColor:
+                                          //       const Color(0xFF16A34A),
+                                          //   activeTrackColor:
+                                          //       const Color(0xFF16A34A)
+                                          //           .withOpacity(0.4),
+                                          //   inactiveThumbColor:
+                                          //       Colors.grey[400],
+                                          //   inactiveTrackColor:
+                                          //       Colors.grey[300],
+                                          // ),
                                           Text(
-                                            profileData.userType == "Mentor" ? "Mentor Mode" : "Switch to Mentor",
+                                            isMentor
+                                                ? "Switch to Professional"
+                                                : "Switch to Mentor",
                                             style: GoogleFonts.roboto(
                                               fontSize: 14.sp,
                                               fontWeight: FontWeight.w500,
-                                              color: profileData.userType == "Mentor"
-                                                  ? const Color(0xFF16A34A)           // green when active
-                                                  : Colors.grey[600],
+                                              color: isMentor
+                                                  ? Colors.orange
+                                                  : const Color(0xFF16A34A),
                                             ),
                                           ),
-
                                           SizedBox(width: 8.w),
 
-                                          // Switch
                                           Switch(
-                                            value: profileData.userType == "Mentor",
+                                            value: isMentor,
                                             onChanged: isLoadingSwitch
                                                 ? null
-                                                : (bool wantToEnableMentor) async {
-                                              setState(() => isLoadingSwitch = true);
+                                                : (bool enableMentor) async {
+                                                    /// ⭐ instant UI change
+                                                    setState(() {
+                                                      isMentor = enableMentor;
+                                                      isLoadingSwitch = true;
+                                                    });
 
-                                              if (wantToEnableMentor) {
-                                                if (profileData.userType == "Mentor") {
-                                                  Fluttertoast.showToast(msg: "You are already a Mentor");
-                                                  setState(() => isLoadingSwitch = false);
-                                                  return;
-                                                }
+                                                    final previousValue =
+                                                        !enableMentor;
 
-                                                try {
-                                                  final newUserType = "Mentor";
-                                                  final body = SwitchBodyMentor(user_type: newUserType);
-                                                  final service = APIStateNetwork(createDio());
-                                                  final response = await service.swichMentor(body);
+                                                    try {
+                                                      final newUserType =
+                                                          enableMentor
+                                                              ? "Mentor"
+                                                              : "Professional";
 
-                                                  if (response.success == true) {
-                                                    Fluttertoast.showToast(msg: response.message ?? "Switched to Mentor successfully");
-                                                    ref.invalidate(userProfileController);
-                                                  } else {
-                                                    Fluttertoast.showToast(
-                                                      msg: response.message ?? "Failed to switch",
-                                                      toastLength: Toast.LENGTH_LONG,
-                                                    );
+                                                      final body =
+                                                          SwitchBodyMentor(
+                                                              user_type:
+                                                                  newUserType);
 
-                                                    if (response.message?.toLowerCase().contains("already mentor") ?? false) {
-                                                      ref.invalidate(userProfileController);
+                                                      final service =
+                                                          APIStateNetwork(
+                                                              createDio());
+
+                                                      final response =
+                                                          await service
+                                                              .swichMentor(
+                                                                  body);
+
+                                                      if (response.success ==
+                                                          true) {
+                                                        Fluttertoast.showToast(
+                                                          msg: response
+                                                                  .message ??
+                                                              "User type updated",
+                                                        );
+
+                                                        /// background refresh
+                                                        ref.invalidate(
+                                                            userProfileController);
+                                                      } else {
+                                                        setState(() =>
+                                                            isMentor =
+                                                                previousValue);
+
+                                                        Fluttertoast.showToast(
+                                                          msg: response
+                                                                  .message ??
+                                                              "Switch failed",
+                                                        );
+                                                      }
+                                                    } catch (e) {
+                                                      setState(() => isMentor =
+                                                          previousValue);
+                                                      Fluttertoast.showToast(
+                                                          msg:
+                                                              "Error: ${e.toString()}");
                                                     }
-                                                  }
-                                                } catch (e) {
-                                                  Fluttertoast.showToast(msg: "Error: ${e.toString()}");
-                                                }
-                                              } else {
-                                                Fluttertoast.showToast(
-                                                  msg: "You are already a Mentor. Cannot switch back to Professional.",
-                                                  toastLength: Toast.LENGTH_LONG,
-                                                );
-                                              }
 
-                                              setState(() => isLoadingSwitch = false);
-                                            },
-                                            activeColor: const Color(0xFF16A34A),
-                                            activeTrackColor: const Color(0xFF16A34A).withOpacity(0.4),
-                                            inactiveThumbColor: Colors.grey[400],
-                                            inactiveTrackColor: Colors.grey[300],
+                                                    setState(() =>
+                                                        isLoadingSwitch =
+                                                            false);
+                                                  },
+                                            activeColor:
+                                                const Color(0xFF16A34A),
+                                            activeTrackColor:
+                                                const Color(0xFF16A34A)
+                                                    .withOpacity(0.4),
+                                            inactiveThumbColor:
+                                                Colors.grey[400],
+                                            inactiveTrackColor:
+                                                Colors.grey[300],
                                           ),
                                         ],
                                       ),
                                     ],
                                   ],
                                 ),
-
 
                                 if (userType != "Student") ...[
                                   SizedBox(
@@ -486,7 +703,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                   ),
                                   Row(
                                     children: [
-
                                       Text(
                                         "${profileData.jobCompanyName ?? "No company"} *",
                                         textAlign: TextAlign.center,
@@ -498,7 +714,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                               : Colors.white,
                                         ),
                                       ),
-
                                       Text(
                                         "${profileData.jobLocation ?? ""}",
                                         textAlign: TextAlign.center,
@@ -510,7 +725,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                               : Colors.white,
                                         ),
                                       )
-
                                     ],
                                   ),
                                 ],
@@ -574,10 +788,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                           fontWeight: FontWeight.w500,
                                           color: Color(0xff9088F1)),
                                     )),
-
-
-
-
 
                                 SizedBox(height: 20.h),
                                 Divider(
@@ -1234,7 +1444,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       ),
     );
   }
-
 }
 
 Widget _buildLanguageSection({
@@ -1438,6 +1647,4 @@ class MentorReview extends ConsumerWidget {
       ),
     );
   }
-
-
 }
