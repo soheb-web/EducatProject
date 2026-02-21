@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "371373570384",
+    "project_id": "educat-320a4",
+    "storage_bucket": "educat-320a4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371373570384:android:9271cfc14cc19ff672d455",
+        "android_client_info": {
+          "package_name": "com.educat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBufBIfWiZjVQbEEuovA7xjumVJjRRWYwQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

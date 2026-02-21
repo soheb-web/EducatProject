@@ -1,0 +1,698 @@
+import 'package:dio/dio.dart';
+import 'package:educationapp/coreFolder/Controller/themeController.dart';
+import 'package:educationapp/coreFolder/Model/passwordChangeBodyModel.dart';
+import 'package:educationapp/coreFolder/network/api.state.dart';
+import 'package:educationapp/coreFolder/utils/preety.dio.dart';
+import 'package:educationapp/home/forgot/forgotPassword.page.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'dart:developer';
+
+import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
+
+class SettingProfilePage extends ConsumerStatefulWidget {
+  const SettingProfilePage({super.key});
+
+  @override
+  ConsumerState<SettingProfilePage> createState() => _SettingProfilePageState();
+}
+
+class _SettingProfilePageState extends ConsumerState<SettingProfilePage> {
+  late TextEditingController fullNameController;
+  late TextEditingController dobController;
+
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   var box = Hive.box('userdata');
+  //   final profileData = box.get('profile');
+  //   final fullName = profileData['full_name'].toString();
+  //   final dob = profileData['dob']?.toString() ?? "";
+  //   fullNameController = TextEditingController(text: fullName);
+  //   dobController = TextEditingController(text: dob);
+  // }
+  @override
+  void initState() {
+    super.initState();
+
+    var box = Hive.box('userdata');
+    final profileData = box.get('profile');
+
+    /// Full name
+    final fullName = profileData?['full_name']?.toString() ?? "";
+
+    /// DOB format fix
+    String formattedDob = "";
+    final dob = profileData?['dob']?.toString() ?? "";
+
+    if (dob.isNotEmpty) {
+      try {
+        final parsedDate = DateTime.parse(dob);
+        formattedDob = DateFormat('dd MMM yyyy').format(parsedDate);
+      } catch (_) {
+        formattedDob = "";
+      }
+    }
+
+    fullNameController = TextEditingController(text: fullName);
+    dobController = TextEditingController(text: formattedDob);
+  }
+
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    dobController.dispose();
+    super.dispose();
+  }
+
+  void showChangePasswordBottomSheet(BuildContext context) {
+    final themeMode = ref.watch(themeProvider);
+    final oldPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final repeatPasswordController = TextEditingController();
+    bool isChange = false;
+    bool isShow = false;
+    bool conShow = false;
+    bool isOld = false;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      // backgroundColor: Color(0xFFF9F9F9),
+      backgroundColor:
+          themeMode == ThemeMode.dark ? Colors.white : Color(0xff9088F1),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.r)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, setState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 20.w,
+                right: 20.w,
+                top: 20.h,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Sheet Header
+                  Center(
+                    child: Container(
+                      width: 50.w,
+                      height: 4.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  Center(
+                    child: Text(
+                      "Password Change",
+                      style: GoogleFonts.roboto(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: themeMode == ThemeMode.dark
+                            ? Color(0xFF1B1B1B)
+                            : Colors.white,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+
+                  // Old Password
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(10.r),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(0, 1),
+                            blurRadius: 8,
+                            spreadRadius: 0,
+                            color: Color.fromARGB(12, 0, 0, 0),
+                          )
+                        ]),
+                    child: TextField(
+                      style: TextStyle(color: Color(0xFF1B1B1B)),
+                      controller: oldPasswordController,
+                      obscureText: isOld ? false : true,
+                      decoration: InputDecoration(
+                          hintText: "Old Password",
+                          hintStyle: GoogleFonts.roboto(
+                              color: Color(0xFF1B1B1B), fontSize: 14.sp),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          suffixIcon: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  isOld = !isOld;
+                                });
+                              },
+                              child: Icon(
+                                isOld ? Icons.visibility : Icons.visibility_off,
+                                color: Colors.grey,
+                              ))),
+                    ),
+                  ),
+                  SizedBox(height: 5.h),
+                  Align(
+                    alignment: AlignmentGeometry.centerRight,
+                    child: TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => ForgotPasswordPage(),
+                              ));
+                        },
+                        child: Text(
+                          "Forgot Password?",
+                          style: GoogleFonts.inter(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: themeMode == ThemeMode.dark
+                                ? Color(0xFF1B1B1B)
+                                : Colors.white,
+                          ),
+                        )),
+                  ),
+                  SizedBox(height: 5.h),
+                  // New Password
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(10.r),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(0, 1),
+                            blurRadius: 8,
+                            spreadRadius: 0,
+                            color: Color.fromARGB(12, 0, 0, 0),
+                          )
+                        ]),
+                    child: TextField(
+                      style: TextStyle(color: Color(0xFF1B1B1B)),
+                      controller: newPasswordController,
+                      obscureText: isShow ? false : true,
+                      decoration: InputDecoration(
+                          hintText: "New Password",
+                          hintStyle: GoogleFonts.roboto(
+                              color: Color(0xFF1B1B1B), fontSize: 14.sp),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          suffixIcon: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  isShow = !isShow;
+                                });
+                              },
+                              child: Icon(
+                                isShow
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.grey,
+                              ))),
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+
+                  // Repeat New Password
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(10.r),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(0, 1),
+                            blurRadius: 8,
+                            spreadRadius: 0,
+                            color: Color.fromARGB(12, 0, 0, 0),
+                          )
+                        ]),
+                    child: TextField(
+                      style: TextStyle(color: Color(0xFF1B1B1B)),
+                      controller: repeatPasswordController,
+                      obscureText: conShow ? false : true,
+                      decoration: InputDecoration(
+                          hintText: "Repeat New Password",
+                          hintStyle: GoogleFonts.roboto(
+                              color: Color(0xFF1B1B1B), fontSize: 14.sp),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          suffixIcon: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  conShow = !conShow;
+                                });
+                              },
+                              child: Icon(
+                                conShow
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.grey,
+                              ))),
+                    ),
+                  ),
+                  SizedBox(height: 25.h),
+
+                  // Save Password Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50.h,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: themeMode == ThemeMode.dark
+                            ? Color(0xff9088F1)
+                            : Color(0xFF1B1B1B),
+                      ),
+                      onPressed: isChange
+                          ? null
+                          : () async {
+                              final oldPass = oldPasswordController.text.trim();
+                              final newPass = newPasswordController.text.trim();
+                              final repeatPass =
+                                  repeatPasswordController.text.trim();
+
+                              if (oldPass.isEmpty ||
+                                  newPass.isEmpty ||
+                                  repeatPass.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Please fill all fields"),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                                return;
+                              }
+
+                              if (newPass != repeatPass) {
+                                Fluttertoast.showToast(
+                                    msg: "Passwords do not match",
+                                    backgroundColor: Colors.red);
+                                return;
+                              }
+                              try {
+                                setState(() {
+                                  isChange = true;
+                                });
+                                final body = PasswordChangeBodyModel(
+                                    oldPassword: oldPass,
+                                    newPassword: newPass,
+                                    newPasswordConfirmation: repeatPass);
+                                final service = APIStateNetwork(createDio());
+                                final response =
+                                    await service.passwordChange(body);
+                                if (response != null) {
+                                  Fluttertoast.showToast(msg: response.message);
+                                  Navigator.pop(context);
+                                } else {
+                                  Fluttertoast.showToast(msg: response.message);
+                                }
+                              } on DioException catch (e, st) {
+                                setState(() {
+                                  isChange = false;
+                                });
+                                log(e.error.toString());
+                                Fluttertoast.showToast(
+                                    msg: e.response!.data['error'] ?? "Error");
+                              } finally {
+                                setState(() {
+                                  isChange = false;
+                                });
+                              }
+                            },
+                      child: isChange
+                          ? Center(
+                              child: SizedBox(
+                                width: 20.w,
+                                height: 20.h,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.w,
+                                ),
+                              ),
+                            )
+                          : Text(
+                              "Save Password",
+                              style: GoogleFonts.roboto(
+                                color: Colors.white,
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var box = Hive.box('userdata');
+    final profileImage = box.get('profile');
+    final themeMode = ref.watch(themeProvider);
+    return Scaffold(
+      //backgroundColor: Color(0xFFF9F9F9),
+      backgroundColor:
+          themeMode == ThemeMode.dark ? Colors.white : Color(0xFF1B1B1B),
+      body: Padding(
+        padding: EdgeInsets.only(left: 10.w, right: 10.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 15.h,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      color: themeMode == ThemeMode.dark
+                          ? Color(0xFF1B1B1B)
+                          : Colors.white,
+                    )),
+                // IconButton(
+                //     onPressed: () {},
+                //     icon: Icon(
+                //       Icons.search,
+                //       color: Color(0xFFF9F9F9),
+                //     )),
+              ],
+            ),
+            SizedBox(
+              height: 25.h,
+            ),
+            Expanded(
+                child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Settings",
+                    style: GoogleFonts.inter(
+                      fontSize: 34.sp,
+                      fontWeight: FontWeight.w700,
+                      color: themeMode == ThemeMode.dark
+                          ? Color(0xFF1B1B1B)
+                          : Colors.white,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  Text(
+                    "Personal Information",
+                    style: GoogleFonts.inter(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400,
+                      color: themeMode == ThemeMode.dark
+                          ? Color(0xFF1B1B1B)
+                          : Colors.white,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  Text(
+                    "Full Name",
+                    style: GoogleFonts.inter(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: themeMode == ThemeMode.dark
+                          ? Color(0xFF1B1B1B)
+                          : Color(0xFF1B1B1B),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 10.h),
+                    decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(10.r),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(0, 1),
+                            blurRadius: 8,
+                            spreadRadius: 0,
+                            color: Color.fromARGB(12, 0, 0, 0),
+                          )
+                        ]),
+                    child: TextField(
+                      style: TextStyle(
+                        color: themeMode == ThemeMode.dark
+                            ? Color(0xFF1B1B1B)
+                            : Color(0xFF1B1B1B),
+                      ),
+                      controller: fullNameController,
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          hint: Text(
+                            "Full name",
+                            style: GoogleFonts.inter(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF9B9B9B)),
+                          )),
+                      onChanged: (value) {
+                        var box = Hive.box('userdata');
+                        box.put('fullName', value);
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+
+                  Text(
+                    "Date of Birth",
+                    style: GoogleFonts.inter(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: themeMode == ThemeMode.dark
+                          ? Color(0xFF1B1B1B)
+                          : Color(0xFF1B1B1B),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 10.h),
+                    decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(10.r),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(0, 1),
+                            blurRadius: 8,
+                            spreadRadius: 0,
+                            color: Color.fromARGB(12, 0, 0, 0),
+                          )
+                        ]),
+                    child: TextField(
+                      style: TextStyle(
+                        color: themeMode == ThemeMode.dark
+                            ? Color(0xFF1B1B1B)
+                            : Color(0xFF1B1B1B),
+                      ),
+                      controller: dobController,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          hint: Text(
+                            "Date of Birth",
+                            style: GoogleFonts.inter(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF9B9B9B)),
+                          )),
+                      onChanged: (value) {
+                        // var box = Hive.box('userdata');
+                        // box.put('dob', value);
+                        var box = Hive.box('userdata');
+                        final profile = box.get('profile') ?? {};
+                        profile['full_name'] = value;
+                        box.put('profile', profile);
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 40.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Password",
+                        style: GoogleFonts.inter(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w500,
+                          color: themeMode == ThemeMode.dark
+                              ? Color(0xFF1B1B1B)
+                              : Colors.white,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          showChangePasswordBottomSheet(context);
+                        },
+                        child: Text(
+                          "Change",
+                          style: GoogleFonts.inter(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                            color: themeMode == ThemeMode.dark
+                                ? Color(0xFF1B1B1B)
+                                : Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(10.r),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(0, 1),
+                            blurRadius: 8,
+                            spreadRadius: 0,
+                            color: Color.fromARGB(12, 0, 0, 0),
+                          )
+                        ]),
+                    child: TextField(
+                      readOnly: true,
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          hint: Text(
+                            "*************",
+                            style: GoogleFonts.inter(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF9B9B9B)),
+                          )),
+                    ),
+                  ),
+                  // SizedBox(
+                  //   height: 35.h,
+                  // ),
+                  // Text(
+                  //   "Notifications",
+                  //   style: GoogleFonts.inter(
+                  //       fontSize: 16.sp,
+                  //       fontWeight: FontWeight.w500,
+                  //       color: Color(0xFF222222)),
+                  // ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  MySwitchButton(
+                    name: "Notifications",
+                  ),
+                  // SizedBox(
+                  //   height: 20.h,
+                  // ),
+                  // MySwitchButton(
+                  //   name: "New arrivals",
+                  // ),
+                  // SizedBox(
+                  //   height: 20.h,
+                  // ),
+                  // MySwitchButton(
+                  //   name: "Delivery status changes",
+                  // ),
+                ],
+              ),
+            ))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MySwitchButton extends ConsumerStatefulWidget {
+  final String name;
+  const MySwitchButton({super.key, required this.name});
+
+  @override
+  ConsumerState<MySwitchButton> createState() => _MySwitchButtonState();
+}
+
+class _MySwitchButtonState extends ConsumerState<MySwitchButton> {
+  bool isCheckt = false;
+  @override
+  Widget build(BuildContext context) {
+    final themeMode = ref.watch(themeProvider);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          widget.name,
+          style: GoogleFonts.inter(
+            fontSize: 17.sp,
+            fontWeight: FontWeight.w500,
+            color:
+                themeMode == ThemeMode.dark ? Color(0xFF1B1B1B) : Colors.white,
+          ),
+        ),
+        Spacer(),
+        Transform.scale(
+          scale: 0.7,
+          child: Switch(
+            activeColor: Color(0xff9088F1),
+           // focusColor: Colors
+            value: isCheckt,
+            onChanged: (value) {
+              setState(() {
+                isCheckt = !isCheckt;
+              });
+            },
+          ),
+        )
+      ],
+    );
+  }
+}
