@@ -1322,7 +1322,7 @@ class _FindCompanyPageState extends ConsumerState<FindCompanyPage> {
     final themeMode = ref.watch(themeProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xff9088F1),
+      backgroundColor: const Color(0xff1B1B1B),
       body: Column(
         children: [
           SizedBox(height: 30.h),
@@ -1594,15 +1594,16 @@ class _FindCompanyPageState extends ConsumerState<FindCompanyPage> {
               width: 40.w,
               height: 40.h,
               decoration: const BoxDecoration(
-                  color: Colors.white, shape: BoxShape.circle),
+                  color: Color(0xff262626), shape: BoxShape.circle),
               child: Center(
                 child: Padding(
                   padding: EdgeInsets.only(left: 8.w),
                   child: Icon(
                     Icons.arrow_back_ios,
                     size: 20,
-                    color: themeMode == ThemeMode.dark
-                        ? const Color(0xFF1B1B1B)
+                    color:
+                    themeMode == ThemeMode.dark
+                        ? const Color(0xFFFFFFFFF)
                         : null,
                   ),
                 ),
@@ -1614,9 +1615,12 @@ class _FindCompanyPageState extends ConsumerState<FindCompanyPage> {
               Text("Find a ",
                   style: GoogleFonts.roboto(
                       fontSize: 24.sp,
-                      color: themeMode == ThemeMode.dark
-                          ? const Color(0xFF1B1B1B)
-                          : Colors.white)),
+                      color:
+                      // themeMode == ThemeMode.dark
+                      //     ?
+                      const Color(0xFFDCF881)
+                          // : Colors.white
+                  )),
               Text("Company",
                   style: GoogleFonts.roboto(
                       fontSize: 24.sp, color: const Color(0xFFDCF881))),

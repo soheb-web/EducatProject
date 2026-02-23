@@ -575,7 +575,7 @@ class _MessageInputState extends ConsumerState<MessageInput> {
               width: 53.w,
               height: 53.h,
               decoration: BoxDecoration(
-                  shape: BoxShape.circle, color: Color(0xff9088F1)),
+                  shape: BoxShape.circle, color: Color(0xff1C4D8D)),
               child: Icon(Icons.send_sharp, color: Colors.white, size: 28),
             ),
           ),
@@ -617,7 +617,7 @@ class ChatBubble extends StatelessWidget {
         constraints:
             BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
         decoration: BoxDecoration(
-          color: isSender ? Color(0xff9088F1) : Colors.white,
+          color: isSender ? Color(0xff1C4D8D) : Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(isSender ? 16.r : 0),
             topRight: Radius.circular(16.r),

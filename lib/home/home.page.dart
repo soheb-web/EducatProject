@@ -46,6 +46,7 @@ import '../coreFolder/Controller/homeDataController.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   int index;
+
   HomePage(this.index, {super.key});
 
   @override
@@ -247,33 +248,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                             ),
                           ),
                         ),
-                        // InkWell(
-                        //   onTap: () {
-                        //     Navigator.push(
-                        //         context,
-                        //         CupertinoPageRoute(
-                        //           builder: (context) =>
-                        //               ProfileCompletionWidget(true),
-                        //         ));
-                        //   },
-                        //   child: Container(
-                        //     height: 38.h,
-                        //     decoration: BoxDecoration(
-                        //         color: const Color(0xFFDCF881),
-                        //         borderRadius: BorderRadius.circular(40.r)),
-                        //     child: Center(
-                        //       child: Padding(
-                        //         padding: EdgeInsets.symmetric(horizontal: 12.w),
-                        //         child: Text(
-                        //           "Edit Profile",
-                        //           style: GoogleFonts.roboto(
-                        //               color: const Color(0xFF1B1B1B),
-                        //               fontSize: 12.sp),
-                        //         ),
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),
@@ -283,7 +257,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                       Padding(
                         padding: EdgeInsets.only(left: 20.w),
                         child: Text(
-                          // profile['full_name'] ?? "User",
                           profile?['full_name'] ?? "User",
                           style: GoogleFonts.roboto(
                             fontSize: 18.sp,
@@ -424,33 +397,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
             ),
 
-            // if (userType == "Student")
-            //   ListTile(
-            //     dense: true,
-            //     onTap: () {
-            //       Navigator.push(
-            //           context,
-            //           MaterialPageRoute(
-            //             builder: (context) => const SavedList(),
-            //           ));
-            //     },
-            //     leading: Image.asset(
-            //       "assets/drawer3.png",
-            //       color: themeMode == ThemeMode.light ? Colors.white : null,
-            //     ),
-            //     title: Text(
-            //       "Saved List",
-            //       style: GoogleFonts.roboto(
-            //         fontSize: 16.sp,
-            //         fontWeight: FontWeight.w600,
-            //         // color: const Color.fromARGB(255, 27, 27, 27),
-            //         color: themeMode == ThemeMode.light
-            //             ? Colors.white
-            //             : Color(0xFF1B1B1B),
-            //       ),
-            //     ),
-            //   ),
-
             if (userType == "Student")
               ListTile(
                 dense: true,
@@ -502,7 +448,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                   style: GoogleFonts.roboto(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
-                    // color: const Color.fromARGB(255, 27, 27, 27),
                     color: themeMode == ThemeMode.light
                         ? Colors.white
                         : Color(0xFF1B1B1B),
@@ -724,44 +669,6 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
     }
   }
 
-  /* void _connectWebSocket() {
-    try {
-      final url =
-          'wss://websocket.educatservicesindia.com/chat/ws/user/${userId}';
-
-      channel = WebSocketChannel.connect(Uri.parse(url));
-
-      setState(() {
-        status = 'Connected';
-      });
-
-      // Incoming messages listen karo
-      channel.stream.listen(
-        (message) {
-          // log('Received: $message');
-          // Yahan message handle karo (JSON parse etc.)
-        },
-        onError: (error) {
-          log('WebSocket error: $error');
-          setState(() {
-            status = 'Error: $error';
-          });
-        },
-        onDone: () {
-          log('WebSocket closed: ${channel.closeReason}');
-          setState(() {
-            status = 'Disconnected';
-          });
-          // Optional: reconnect logic
-          Future.delayed(const Duration(seconds: 3), _connectWebSocket);
-        },
-      );
-    } catch (e) {
-      setState(() {
-        status = 'Connection failed: $e';
-      });
-    }
-  }*/
   void _connectedUsersCount() {
     try {
       final url =
@@ -770,15 +677,12 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
       setState(() {
         statusMemtnro = 'ConnectedMentor';
       });
-      // Incoming messages listen karo
       channel.stream.listen(
         (message) {
           log('connectedUsersCount Received :$message');
-          // Yahan message handle karo (JSON parse etc.)
           try {
             final data = jsonDecode(message) as Map<String, dynamic>;
 
-            // Sirf "connected_users" type ke messages process karo
             if (data['type'] == 'connected_users') {
               final int count = data['count'] ?? 0;
               final List<dynamic> usersList = data['users'] ?? [];
@@ -792,7 +696,6 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
 
               log('Updated Online Mentors: $count');
             }
-            // Agar future mein aur types aayein (jaise single user online/offline), to yahan handle kar sakte ho
           } catch (e) {
             print('JSON Parse Error in Presence: $e');
           }
@@ -808,7 +711,6 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
           setState(() {
             statusMemtnro = 'DisconnectedMentor';
           });
-          // Optional: reconnect logic
           Future.delayed(const Duration(seconds: 3), _connectedUsersCount);
         },
       );
@@ -863,12 +765,15 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
     );
 
     return Scaffold(
+      // backgroundColor: Colors.red,
       backgroundColor:
-          themeMode == ThemeMode.dark ? Color(0xFFFFFFFF) : Color(0xFF05040F),
+          themeMode == ThemeMode.dark ? Color(0xFF05040F) : Color(0xffBDE8F5),
       body: RefreshIndicator(
+
         backgroundColor:
             themeMode == ThemeMode.dark ? Color(0xFFFFFFFF) : Color(0xFF05040F),
         color: themeMode == ThemeMode.dark ? Color(0xFF1B1B1B) : Colors.white,
+
         onRefresh: () async {
           _connectWebSocket();
           _connectedUsersCount();
@@ -876,1891 +781,2629 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
           ref.invalidate(getHomeStudentDataProvider);
           ref.invalidate(getHomeMentorDataProvider);
         },
+
         child: SafeArea(
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 20.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(width: 20.w),
-                    GestureDetector(
-                      onTap: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      child: Container(
-                        height: 50.w,
-                        width: 50.w,
-                        decoration: BoxDecoration(
-                            color: themeMode == ThemeMode.dark
-                                ? Color(0xFFF0F0F7)
-                                : Color(0xFF171621),
-                            borderRadius: BorderRadius.circular(500.r)),
-                        child: Center(
-                          child: Icon(
-                            Icons.menu,
-                            color: themeMode == ThemeMode.light
-                                ? Color(0xffFFFFFF)
-                                : Color(0xFF33323F),
-                            // color: Color(0xFF33323F),
-                            size: 22.w,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    SizedBox(
-                      width: 30.w,
-                    ),
-                    Center(
-                      child: Image.asset("assets/mentorLogo.png",
-                          width: 100.w,
-                          color: themeMode == ThemeMode.dark
-                              ? Color(0xFF4988C4)
-                              : Color(0xFF1C4D8D)),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                        style: IconButton.styleFrom(
-                          backgroundColor: themeMode == ThemeMode.light
-                              ? Color(0xFF171621)
-                              : Color(0xFFF0F0F7),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => NotificationPage(),
-                              ));
-                        },
-                        icon: Icon(
-                          Icons.notifications_none,
-                          // color: Color(0xFF33323F),
-                          color: themeMode == ThemeMode.light
-                              ? Color(0xffFFFFFF)
-                              : Color(0xFF33323F),
-                          size: 22.w,
-                        )),
-                    SizedBox(width: 3.w),
-                    // GestureDetector(
-                    //   onTap: () {
-                    //     Navigator.push(
-                    //         context,
-                    //         CupertinoPageRoute(
-                    //             builder: (context) => HomePage(3)));
-                    //   },
-                    //   child: Container(
-                    //     height: 50.w,
-                    //     width: 50.w,
-                    //     decoration: BoxDecoration(
-                    //       border: Border.all(
-                    //         width: 2.0,
-                    //         color: Color(0xff9088F1),
-                    //       ),
-                    //       color: const Color.fromARGB(25, 255, 255, 255),
-                    //       borderRadius: BorderRadius.circular(500.r),
-                    //     ),
-                    //     child: ClipOval(
-                    //       child: Image.network(
-                    //         // profileImage['profile_picture']?.toString() ??
-                    //         profile?['profile_picture'] ??
-                    //             "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
-                    //         fit: BoxFit.cover,
-                    //         errorBuilder: (context, error, stackTrace) {
-                    //           return ClipOval(
-                    //             child: Image.network(
-                    //               "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
-                    //               fit: BoxFit.cover,
-                    //             ),
-                    //           );
-                    //         },
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
 
-                    SizedBox(width: 20.w),
-                  ],
-                ),
-                SizedBox(height: 25.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Text('WebSocket Status: $status'),
-                          // Text('WebSocket Mentor: $statusMemtnro'),
 
-                          Row(
-                            children: [
-                              Text(
-                                "Welcome, ",
-                                style: GoogleFonts.roboto(
-                                  fontSize: 24.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: themeMode == ThemeMode.dark
-                                      ? Color(0xFF1F1F26)
-                                      : Color(0xFFC5C3D9),
-                                ),
-                              ),
-                              Text(
-                                // profile['full_name'] ?? "User",
-                                profile?['full_name'] ?? "User",
-                                style: GoogleFonts.roboto(
-                                    fontSize: 24.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color(0xFF1C4D8D)),
-                              ),
-                            ],
-                          ),
-                          // Text(
-                          //   "Let’s plan your bright future.",
-                          //   style: GoogleFonts.roboto(
-                          //       fontSize: 14.sp,
-                          //       fontWeight: FontWeight.w400,
-                          //       color: themeMode == ThemeMode.dark
-                          //           ? Color(0xFF1B1B1B)
-                          //           : Colors.white),
-                          // ),
-                        ],
-                      ),
-                      const Spacer(),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20.h),
-                Padding(
-                  padding: EdgeInsets.only(left: 20.w, right: 20.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (userType == "Student")
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => SavedSkilListPage(),
-                                ));
-                          },
-                          child: Container(
-                            height: 120.h,
-                            width: 185.w,
-                            decoration: BoxDecoration(
-                              color: themeMode == ThemeMode.dark
-                                  ? Color(0xFFBDE8F5)
-                                  : Color(0xFF00264B),
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(18),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    // "Skills Available",
-                                    "Saved Skill",
-                                    style: GoogleFonts.roboto(
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.w700,
-                                        color: themeMode == ThemeMode.dark
-                                            ? Color(0xFF33323F)
-                                            : Color(0xFFC5C3D9)),
-                                  ),
-                                  Spacer(),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      // getHomeStudentData.when(
-                                      //   data: (data) => Text(
-                                      //     "${data.skills?.length ?? 0}",
-                                      //     style: GoogleFonts.roboto(
-                                      //         fontSize: 24.sp,
-                                      //         fontWeight: FontWeight.w500,
-                                      //         color: themeMode == ThemeMode.dark
-                                      //             ? Color(0xFF4988C4)
-                                      //             : Color(0xFF1C4D8D)),
-                                      //   ),
-                                      //   loading: () => SizedBox(
-                                      //     width: 20.w,
-                                      //     height: 20.h,
-                                      //     child:
-                                      //         const CircularProgressIndicator(
-                                      //             color: Colors.white,
-                                      //             strokeWidth: 2),
-                                      //   ),
-                                      //   error: (error, stack) => Text(
-                                      //     "N/A",
-                                      //     style: GoogleFonts.roboto(
-                                      //         fontSize: 16.sp,
-                                      //         fontWeight: FontWeight.w600,
-                                      //         color: Colors.white),
-                                      //   ),
-                                      // ),
-                                      getSaveSkillListProvider.when(
-                                          data: (data) => Text(
-                                                "${data.data?.length ?? 0}",
-                                                style: GoogleFonts.roboto(
-                                                    fontSize: 24.sp,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: themeMode ==
-                                                            ThemeMode.dark
-                                                        ? Color(0xFF4988C4)
-                                                        : Color(0xFF1C4D8D)),
-                                              ),
-                                          loading: () => SizedBox(
-                                                width: 20.w,
-                                                height: 20.h,
-                                                child:
-                                                    const CircularProgressIndicator(
-                                                        color: Colors.white,
-                                                        strokeWidth: 2),
-                                              ),
-                                          error: (error, stack) {
-                                            log(error.toString());
-                                            log(stack.toString());
-                                            return Text(
-                                              "N/A",
-                                              style: GoogleFonts.roboto(
-                                                  fontSize: 16.sp,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.white),
-                                            );
-                                          }),
-                                      Container(
-                                        width: 30.w,
-                                        height: 30.h,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: themeMode == ThemeMode.dark
-                                              ? Color(0xFF0F2854)
-                                              : Color(0xFF1C4D8D),
-                                        ),
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.arrow_forward_ios_outlined,
-                                            color: themeMode == ThemeMode.dark
-                                                ? Colors.white
-                                                : Color(0xFFBDE8F5),
-                                            size: 15.sp,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      // SizedBox(width: 15.w),
-                      if (userType == "Student")
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => OnlineMentorPage(
-                                    onlineMentors: onlineMentors,
-                                  ),
-                                ));
-                          },
-                          child: Container(
-                            height: 120.h,
-                            width: 185.w,
-                            decoration: BoxDecoration(
-                              color: themeMode == ThemeMode.dark
-                                  ? Color(0xFFFFF4D7)
-                                  : Color.fromARGB(76, 174, 126, 0),
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(18),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Mentors Online",
-                                    style: GoogleFonts.roboto(
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.w700,
-                                        color: themeMode == ThemeMode.dark
-                                            ? Color(0xFF33323F)
-                                            : Color(0xFFC5C3D9)),
-                                  ),
-                                  Spacer(),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "$onlineMentorCount",
-                                        style: GoogleFonts.roboto(
-                                            fontSize: 24.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: themeMode == ThemeMode.dark
-                                                ? Color(0xFF1C4D8D)
-                                                : Color(0xFF4988C4)),
-                                      ),
-                                      Container(
-                                        width: 30.w,
-                                        height: 30.h,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: themeMode == ThemeMode.dark
-                                              ? Color(0xFF0F2854)
-                                              : Color(0xFF1C4D8D),
-                                        ),
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.arrow_forward_ios_outlined,
-                                            color: themeMode == ThemeMode.dark
-                                                ? Colors.white
-                                                : Color(0xFFBDE8F5),
-                                            size: 15.sp,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      // SizedBox(width: 15.w),
-                    ],
-                  ),
-                ),
-                if (userType == "Professional" || userType == "Mentor")
                   Container(
-                    margin: EdgeInsets.only(left: 20.w, right: 20.w),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => RequestPage(),
-                                ));
-                          },
-                          child: Container(
-                            height: 130.h,
-                            width: 120.w,
-                            decoration: BoxDecoration(
-                              color: const Color(0xff9088F1),
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 15.h),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 15.w),
-                                  child: Container(
-                                    width: 50.w,
-                                    height: 50.h,
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(255, 0, 0, 0)
-                                          .withOpacity(0.1),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Image.asset(
-                                      "assets/mask1.png",
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 10.h),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 15.w),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "New Requests",
-                                        style: GoogleFonts.roboto(
-                                            fontSize: 11.sp,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.white),
-                                      ),
-                                      Text(
-                                        // "20",
-                                        requestLenght ?? "0",
-                                        style: GoogleFonts.roboto(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => WalletPage(),
-                                ));
-                          },
-                          child: Container(
-                            height: 130.h,
-                            width: 120.w,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF485C07),
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 15.h),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 15.w),
-                                  child: Container(
-                                    width: 50.w,
-                                    height: 50.h,
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(255, 0, 0, 0)
-                                          .withOpacity(0.1),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Image.asset(
-                                      "assets/mask1.png",
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 10.h),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 15.w),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Wallet",
-                                        style: GoogleFonts.roboto(
-                                            fontSize: 11.sp,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.white),
-                                      ),
-                                      wallet == null
-                                          ? SizedBox()
-                                          : Text(
-                                              wallet!,
-                                              style: GoogleFonts.roboto(
-                                                  fontSize: 16.sp,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.white),
-                                            ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => YourBidsPage(),
-                                ));
-                          },
-                          child: Container(
-                            height: 130.h,
-                            width: 120.w,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF1C4D8D),
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 15.h),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 15.w),
-                                  child: Container(
-                                    width: 50.w,
-                                    height: 50.h,
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(255, 0, 0, 0)
-                                          .withOpacity(0.1),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Image.asset(
-                                      "assets/mask1.png",
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 10.h),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 15.w),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Your Bid",
-                                        style: GoogleFonts.roboto(
-                                            fontSize: 11.sp,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.white),
-                                      ),
-                                      yourBid == null
-                                          ? SizedBox()
-                                          : Text(
-                                              yourBid.toString(),
-                                              style: GoogleFonts.roboto(
-                                                  fontSize: 16.sp,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.white),
-                                            ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                SizedBox(height: 20.h),
-                if (userType == "Professional" || userType == "Mentor")
-                  Container(
-                    // height: 500.h,
-                    width: double.infinity,
+                    margin: EdgeInsets.only(bottom: 20.h),
                     decoration: BoxDecoration(
-                      // color: Colors.white,
-                      color: themeMode == ThemeMode.dark
-                          ? Colors.white
-                          : Color(0xFF1B1B1B),
+                        color: Color(0xffBDE8F5),
+                        borderRadius: BorderRadius.only(
 
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
+                          // topLeft: Radius.circular(30.sp),
+                          // topRight: Radius.circular(30.sp),
+                          bottomRight: Radius.circular(30.sp),
+                          bottomLeft: Radius.circular(30.sp),
+                        )
                     ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          SizedBox(height: 20.h),
-                          getHomeMentorData.when(
-                            data: (mentorData) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                setState(() {
-                                  // wallet = mentorData.data!.coins.toString();
-                                  // yourBid = mentorData.data!.notification_count
-                                  //     .toString();
-                                  yourBid =
-                                      mentorData.data?.acceptedStudents?.length;
-                                });
-                              });
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          CupertinoPageRoute(
-                                            builder: (context) =>
-                                                ProfileCompletionWidget(true),
-                                          ));
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.only(
-                                          left: 20.w, right: 20.w),
-                                      // width: 400.w.clamp(0, 400.w),
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 20.h),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(30.r),
-                                        color: themeMode == ThemeMode.dark
-                                            ? Color.fromARGB(38, 0, 128, 128)
-                                            : Color(0xff9088F1),
-                                      ),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                                left: 20.w,
-                                                right: 20.w,
-                                                top: 10.h),
-                                            height: 5.h,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(10.r),
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.r),
-                                              child: LinearProgressIndicator(
-                                                // value: profileCompletion.clamp(
-                                                //     0.0, 1.0),
-                                                value: (((mentorData.data!
-                                                                    .profileCompletion ??
-                                                                0.0) /
-                                                            100)
-                                                        .clamp(0.0, 1.0))
-                                                    .toDouble(),
-                                                // backgroundColor:
-                                                //     Colors.transparent,
-                                                backgroundColor: themeMode ==
-                                                        ThemeMode.light
-                                                    ? const Color(0xFFE0E0E0)
-                                                    : const Color(0xFF2A2A2A),
+                    // height: 400.h,
 
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                        Color>(
-                                                  // Color(0xff9088F1),
-                                                  themeMode == ThemeMode.dark
-                                                      ? Color(0xff9088F1)
-                                                      : Color(0xFF1B1B1B),
-                                                ),
-                                                minHeight: 20.h,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 12.h),
-                                          Container(
-                                            margin:
-                                                EdgeInsets.only(right: 16.w),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 20.w),
-                                                  child: Text(
-                                                    "Profile Completed",
-                                                    style: GoogleFonts.roboto(
-                                                      fontSize: 14.sp,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      // color: Color.fromARGB(
-                                                      //     204, 0, 0, 0),
-                                                      color: themeMode ==
-                                                              ThemeMode.dark
-                                                          ? Color.fromARGB(
-                                                              204, 0, 0, 0)
-                                                          : Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  //  "${(profileCompletion * 100).toInt()}%",
-                                                  "${(mentorData.data!.profileCompletion ?? 0.0).toStringAsFixed(0)}%",
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 14.sp,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: themeMode ==
-                                                            ThemeMode.dark
-                                                        ? Color.fromARGB(
-                                                            204, 0, 0, 0)
-                                                        : Colors.white,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                                left: 15.w,
-                                                right: 20.w,
-                                                top: 16.h),
-                                            child: Row(
-                                              children: [
-                                                ClipOval(
-                                                  child: Image.network(
-                                                    // profileImage['profile_picture']
-                                                    //         ?.toString() ??
-                                                    //     "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
-                                                    mentorData
-                                                            .data!.profilePic ??
-                                                        "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
-                                                    fit: BoxFit.cover,
-                                                    height: 50.w,
-                                                    width: 50.w,
-                                                    errorBuilder: (context,
-                                                        error, stackTrace) {
-                                                      return ClipOval(
-                                                        child: Image.network(
-                                                          "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
-                                                          fit: BoxFit.cover,
-                                                          height: 50.w,
-                                                          width: 50.w,
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                                ),
-                                                SizedBox(width: 10.w),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      // "Mike Pena",
-                                                      "${mentorData.data!.fullName ?? "Mentor"}!",
-                                                      style: GoogleFonts.roboto(
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: themeMode ==
-                                                                ThemeMode.dark
-                                                            ? Color.fromARGB(
-                                                                204, 0, 0, 0)
-                                                            : Colors.white,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      "Placement | Interview",
-                                                      style: GoogleFonts.roboto(
-                                                        fontSize: 14.sp,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: themeMode ==
-                                                                ThemeMode.dark
-                                                            ? Color.fromARGB(
-                                                                204, 0, 0, 0)
-                                                            : Colors.white,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                                left: 20.w,
-                                                right: 15.w,
-                                                top: 16.h),
-                                            child: Text(
-                                              // "With over 5 years of experience, "
-                                              // "I've guided 300+ students to land jobs "
-                                              // "in top companies like Google, TCS, and Deloitte. "
-                                              // "My sessions focus on mock interviews, resume building, "
-                                              // "and effective communication",
-                                              mentorData.data!.description ??
-                                                  "No descripion",
-                                              style: GoogleFonts.roboto(
-                                                fontSize: 15.sp,
-                                                fontWeight: FontWeight.w400,
-                                                color:
-                                                    themeMode == ThemeMode.dark
-                                                        ? Color.fromARGB(
-                                                            204, 0, 0, 0)
-                                                        : Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 20.w, right: 20.w, top: 20.h),
-                                    child: Text(
-                                      "Your Bids",
-                                      style: GoogleFonts.inter(
-                                        fontSize: 20.sp,
-                                        fontWeight: FontWeight.w600,
-                                        //color: Color(0xFF1B1B1B),
-                                        color: themeMode == ThemeMode.dark
-                                            ? Color(0xFF1B1B1B)
-                                            : Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10.h,
-                                  ),
-                                  mentorData.data!.acceptedStudents!.isEmpty
-                                      ? Center(
-                                          child: Text(
-                                            "No Accepted Student",
-                                            style: GoogleFonts.inter(
-                                              fontSize: 20.sp,
-                                              fontWeight: FontWeight.w300,
-                                              color: themeMode == ThemeMode.dark
-                                                  ? Color(0xFF1B1B1B)
-                                                  : Colors.white,
-                                            ),
-                                          ),
-                                        )
-                                      : ListView.builder(
-                                          shrinkWrap: true,
-                                          padding: EdgeInsets.zero,
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          itemCount: mentorData
-                                              .data!.acceptedStudents!.length,
-                                          itemBuilder: (context, index) {
-                                            final student = mentorData
-                                                .data!.acceptedStudents![index];
-                                            return InkWell(
-                                              onTap: () {
-                                                log(box
-                                                    .get("userid")
-                                                    .toString());
-                                                log(
-                                                  mentorData
-                                                      .data!
-                                                      .acceptedStudents![index]
-                                                      .id
-                                                      .toString(),
-                                                );
-                                                Navigator.push(
-                                                    context,
-                                                    CupertinoPageRoute(
-                                                      builder: (context) => ChatingPage(
-                                                          id: box
-                                                              .get("userid")
-                                                              .toString(),
-                                                          otherUesrid: mentorData
-                                                              .data!
-                                                              .acceptedStudents![
-                                                                  index]
-                                                              .id
-                                                              .toString(),
-                                                          name: student
-                                                                  .fullName ??
-                                                              "No Name"),
-                                                    ));
-                                              },
-                                              child: MyContainer(
-                                                image: student.profilePic ??
-                                                    "https://flutter.github.io/assets-for-api-docs/assets/widgets/puffin.jpg",
-                                                title:
-                                                    student.fullName ?? "N/A",
-                                                email:
-                                                    student.email ?? "No Email",
-                                                description:
-                                                    student.description ?? "",
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                  SizedBox(height: 10.h),
-                                ],
-                              );
-                            },
-                            error: (error, stackTrace) {
-                              log(stackTrace.toString());
-                              return Center(
-                                child: Text(error.toString()),
-                              );
-                            },
-                            loading: () => Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(left: 20.w, top: 10.h),
-                            child: Row(
-                              children: [
-                                Text(
-                                  "New Request",
-                                  style: GoogleFonts.roboto(
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.w600,
-                                    //color: Color(0xFF1B1B1B),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 20.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(width: 20.w),
+                            GestureDetector(
+                              onTap: () {
+                                Scaffold.of(context).openDrawer();
+                              },
+                              child: Container(
+                                height: 50.w,
+                                width: 50.w,
+                                decoration: BoxDecoration(
                                     color: themeMode == ThemeMode.dark
-                                        ? Color(0xFF1B1B1B)
-                                        : Colors.white,
+                                        ?Color(0xff0F2854)
+                                    // Color(0xFFF0F0F7)
+                                        : Color(0xFF171621),
+                                    borderRadius: BorderRadius.circular(500.r)),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.dashboard_outlined,
+                                    color: themeMode == ThemeMode.light
+
+                                        ? Color(0xFF33323F):  Color(0xffFFFFFF),
+                                    size: 22.w,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 10.h),
-                          getRequestHomeData.when(
-                            data: (requestData) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                setState(() {
-                                  requestLenght =
-                                      requestData.data.length.toString();
-                                });
-                              });
-
-                              if (requestData.data.isEmpty) {
-                                return Center(
-                                  child: Text(
-                                    "No Request Available",
-                                    style: GoogleFonts.inter(
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.w300,
-                                      //color: Color(0xFF1B1B1B),
-                                      color: themeMode == ThemeMode.dark
-                                          ? Color(0xFF1B1B1B)
-                                          : Colors.white,
-                                    ),
-                                  ),
-                                );
-                              }
-
-                              return ListView.builder(
-                                padding: EdgeInsets.zero,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: requestData.data.length,
-                                itemBuilder: (context, index) {
-                                  final student = requestData.data[index];
-                                  return GetRequestStudentBody(
-                                    image: student.studentProfile ??
-                                        "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
-                                    title: student.studentName,
-                                    subtitle: student.studentType,
-                                    email: student.studentEmail,
-                                    phone: student.studentPhone,
-                                    callBack: () async {
-                                      final body = AcceptRequestBodyModel(
-                                          requestId: requestData.data[index].id
-                                              .toString());
-                                      try {
-                                        setState(() {
-                                          isAccept = true;
-                                        });
-
-                                        final service =
-                                            APIStateNetwork(createDio());
-                                        final response =
-                                            await service.acceptRequest(body);
-
-                                        if (response.status == true) {
-                                          api.sendNotificationMentor(
-                                              title:
-                                                  'Mentorship Request Accepted 🎉',
-                                              b:
-                                                  'Great news! Your mentorship request has been accepted.',
-                                              user_Id:
-                                                  student.studentId.toString());
-
-                                          Fluttertoast.showToast(
-                                              msg: response.message);
-                                          ref.invalidate(
-                                              getHomeMentorDataProvider);
-                                          ref.invalidate(
-                                              getRequestStudentController);
-                                          ref.invalidate(myListingController);
-                                        } else {
-                                          // Fluttertoast.showToast(
-                                          //     msg: response.message);
-                                          Fluttertoast.showToast(
-                                              msg:
-                                                  "Please upgrade the membership for mentor",
-                                              toastLength: Toast.LENGTH_LONG);
-                                        }
-                                      } catch (e, st) {
-                                        log("${e.toString()} /n ${st.toString()}");
-                                        Fluttertoast.showToast(
-                                            msg: "Not Accept");
-                                      } finally {
-                                        setState(() {
-                                          isAccept = false;
-                                        });
-                                      }
-                                    },
-                                  );
-                                },
-                              );
-                            },
-                            error: (error, stackTrace) {
-                              log(stackTrace.toString());
-                              return Center(
-                                child: Text(error.toString()),
-                              );
-                            },
-                            loading: () => Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                          SizedBox(height: 20.h),
-                        ],
-                      ),
-                    ),
-                  )
-                else
-                  SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 20.h,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Explore Trending Skills",
-                                style: GoogleFonts.roboto(
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: themeMode == ThemeMode.light
-                                        ? Color(0xFFC5C3D9)
-                                        : Color(0xFF1F1F26)),
                               ),
-                              InkWell(
-                                onTap: () {
+                            ),
+                            const Spacer(),
+                            SizedBox(
+                              width: 30.w,
+                            ),
+                            Center(
+                              child: Image.asset("assets/mentorLogo.png",
+                                  width: 100.w,
+                                  color: themeMode == ThemeMode.dark
+                                      ? Color(0xFF4988C4)
+                                      : Color(0xFF1C4D8D)),
+                            ),
+                            const Spacer(),
+                            IconButton(
+                                style: IconButton.styleFrom(
+                                  backgroundColor: themeMode == ThemeMode.light
+                                      ? Color(0xFF171621)
+                                      : Color(0xFF0F2854),
+                                ),
+                                onPressed: () {
                                   Navigator.push(
                                       context,
                                       CupertinoPageRoute(
-                                        builder: (context) => FindSkillPage(),
+                                        builder: (context) => NotificationPage(),
                                       ));
                                 },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "View All",
-                                      style: GoogleFonts.roboto(
-                                        color: themeMode == ThemeMode.light
-                                            ? Color(0xFF4988C4)
-                                            : Color(0xFF1C4D8D),
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: themeMode == ThemeMode.light
-                                          ? Color(0xFF4988C4)
-                                          : Color(0xFF1C4D8D),
-                                      size: 15.sp,
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 20.h),
-                        getHomeStudentData.when(
-                          data: (data) {
-                            final skills = data.skills ?? [];
-                            if (skills.isEmpty) {
-                              return Center(
-                                child: Text(
-                                  "No skills available",
-                                  style: GoogleFonts.roboto(
-                                      fontSize: 14.sp, color: Colors.white),
-                                ),
-                              );
-                            }
-                            return SizedBox(
-                              height: 140.h,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                                itemCount: skills.length,
-                                itemBuilder: (context, index) {
-                                  final skill = skills[index];
-                                  return Padding(
-                                    padding: EdgeInsets.only(right: 15.w),
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            CupertinoPageRoute(
-                                              builder: (context) =>
-                                                  TrendingExprtPage(
-                                                id: skill.id ?? 0,
-                                              ),
-                                            ));
-                                      },
-                                      child: Container(
-                                        width: 125.w,
-                                        decoration: BoxDecoration(
-                                          color: themeMode == ThemeMode.light
-                                              ? null
-                                              : Color(0xFFFFFFFF),
-                                          border: Border.all(
-                                              color:
-                                                  themeMode == ThemeMode.light
-                                                      ? Color.fromARGB(
-                                                          25, 255, 255, 255)
-                                                      : Color.fromARGB(
-                                                          25,
-                                                          88,
-                                                          86,
-                                                          113,
-                                                        )),
-                                          borderRadius:
-                                              BorderRadius.circular(10.r),
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                              bottom: 20.h, top: 20.h),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                width: 40.w,
-                                                height: 40.h,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  //color: Color(0xFFF0F0F7),
-                                                  image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        skill.image ?? ""),
-                                                    fit: BoxFit.cover,
-                                                    onError: (exception,
-                                                            stackTrace) =>
-                                                        const AssetImage(
-                                                            "assets/placeholder.png"),
-                                                  ),
-                                                ),
-                                              ),
-                                              // Container(
-                                              //   width: 40.w,
-                                              //   height: 40.h,
-                                              //   decoration: BoxDecoration(
-                                              //       shape: BoxShape.circle,
-                                              //       color: Color(0xFFF0F0F7)),
-                                              //   child: Center(
-                                              //     child: Image.asset(
-                                              //         "assets/skillsImage.png"),
-                                              //   ),
-                                              // ),
-                                              Spacer(),
-                                              Center(
-                                                child: Text(
-                                                  skill.level
-                                                          ?.toString()
-                                                          .split('.')
-                                                          .last ??
-                                                      "N/A",
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 11.sp,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: themeMode ==
-                                                            ThemeMode.light
-                                                        ? Color(0xFF4988C4)
-                                                        : Color(0xFF1C4D8D),
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
+                                icon: Icon(
+                                  Icons.notifications_none,
+                                  // color: Color(0xFF33323F),
+                                  color: themeMode == ThemeMode.light
+                                        ? Color(0xFF33323F):
+                                       Color(0xffFFFFFF),
 
-                                              Center(
-                                                child: Text(
-                                                  textAlign: TextAlign.center,
-                                                  limitString(
-                                                      skill.title ?? "Unknown",
-                                                      18),
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 12.sp,
-                                                    fontWeight: FontWeight.w700,
-                                                    color: themeMode ==
-                                                            ThemeMode.light
-                                                        ? Color(0xFFC5C3D9)
-                                                        : Color(0xFF33323F),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                          loading: () => const Center(
-                            child: CircularProgressIndicator(
-                                color: Color(0xff9088F1)),
-                          ),
-                          error: (error, stack) => Center(
-                            child: Text(
-                              "Error loading skills",
-                              style: GoogleFonts.roboto(
-                                  fontSize: 14.sp, color: Colors.white),
+                                  size: 22.w,
+                                )
                             ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 30.h,
-                        ),
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              HomePageBody(
-                                callBack: (String category) {
-                                  setState(() {
-                                    filterQuery = category;
-                                  });
-                                },
-                              ),
-                              SizedBox(height: 10.h),
-                              getHomeStudentData.when(
-                                data: (data) {
-                                  final mentors = filterQuery == "All" ||
-                                          filterQuery.isEmpty
-                                      ? data.mentors?.values
-                                              .expand((list) => list)
-                                              .toList() ??
-                                          []
-                                      : data.mentors?[filterQuery]?.toList() ??
-                                          [];
-                                  final limitedMentors =
-                                      mentors.take(5).toList();
-                                  if (mentors.isEmpty) {
-                                    return Center(
-                                      child: Text(
-                                        "No mentors available",
-                                        style: GoogleFonts.roboto(
-                                          fontSize: 14.sp,
-                                          //color: Colors.white,
-                                          color: themeMode == ThemeMode.dark
-                                              ? Color(0xFF1B1B1B)
-                                              : Colors.white,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                  return ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 20.w),
-                                    itemCount: limitedMentors.length,
-                                    itemBuilder: (context, index) {
-                                      final mentor = limitedMentors[index];
-                                      return InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              CupertinoPageRoute(
-                                                builder: (context) =>
-                                                    MentorDetailPage(
-                                                        id: mentor.id ?? 0),
-                                              ));
-                                        },
-                                        child: UserTabs(
-                                          id: mentor.id ?? 0,
-                                          fullname:
-                                              mentor.fullName ?? "Unknown",
-                                          // skill: mentor.skills
-                                          //         ?.elementAtOrNull(0)
-                                          //         ?.title ??
-                                          //     "No skill",
-                                          skill: mentor.jobRole ?? "No",
-                                          servicetype: [
-                                            mentor.serviceType ?? "N/A"
-                                          ],
-                                          image: mentor.profilePic ?? "",
-                                          language: mentor.languageKnown ?? "",
-                                          experience:
-                                              mentor.totalExperience ?? "0",
-                                          otherUserId: mentor.id.toString(),
-                                          education:
-                                              mentor.highestQualification ?? "",
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                loading: () => const Center(
-                                  child: CircularProgressIndicator(
-                                      color: Color(0xff9088F1)),
-                                ),
-                                error: (error, stack) {
-                                  log("Mentors Error: $error");
-                                  log("StackTrace: $stack");
-                                  return Center(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          "Error loading mentors: $error",
-                                          style: GoogleFonts.roboto(
-                                              fontSize: 14.sp,
-                                              color: Colors.white),
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () => ref.refresh(
-                                              getHomeStudentDataProvider),
-                                          child: const Text("Retry"),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          // height: 350.h,
-                          // width: double.infinity,
-                          // decoration: const BoxDecoration(
-                          //   // color: Colors.white,
-                          //   borderRadius: BorderRadius.only(
-                          //     topLeft: Radius.circular(20),
-                          //     topRight: Radius.circular(20),
-                          //     bottomLeft: Radius.circular(20),
-                          //     bottomRight: Radius.circular(20),
-                          //   ),
-                          // ),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    margin:
-                                        EdgeInsets.only(left: 20.w, top: 20.h),
-                                    child: Text(
-                                      "Explore Collage Review ",
-                                      style: GoogleFonts.roboto(
-                                          fontSize: 18.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: themeMode == ThemeMode.light
-                                              ? Color(0xFFC5C3D9)
-                                              : Color(0xFF1F1F26)),
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          CupertinoPageRoute(
-                                            builder: (context) =>
-                                                FindCollegePage(),
-                                          ));
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.only(
-                                          right: 20.w, top: 20.h),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            "View All",
-                                            style: GoogleFonts.roboto(
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.w500,
-                                              color:
-                                                  themeMode == ThemeMode.light
-                                                      ? Color(0xFF4988C4)
-                                                      : Color(0xFF1C4D8D),
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.arrow_forward_ios,
-                                            color: themeMode == ThemeMode.light
-                                                ? Color(0xFF4988C4)
-                                                : Color(0xFF1C4D8D),
-                                            size: 15.sp,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 20.h),
-                              getHomeStudentData.when(
-                                data: (data) {
-                                  final colleges = data.colleges ?? [];
-                                  if (colleges.isEmpty) {
-                                    return Center(
-                                      child: Text(
-                                        "No colleges available",
-                                        style: GoogleFonts.roboto(
-                                            fontSize: 14.sp,
-                                            color: Colors.white),
-                                      ),
-                                    );
-                                  }
-                                  final limitCollage =
-                                      colleges.take(5).toList();
-
-                                  return ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 20.w),
-                                    itemCount: limitCollage.length,
-                                    itemBuilder: (context, index) {
-                                      final college = limitCollage[index];
-                                      return InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              CupertinoPageRoute(
-                                                builder: (context) =>
-                                                    CollegeDetailPage(
-                                                        college.id!),
-                                              ));
-                                        },
-                                        child: Container(
-                                          margin: EdgeInsets.only(bottom: 15.h),
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 18.h, horizontal: 15.w),
-                                          decoration: BoxDecoration(
-                                            color: themeMode == ThemeMode.light
-                                                ? null
-                                                : Color(0xFFFFFFFF),
-                                            border: Border.all(
-                                                color:
-                                                    themeMode == ThemeMode.light
-                                                        ? Color.fromARGB(
-                                                            25, 255, 255, 255)
-                                                        : Color.fromARGB(
-                                                            25, 88, 86, 113)),
-                                            borderRadius:
-                                                BorderRadius.circular(10.r),
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: 56.w,
-                                                    height: 56.h,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: Color(0xFFF0F0F7),
-                                                    ),
-                                                    child: ClipOval(
-                                                      child: Image.network(
-                                                        college.image ??
-                                                            "https://www.howardluksmd.com/wp-content/uploads/2021/10/featured-image-placeholder-728x404.jpg",
-                                                        fit: BoxFit.contain,
-                                                        errorBuilder: (context,
-                                                            error, stackTrace) {
-                                                          return ClipOval(
-                                                            child:
-                                                                Image.network(
-                                                              "https://www.howardluksmd.com/wp-content/uploads/2021/10/featured-image-placeholder-728x404.jpg",
-                                                            ),
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10.w,
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        college.collegeName ??
-                                                            "N/A",
-                                                        style: GoogleFonts.roboto(
-                                                            fontSize: 15.sp,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color: themeMode ==
-                                                                    ThemeMode
-                                                                        .light
-                                                                ? Color(
-                                                                    0xFFFFFFFF)
-                                                                : Color(
-                                                                    0xFF33323F)),
-                                                      ),
-                                                      Text(
-                                                        "${college.city ?? "N/A"} | ${college.totalReviews} Review",
-                                                        style: GoogleFonts.roboto(
-                                                            fontSize: 15.sp,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color: themeMode ==
-                                                                    ThemeMode
-                                                                        .light
-                                                                ? Color
-                                                                    .fromARGB(
-                                                                        178,
-                                                                        255,
-                                                                        255,
-                                                                        255)
-                                                                : Color(
-                                                                    0xFF666666)),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Spacer(),
-                                                  Container(
-                                                      padding: EdgeInsets.only(
-                                                          left: 8.w,
-                                                          right: 10.w,
-                                                          top: 8.h,
-                                                          bottom: 8.h),
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      10.r),
-                                                          color: Color.fromARGB(
-                                                              51,
-                                                              217,
-                                                              162,
-                                                              24)),
-                                                      child: Row(
-                                                        children: [
-                                                          Icon(
-                                                            Icons.star,
-                                                            color: Color(
-                                                                0xFFD9A218),
-                                                            size: 18.sp,
-                                                          ),
-                                                          SizedBox(
-                                                            width: 5.w,
-                                                          ),
-                                                          Text(
-                                                            college.avgRating!
-                                                                .toStringAsFixed(
-                                                                    1),
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: GoogleFonts.inter(
-                                                                fontSize: 13.sp,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Color(
-                                                                    0xFFD9A218)),
-                                                          )
-                                                        ],
-                                                      ))
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                loading: () => const Center(
-                                  child: CircularProgressIndicator(
-                                      color: Color(0xff9088F1)),
-                                ),
-                                error: (error, stack) => Center(
-                                  child: Text(
-                                    "Error loading colleges",
-                                    style: GoogleFonts.roboto(
-                                        fontSize: 14.sp, color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            SizedBox(width: 3.w),
+                            SizedBox(width: 20.w),
+                          ],
                         ),
                         SizedBox(height: 25.h),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Welcome, ",
+                                        style: GoogleFonts.roboto(
+                                          fontSize: 24.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: themeMode == ThemeMode.dark
+                                              ? Color(0xFF1F1F26)
+                                              : Color(0xFFC5C3D9),
+                                        ),
+                                      ),
+                                      Text(
+                                        profile?['full_name'] ?? "User",
+                                        style: GoogleFonts.roboto(
+                                            fontSize: 24.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color(0xFF1C4D8D)),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const Spacer(),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 20.h),
+                        Padding(
+                          padding: EdgeInsets.only(left: 20.w, right: 20.w),
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "Top Companies",
+                              if (userType == "Student")
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                          builder: (context) => SavedSkilListPage(),
+                                        ));
+                                  },
+                                  child: Container(
+                                    height: 120.h,
+                                    width: 185.w,
+                                    decoration: BoxDecoration(
+                                      color: themeMode == ThemeMode.dark?
+
+                                      Color(0xFF00264B):  Color(0xFFBDE8F5),
+                                      borderRadius: BorderRadius.circular(20.r),
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(18),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            // "Skills Available",
+                                            "Saved Skill",
+                                            style: GoogleFonts.roboto(
+                                                fontSize: 13.sp,
+                                                fontWeight: FontWeight.w700,
+                                                color: themeMode == ThemeMode.dark
+
+                                                    ? Color(0xFFC5C3D9):  Color(0xFF33323F)),
+                                          ),
+                                          Spacer(),
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              // getHomeStudentData.when(
+                                              //   data: (data) => Text(
+                                              //     "${data.skills?.length ?? 0}",
+                                              //     style: GoogleFonts.roboto(
+                                              //         fontSize: 24.sp,
+                                              //         fontWeight: FontWeight.w500,
+                                              //         color: themeMode == ThemeMode.dark
+                                              //             ? Color(0xFF4988C4)
+                                              //             : Color(0xFF1C4D8D)),
+                                              //   ),
+                                              //   loading: () => SizedBox(
+                                              //     width: 20.w,
+                                              //     height: 20.h,
+                                              //     child:
+                                              //         const CircularProgressIndicator(
+                                              //             color: Colors.white,
+                                              //             strokeWidth: 2),
+                                              //   ),
+                                              //   error: (error, stack) => Text(
+                                              //     "N/A",
+                                              //     style: GoogleFonts.roboto(
+                                              //         fontSize: 16.sp,
+                                              //         fontWeight: FontWeight.w600,
+                                              //         color: Colors.white),
+                                              //   ),
+                                              // ),
+                                              getSaveSkillListProvider.when(
+                                                  data: (data) => Text(
+                                                    "${data.data?.length ?? 0}",
+                                                    style: GoogleFonts.roboto(
+                                                        fontSize: 24.sp,
+                                                        fontWeight: FontWeight.w500,
+                                                        color: themeMode ==
+                                                            ThemeMode.dark
+                                                            ? Color(0xFFFFFFFF)
+                                                            : Color(0xFF1C4D8D)),
+                                                  ),
+                                                  loading: () => SizedBox(
+                                                    width: 20.w,
+                                                    height: 20.h,
+                                                    child:
+                                                    const CircularProgressIndicator(
+                                                        color: Colors.white,
+                                                        strokeWidth: 2),
+                                                  ),
+                                                  error: (error, stack) {
+                                                    log(error.toString());
+                                                    log(stack.toString());
+                                                    return Text(
+                                                      "N/A",
+                                                      style: GoogleFonts.roboto(
+                                                          fontSize: 16.sp,
+                                                          fontWeight: FontWeight.w600,
+                                                          color: Colors.white),
+                                                    );
+                                                  }),
+                                              Container(
+                                                width: 30.w,
+                                                height: 30.h,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: themeMode == ThemeMode.dark
+                                                      ? Color(0xFFFFFFFF)
+                                                      : Color(0xFF1C4D8D),
+                                                ),
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.arrow_forward_ios_outlined,
+                                                    color: themeMode == ThemeMode.dark
+                                                        ? Color(0xff0F2854)
+                                                        : Color(0xFFBDE8F5),
+                                                    size: 15.sp,
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              // SizedBox(width: 15.w),
+                              if (userType == "Student")
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                          builder: (context) => OnlineMentorPage(
+                                            onlineMentors: onlineMentors,
+                                          ),
+                                        ));
+                                  },
+                                  child: Container(
+                                    height: 120.h,
+                                    width: 185.w,
+                                    decoration: BoxDecoration(
+                                      color: themeMode == ThemeMode.dark
+                                          ? Color(0xFFDCF881)
+                                          : Color.fromARGB(76, 174, 126, 0),
+                                      borderRadius: BorderRadius.circular(20.r),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(18),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Mentors Online",
+                                            style: GoogleFonts.roboto(
+                                                fontSize: 13.sp,
+                                                fontWeight: FontWeight.w700,
+                                                color: themeMode == ThemeMode.dark
+                                                    ? Color(0xFF33323F)
+                                                    : Color(0xFFC5C3D9)),
+                                          ),
+                                          Spacer(),
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                "$onlineMentorCount",
+                                                style: GoogleFonts.roboto(
+                                                    fontSize: 24.sp,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: themeMode == ThemeMode.dark
+                                                        ? Color(0xFF1C4D8D)
+                                                        : Color(0xFF4988C4)),
+                                              ),
+                                              Container(
+                                                width: 30.w,
+                                                height: 30.h,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: themeMode == ThemeMode.dark
+                                                      ? Color(0xFF0F2854)
+                                                      : Color(0xFF1C4D8D),
+                                                ),
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.arrow_forward_ios_outlined,
+                                                    color: themeMode == ThemeMode.dark
+                                                        ? Colors.white
+                                                        : Color(0xFFBDE8F5),
+                                                    size: 15.sp,
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              // SizedBox(width: 15.w),
+                            ],
+                          ),
+                        ),
+                        if (userType == "Professional" || userType == "Mentor")
+                          Container(
+                            margin: EdgeInsets.only(left: 20.w, right: 20.w),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                          builder: (context) => RequestPage(),
+                                        ));
+                                  },
+                                  child: Container(
+                                    height: 130.h,
+                                    width: 120.w,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xff9088F1),
+                                      borderRadius: BorderRadius.circular(20.r),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: 15.h),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 15.w),
+                                          child: Container(
+                                            width: 50.w,
+                                            height: 50.h,
+                                            decoration: BoxDecoration(
+                                              color: const Color.fromARGB(255, 0, 0, 0)
+                                                  .withOpacity(0.1),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Image.asset(
+                                              "assets/mask1.png",
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 15.w),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "New Requests",
+                                                style: GoogleFonts.roboto(
+                                                    fontSize: 11.sp,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.white),
+                                              ),
+                                              Text(
+                                                // "20",
+                                                requestLenght ?? "0",
+                                                style: GoogleFonts.roboto(
+                                                    fontSize: 16.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                          builder: (context) => WalletPage(),
+                                        ));
+                                  },
+                                  child: Container(
+                                    height: 130.h,
+                                    width: 120.w,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF485C07),
+                                      borderRadius: BorderRadius.circular(20.r),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: 15.h),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 15.w),
+                                          child: Container(
+                                            width: 50.w,
+                                            height: 50.h,
+                                            decoration: BoxDecoration(
+                                              color: const Color.fromARGB(255, 0, 0, 0)
+                                                  .withOpacity(0.1),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Image.asset(
+                                              "assets/mask1.png",
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 15.w),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Wallet",
+                                                style: GoogleFonts.roboto(
+                                                    fontSize: 11.sp,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.white),
+                                              ),
+                                              wallet == null
+                                                  ? SizedBox()
+                                                  : Text(
+                                                wallet!,
+                                                style: GoogleFonts.roboto(
+                                                    fontSize: 16.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                          builder: (context) => YourBidsPage(),
+                                        ));
+                                  },
+                                  child: Container(
+                                    height: 130.h,
+                                    width: 120.w,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF1C4D8D),
+                                      borderRadius: BorderRadius.circular(20.r),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: 15.h),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 15.w),
+                                          child: Container(
+                                            width: 50.w,
+                                            height: 50.h,
+                                            decoration: BoxDecoration(
+                                              color: const Color.fromARGB(255, 0, 0, 0)
+                                                  .withOpacity(0.1),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Image.asset(
+                                              "assets/mask1.png",
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 15.w),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Your Bid",
+                                                style: GoogleFonts.roboto(
+                                                    fontSize: 11.sp,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.white),
+                                              ),
+                                              yourBid == null
+                                                  ? SizedBox()
+                                                  : Text(
+                                                yourBid.toString(),
+                                                style: GoogleFonts.roboto(
+                                                    fontSize: 16.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                        SizedBox(height: 20.h),
+
+
+                        // SizedBox(height: 20.h),
+                        if (userType == "Professional" || userType == "Mentor")
+                          Container(
+                            // height: 500.h,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              // color: Colors.white,
+                              color: themeMode == ThemeMode.dark
+                                  ? Colors.white
+                                  : Color(0xFF1B1B1B),
+
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
+                            ),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  SizedBox(height: 20.h),
+                                  getHomeMentorData.when(
+                                    data: (mentorData) {
+                                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                                        setState(() {
+                                          // wallet = mentorData.data!.coins.toString();
+                                          // yourBid = mentorData.data!.notification_count
+                                          //     .toString();
+                                          yourBid =
+                                              mentorData.data?.acceptedStudents?.length;
+                                        });
+                                      });
+                                      return Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        ProfileCompletionWidget(true),
+                                                  ));
+                                            },
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                  left: 20.w, right: 20.w),
+                                              // width: 400.w.clamp(0, 400.w),
+                                              padding:
+                                              EdgeInsets.symmetric(vertical: 20.h),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(30.r),
+                                                color: themeMode == ThemeMode.dark
+                                                    ? Color.fromARGB(38, 0, 128, 128)
+                                                    : Color(0xff9088F1),
+                                              ),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    margin: EdgeInsets.only(
+                                                        left: 20.w,
+                                                        right: 20.w,
+                                                        top: 10.h),
+                                                    height: 5.h,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                      BorderRadius.circular(10.r),
+                                                    ),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                      BorderRadius.circular(10.r),
+                                                      child: LinearProgressIndicator(
+                                                        // value: profileCompletion.clamp(
+                                                        //     0.0, 1.0),
+                                                        value: (((mentorData.data!
+                                                            .profileCompletion ??
+                                                            0.0) /
+                                                            100)
+                                                            .clamp(0.0, 1.0))
+                                                            .toDouble(),
+                                                        // backgroundColor:
+                                                        //     Colors.transparent,
+                                                        backgroundColor: themeMode ==
+                                                            ThemeMode.light
+                                                            ? const Color(0xFFE0E0E0)
+                                                            : const Color(0xFF2A2A2A),
+
+                                                        valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                            Color>(
+                                                          // Color(0xff9088F1),
+                                                          themeMode == ThemeMode.dark
+                                                              ? Color(0xff9088F1)
+                                                              : Color(0xFF1B1B1B),
+                                                        ),
+                                                        minHeight: 20.h,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 12.h),
+                                                  Container(
+                                                    margin:
+                                                    EdgeInsets.only(right: 16.w),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                      children: [
+                                                        Padding(
+                                                          padding: EdgeInsets.symmetric(
+                                                              horizontal: 20.w),
+                                                          child: Text(
+                                                            "Profile Completed",
+                                                            style: GoogleFonts.roboto(
+                                                              fontSize: 14.sp,
+                                                              fontWeight:
+                                                              FontWeight.w600,
+                                                              // color: Color.fromARGB(
+                                                              //     204, 0, 0, 0),
+                                                              color: themeMode ==
+                                                                  ThemeMode.dark
+                                                                  ? Color.fromARGB(
+                                                                  204, 0, 0, 0)
+                                                                  : Colors.white,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          //  "${(profileCompletion * 100).toInt()}%",
+                                                          "${(mentorData.data!.profileCompletion ?? 0.0).toStringAsFixed(0)}%",
+                                                          style: GoogleFonts.roboto(
+                                                            fontSize: 14.sp,
+                                                            fontWeight: FontWeight.w400,
+                                                            color: themeMode ==
+                                                                ThemeMode.dark
+                                                                ? Color.fromARGB(
+                                                                204, 0, 0, 0)
+                                                                : Colors.white,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    margin: EdgeInsets.only(
+                                                        left: 15.w,
+                                                        right: 20.w,
+                                                        top: 16.h),
+                                                    child: Row(
+                                                      children: [
+                                                        ClipOval(
+                                                          child: Image.network(
+                                                            // profileImage['profile_picture']
+                                                            //         ?.toString() ??
+                                                            //     "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
+                                                            mentorData
+                                                                .data!.profilePic ??
+                                                                "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
+                                                            fit: BoxFit.cover,
+                                                            height: 50.w,
+                                                            width: 50.w,
+                                                            errorBuilder: (context,
+                                                                error, stackTrace) {
+                                                              return ClipOval(
+                                                                child: Image.network(
+                                                                  "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
+                                                                  fit: BoxFit.cover,
+                                                                  height: 50.w,
+                                                                  width: 50.w,
+                                                                ),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 10.w),
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                          CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              // "Mike Pena",
+                                                              "${mentorData.data!.fullName ?? "Mentor"}!",
+                                                              style: GoogleFonts.roboto(
+                                                                fontSize: 16.sp,
+                                                                fontWeight:
+                                                                FontWeight.w400,
+                                                                color: themeMode ==
+                                                                    ThemeMode.dark
+                                                                    ? Color.fromARGB(
+                                                                    204, 0, 0, 0)
+                                                                    : Colors.white,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              "Placement | Interview",
+                                                              style: GoogleFonts.roboto(
+                                                                fontSize: 14.sp,
+                                                                fontWeight:
+                                                                FontWeight.w400,
+                                                                color: themeMode ==
+                                                                    ThemeMode.dark
+                                                                    ? Color.fromARGB(
+                                                                    204, 0, 0, 0)
+                                                                    : Colors.white,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    margin: EdgeInsets.only(
+                                                        left: 20.w,
+                                                        right: 15.w,
+                                                        top: 16.h),
+                                                    child: Text(
+                                                      // "With over 5 years of experience, "
+                                                      // "I've guided 300+ students to land jobs "
+                                                      // "in top companies like Google, TCS, and Deloitte. "
+                                                      // "My sessions focus on mock interviews, resume building, "
+                                                      // "and effective communication",
+                                                      mentorData.data!.description ??
+                                                          "No descripion",
+                                                      style: GoogleFonts.roboto(
+                                                        fontSize: 15.sp,
+                                                        fontWeight: FontWeight.w400,
+                                                        color:
+                                                        themeMode == ThemeMode.dark
+                                                            ? Color.fromARGB(
+                                                            204, 0, 0, 0)
+                                                            : Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                left: 20.w, right: 20.w, top: 20.h),
+                                            child: Text(
+                                              "Your Bids",
+                                              style: GoogleFonts.inter(
+                                                fontSize: 20.sp,
+                                                fontWeight: FontWeight.w600,
+                                                //color: Color(0xFF1B1B1B),
+                                                color: themeMode == ThemeMode.dark
+                                                    ? Color(0xFF1B1B1B)
+                                                    : Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10.h,
+                                          ),
+                                          mentorData.data!.acceptedStudents!.isEmpty
+                                              ? Center(
+                                            child: Text(
+                                              "No Accepted Student",
+                                              style: GoogleFonts.inter(
+                                                fontSize: 20.sp,
+                                                fontWeight: FontWeight.w300,
+                                                color: themeMode == ThemeMode.dark
+                                                    ? Color(0xFF1B1B1B)
+                                                    : Colors.white,
+                                              ),
+                                            ),
+                                          )
+                                              : ListView.builder(
+                                            shrinkWrap: true,
+                                            padding: EdgeInsets.zero,
+                                            physics:
+                                            NeverScrollableScrollPhysics(),
+                                            itemCount: mentorData
+                                                .data!.acceptedStudents!.length,
+                                            itemBuilder: (context, index) {
+                                              final student = mentorData
+                                                  .data!.acceptedStudents![index];
+                                              return InkWell(
+                                                onTap: () {
+                                                  log(box
+                                                      .get("userid")
+                                                      .toString());
+                                                  log(
+                                                    mentorData
+                                                        .data!
+                                                        .acceptedStudents![index]
+                                                        .id
+                                                        .toString(),
+                                                  );
+                                                  Navigator.push(
+                                                      context,
+                                                      CupertinoPageRoute(
+                                                        builder: (context) => ChatingPage(
+                                                            id: box
+                                                                .get("userid")
+                                                                .toString(),
+                                                            otherUesrid: mentorData
+                                                                .data!
+                                                                .acceptedStudents![
+                                                            index]
+                                                                .id
+                                                                .toString(),
+                                                            name: student
+                                                                .fullName ??
+                                                                "No Name"),
+                                                      ));
+                                                },
+                                                child: MyContainer(
+                                                  image: student.profilePic ??
+                                                      "https://flutter.github.io/assets-for-api-docs/assets/widgets/puffin.jpg",
+                                                  title:
+                                                  student.fullName ?? "N/A",
+                                                  email:
+                                                  student.email ?? "No Email",
+                                                  description:
+                                                  student.description ?? "",
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SizedBox(height: 10.h),
+                                        ],
+                                      );
+                                    },
+                                    error: (error, stackTrace) {
+                                      log(stackTrace.toString());
+                                      return Center(
+                                        child: Text(error.toString()),
+                                      );
+                                    },
+                                    loading: () => Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 20.w, top: 10.h),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "New Request",
+                                          style: GoogleFonts.roboto(
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.w600,
+                                            //color: Color(0xFF1B1B1B),
+                                            color: themeMode == ThemeMode.dark
+                                                ? Color(0xFF1B1B1B)
+                                                : Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: 10.h),
+                                  getRequestHomeData.when(
+                                    data: (requestData) {
+                                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                                        setState(() {
+                                          requestLenght =
+                                              requestData.data.length.toString();
+                                        });
+                                      });
+
+                                      if (requestData.data.isEmpty) {
+                                        return Center(
+                                          child: Text(
+                                            "No Request Available",
+                                            style: GoogleFonts.inter(
+                                              fontSize: 20.sp,
+                                              fontWeight: FontWeight.w300,
+                                              //color: Color(0xFF1B1B1B),
+                                              color: themeMode == ThemeMode.dark
+                                                  ? Color(0xFF1B1B1B)
+                                                  : Colors.white,
+                                            ),
+                                          ),
+                                        );
+                                      }
+
+                                      return ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: requestData.data.length,
+                                        itemBuilder: (context, index) {
+                                          final student = requestData.data[index];
+                                          return GetRequestStudentBody(
+                                            image: student.studentProfile ??
+                                                "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
+                                            title: student.studentName,
+                                            subtitle: student.studentType,
+                                            email: student.studentEmail,
+                                            phone: student.studentPhone,
+                                            callBack: () async {
+                                              final body = AcceptRequestBodyModel(
+                                                  requestId: requestData.data[index].id
+                                                      .toString());
+                                              try {
+                                                setState(() {
+                                                  isAccept = true;
+                                                });
+
+                                                final service =
+                                                APIStateNetwork(createDio());
+                                                final response =
+                                                await service.acceptRequest(body);
+
+                                                if (response.status == true) {
+                                                  api.sendNotificationMentor(
+                                                      title:
+                                                      'Mentorship Request Accepted 🎉',
+                                                      b:
+                                                      'Great news! Your mentorship request has been accepted.',
+                                                      user_Id:
+                                                      student.studentId.toString());
+
+                                                  Fluttertoast.showToast(
+                                                      msg: response.message);
+                                                  ref.invalidate(
+                                                      getHomeMentorDataProvider);
+                                                  ref.invalidate(
+                                                      getRequestStudentController);
+                                                  ref.invalidate(myListingController);
+                                                } else {
+                                                  // Fluttertoast.showToast(
+                                                  //     msg: response.message);
+                                                  Fluttertoast.showToast(
+                                                      msg:
+                                                      "Please upgrade the membership for mentor",
+                                                      toastLength: Toast.LENGTH_LONG);
+                                                }
+                                              } catch (e, st) {
+                                                log("${e.toString()} /n ${st.toString()}");
+                                                Fluttertoast.showToast(
+                                                    msg: "Not Accept");
+                                              } finally {
+                                                setState(() {
+                                                  isAccept = false;
+                                                });
+                                              }
+                                            },
+                                          );
+                                        },
+                                      );
+                                    },
+                                    error: (error, stackTrace) {
+                                      log(stackTrace.toString());
+                                      return Center(
+                                        child: Text(error.toString()),
+                                      );
+                                    },
+                                    loading: () => Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
+                                  SizedBox(height: 20.h),
+                                ],
+                              ),
+                            ),
+                          )
+                        else
+                          SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.only(
+
+                                        topLeft: Radius.circular(30.sp),
+                                        topRight: Radius.circular(30.sp),
+                                        bottomRight: Radius.circular(30.sp),
+                                        bottomLeft: Radius.circular(30.sp),
+                                      )
+                                  ),
+
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+
+                                      SizedBox(
+                                        height: 20.h,
+                                      ),
+
+                                      // Padding(
+                                      //   padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                      //   child: Row(
+                                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      //     children: [
+                                      //       Text(
+                                      //         "Explore Trending Skills",
+                                      //         style: GoogleFonts.roboto(
+                                      //             fontSize: 18.sp,
+                                      //             fontWeight: FontWeight.w500,
+                                      //             color: themeMode == ThemeMode.light
+                                      //                 ? Color(0xFFC5C3D9)
+                                      //                 : Color(0xFF1F1F26)),
+                                      //       ),
+                                      //       InkWell(
+                                      //         onTap: () {
+                                      //           Navigator.push(
+                                      //               context,
+                                      //               CupertinoPageRoute(
+                                      //                 builder: (context) => FindSkillPage(),
+                                      //               ));
+                                      //         },
+                                      //         child: Row(
+                                      //           children: [
+                                      //             Text(
+                                      //               "View All",
+                                      //               style: GoogleFonts.roboto(
+                                      //                 color: themeMode == ThemeMode.light
+                                      //                     ? Color(0xFF4988C4)
+                                      //                     : Color(0xFF1C4D8D),
+                                      //                 fontSize: 14.sp,
+                                      //                 fontWeight: FontWeight.w500,
+                                      //               ),
+                                      //             ),
+                                      //             Icon(
+                                      //               Icons.arrow_forward_ios,
+                                      //               color: themeMode == ThemeMode.light
+                                      //                   ? Color(0xFF4988C4)
+                                      //                   : Color(0xFF1C4D8D),
+                                      //               size: 15.sp,
+                                      //             )
+                                      //           ],
+                                      //         ),
+                                      //       )
+                                      //     ],
+                                      //   ),
+                                      // ),
+                                      // SizedBox(height: 20.h),
+                                      // getHomeStudentData.when(
+                                      //   data: (data) {
+                                      //     final skills = data.skills ?? [];
+                                      //     if (skills.isEmpty) {
+                                      //       return Center(
+                                      //         child: Text(
+                                      //           "No skills available",
+                                      //           style: GoogleFonts.roboto(
+                                      //               fontSize: 14.sp, color: Colors.white),
+                                      //         ),
+                                      //       );
+                                      //     }
+                                      //     return SizedBox(
+                                      //       height: 140.h,
+                                      //       child: ListView.builder(
+                                      //         scrollDirection: Axis.horizontal,
+                                      //         padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                      //         itemCount: skills.length,
+                                      //         itemBuilder: (context, index) {
+                                      //           final skill = skills[index];
+                                      //           return Padding(
+                                      //             padding: EdgeInsets.only(right: 15.w),
+                                      //             child: InkWell(
+                                      //               onTap: () {
+                                      //                 Navigator.push(
+                                      //                     context,
+                                      //                     CupertinoPageRoute(
+                                      //                       builder: (context) =>
+                                      //                           TrendingExprtPage(
+                                      //                         id: skill.id ?? 0,
+                                      //                       ),
+                                      //                     ));
+                                      //               },
+                                      //               child: Container(
+                                      //                 width: 125.w,
+                                      //                 decoration: BoxDecoration(
+                                      //                   color: themeMode == ThemeMode.light
+                                      //                       ? null
+                                      //                       : Color(0xFFFFFFFF),
+                                      //                   border: Border.all(
+                                      //                       color:
+                                      //                           themeMode == ThemeMode.light
+                                      //                               ? Color.fromARGB(
+                                      //                                   25, 255, 255, 255)
+                                      //                               : Color.fromARGB(
+                                      //                                   25,
+                                      //                                   88,
+                                      //                                   86,
+                                      //                                   113,
+                                      //                                 )),
+                                      //                   borderRadius:
+                                      //                       BorderRadius.circular(10.r),
+                                      //                 ),
+                                      //                 child: Padding(
+                                      //                   padding: EdgeInsets.only(
+                                      //                       bottom: 20.h, top: 20.h),
+                                      //                   child: Column(
+                                      //                     crossAxisAlignment:
+                                      //                         CrossAxisAlignment.center,
+                                      //                     children: [
+                                      //                       Container(
+                                      //                         width: 40.w,
+                                      //                         height: 40.h,
+                                      //                         decoration: BoxDecoration(
+                                      //                           shape: BoxShape.circle,
+                                      //                           //color: Color(0xFFF0F0F7),
+                                      //                           image: DecorationImage(
+                                      //                             image: NetworkImage(
+                                      //                                 skill.image ?? ""),
+                                      //                             fit: BoxFit.cover,
+                                      //                             onError: (exception,
+                                      //                                     stackTrace) =>
+                                      //                                 const AssetImage(
+                                      //                                     "assets/placeholder.png"),
+                                      //                           ),
+                                      //                         ),
+                                      //                       ),
+                                      //                       // Container(
+                                      //                       //   width: 40.w,
+                                      //                       //   height: 40.h,
+                                      //                       //   decoration: BoxDecoration(
+                                      //                       //       shape: BoxShape.circle,
+                                      //                       //       color: Color(0xFFF0F0F7)),
+                                      //                       //   child: Center(
+                                      //                       //     child: Image.asset(
+                                      //                       //         "assets/skillsImage.png"),
+                                      //                       //   ),
+                                      //                       // ),
+                                      //                       Spacer(),
+                                      //                       Center(
+                                      //                         child: Text(
+                                      //                           skill.level
+                                      //                                   ?.toString()
+                                      //                                   .split('.')
+                                      //                                   .last ??
+                                      //                               "N/A",
+                                      //                           style: GoogleFonts.roboto(
+                                      //                             fontSize: 11.sp,
+                                      //                             fontWeight: FontWeight.w500,
+                                      //                             color: themeMode ==
+                                      //                                     ThemeMode.light
+                                      //                                 ? Color(0xFF4988C4)
+                                      //                                 : Color(0xFF1C4D8D),
+                                      //                           ),
+                                      //                           textAlign: TextAlign.center,
+                                      //                         ),
+                                      //                       ),
+                                      //
+                                      //                       Center(
+                                      //                         child: Text(
+                                      //                           textAlign: TextAlign.center,
+                                      //                           limitString(
+                                      //                               skill.title ?? "Unknown",
+                                      //                               18),
+                                      //                           style: GoogleFonts.roboto(
+                                      //                             fontSize: 12.sp,
+                                      //                             fontWeight: FontWeight.w700,
+                                      //                             color: themeMode ==
+                                      //                                     ThemeMode.light
+                                      //                                 ? Color(0xFFC5C3D9)
+                                      //                                 : Color(0xFF33323F),
+                                      //                           ),
+                                      //                         ),
+                                      //                       ),
+                                      //                     ],
+                                      //                   ),
+                                      //                 ),
+                                      //               ),
+                                      //             ),
+                                      //           );
+                                      //         },
+                                      //       ),
+                                      //     );
+                                      //   },
+                                      //   loading: () => const Center(
+                                      //     child: CircularProgressIndicator(
+                                      //         color: Color(0xff9088F1)),
+                                      //   ),
+                                      //   error: (error, stack) => Center(
+                                      //     child: Text(
+                                      //       "Error loading skills",
+                                      //       style: GoogleFonts.roboto(
+                                      //           fontSize: 14.sp, color: Colors.white),
+                                      //     ),
+                                      //   ),
+                                      // ),
+
+                                      SizedBox(
+                                        height: 30.h,
+                                      ),
+
+                                      Container(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            HomePageBody(
+                                              callBack: (String category) {
+                                                setState(() {
+                                                  filterQuery = category;
+                                                });
+                                              },
+                                            ),
+                                            SizedBox(height: 10.h),
+                                            getHomeStudentData.when(
+                                              data: (data) {
+                                                final mentors = filterQuery == "All" ||
+                                                    filterQuery.isEmpty
+                                                    ? data.mentors?.values
+                                                    .expand((list) => list)
+                                                    .toList() ??
+                                                    []
+                                                    : data.mentors?[filterQuery]?.toList() ??
+                                                    [];
+                                                final limitedMentors =
+                                                mentors.take(5).toList();
+                                                if (mentors.isEmpty) {
+                                                  return Center(
+                                                    child: Text(
+                                                      "No mentors available",
+                                                      style: GoogleFonts.roboto(
+                                                        fontSize: 14.sp,
+                                                        //color: Colors.white,
+                                                        color: themeMode == ThemeMode.dark
+                                                            ? Color(0xFF1B1B1B)
+                                                            : Colors.white,
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                                return ListView.builder(
+                                                  shrinkWrap: true,
+                                                  physics: NeverScrollableScrollPhysics(),
+                                                  padding:
+                                                  EdgeInsets.symmetric(horizontal: 20.w),
+                                                  itemCount: limitedMentors.length,
+                                                  itemBuilder: (context, index) {
+                                                    final mentor = limitedMentors[index];
+                                                    return InkWell(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            CupertinoPageRoute(
+                                                              builder: (context) =>
+                                                                  MentorDetailPage(
+                                                                      id: mentor.id ?? 0),
+                                                            ));
+                                                      },
+                                                      child: UserTabs(
+                                                        id: mentor.id ?? 0,
+                                                        fullname:
+                                                        mentor.fullName ?? "Unknown",
+                                                        // skill: mentor.skills
+                                                        //         ?.elementAtOrNull(0)
+                                                        //         ?.title ??
+                                                        //     "No skill",
+                                                        skill: mentor.jobRole ?? "No",
+                                                        servicetype: [
+                                                          mentor.serviceType ?? "N/A"
+                                                        ],
+                                                        image: mentor.profilePic ?? "",
+                                                        language: mentor.languageKnown ?? "",
+                                                        experience:
+                                                        mentor.totalExperience ?? "0",
+                                                        otherUserId: mentor.id.toString(),
+                                                        education:
+                                                        mentor.highestQualification ?? "",
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              loading: () => const Center(
+                                                child: CircularProgressIndicator(
+                                                    color: Color(0xff9088F1)),
+                                              ),
+                                              error: (error, stack) {
+                                                log("Mentors Error: $error");
+                                                log("StackTrace: $stack");
+                                                return Center(
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        "Error loading mentors: $error",
+                                                        style: GoogleFonts.roboto(
+                                                            fontSize: 14.sp,
+                                                            color: Colors.white),
+                                                      ),
+                                                      ElevatedButton(
+                                                        onPressed: () => ref.refresh(
+                                                            getHomeStudentDataProvider),
+                                                        child: const Text("Retry"),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+
+                                      SizedBox(height: 20.h,)
+
+                                      // Container(
+                                      //
+                                      //   child: Column(
+                                      //     children: [
+                                      //       Row(
+                                      //         mainAxisAlignment:
+                                      //             MainAxisAlignment.spaceBetween,
+                                      //         children: [
+                                      //           Container(
+                                      //             margin:
+                                      //                 EdgeInsets.only(left: 20.w, top: 20.h),
+                                      //             child: Text(
+                                      //               "Explore Collage Review ",
+                                      //               style: GoogleFonts.roboto(
+                                      //                   fontSize: 18.sp,
+                                      //                   fontWeight: FontWeight.w600,
+                                      //                   color: themeMode == ThemeMode.light
+                                      //                       ? Color(0xFFC5C3D9)
+                                      //                       : Color(0xFF1F1F26)),
+                                      //             ),
+                                      //           ),
+                                      //           InkWell(
+                                      //             onTap: () {
+                                      //               Navigator.push(
+                                      //                   context,
+                                      //                   CupertinoPageRoute(
+                                      //                     builder: (context) =>
+                                      //                         FindCollegePage(),
+                                      //                   ));
+                                      //             },
+                                      //             child: Container(
+                                      //               margin: EdgeInsets.only(
+                                      //                   right: 20.w, top: 20.h),
+                                      //               child: Row(
+                                      //                 children: [
+                                      //                   Text(
+                                      //                     "View All",
+                                      //                     style: GoogleFonts.roboto(
+                                      //                       fontSize: 15.sp,
+                                      //                       fontWeight: FontWeight.w500,
+                                      //                       color:
+                                      //                           themeMode == ThemeMode.light
+                                      //                               ? Color(0xFF4988C4)
+                                      //                               : Color(0xFF1C4D8D),
+                                      //                     ),
+                                      //                   ),
+                                      //                   Icon(
+                                      //                     Icons.arrow_forward_ios,
+                                      //                     color: themeMode == ThemeMode.light
+                                      //                         ? Color(0xFF4988C4)
+                                      //                         : Color(0xFF1C4D8D),
+                                      //                     size: 15.sp,
+                                      //                   )
+                                      //                 ],
+                                      //               ),
+                                      //             ),
+                                      //           ),
+                                      //         ],
+                                      //       ),
+                                      //       SizedBox(height: 20.h),
+                                      //       getHomeStudentData.when(
+                                      //         data: (data) {
+                                      //           final colleges = data.colleges ?? [];
+                                      //           if (colleges.isEmpty) {
+                                      //             return Center(
+                                      //               child: Text(
+                                      //                 "No colleges available",
+                                      //                 style: GoogleFonts.roboto(
+                                      //                     fontSize: 14.sp,
+                                      //                     color: Colors.white),
+                                      //               ),
+                                      //             );
+                                      //           }
+                                      //           final limitCollage =
+                                      //               colleges.take(5).toList();
+                                      //
+                                      //           return ListView.builder(
+                                      //             shrinkWrap: true,
+                                      //             physics: NeverScrollableScrollPhysics(),
+                                      //             padding:
+                                      //                 EdgeInsets.symmetric(horizontal: 20.w),
+                                      //             itemCount: limitCollage.length,
+                                      //             itemBuilder: (context, index) {
+                                      //               final college = limitCollage[index];
+                                      //               return InkWell(
+                                      //                 onTap: () {
+                                      //                   Navigator.push(
+                                      //                       context,
+                                      //                       CupertinoPageRoute(
+                                      //                         builder: (context) =>
+                                      //                             CollegeDetailPage(
+                                      //                                 college.id!),
+                                      //                       ));
+                                      //                 },
+                                      //                 child: Container(
+                                      //                   margin: EdgeInsets.only(bottom: 15.h),
+                                      //                   padding: EdgeInsets.symmetric(
+                                      //                       vertical: 18.h, horizontal: 15.w),
+                                      //                   decoration: BoxDecoration(
+                                      //                     color: themeMode == ThemeMode.light
+                                      //                         ? null
+                                      //                         : Color(0xFFFFFFFF),
+                                      //                     border: Border.all(
+                                      //                         color:
+                                      //                             themeMode == ThemeMode.light
+                                      //                                 ? Color.fromARGB(
+                                      //                                     25, 255, 255, 255)
+                                      //                                 : Color.fromARGB(
+                                      //                                     25, 88, 86, 113)),
+                                      //                     borderRadius:
+                                      //                         BorderRadius.circular(10.r),
+                                      //                   ),
+                                      //                   child: Column(
+                                      //                     crossAxisAlignment:
+                                      //                         CrossAxisAlignment.start,
+                                      //                     children: [
+                                      //                       Row(
+                                      //                         children: [
+                                      //                           Container(
+                                      //                             width: 56.w,
+                                      //                             height: 56.h,
+                                      //                             decoration: BoxDecoration(
+                                      //                               shape: BoxShape.circle,
+                                      //                               color: Color(0xFFF0F0F7),
+                                      //                             ),
+                                      //                             child: ClipOval(
+                                      //                               child: Image.network(
+                                      //                                 college.image ??
+                                      //                                     "https://www.howardluksmd.com/wp-content/uploads/2021/10/featured-image-placeholder-728x404.jpg",
+                                      //                                 fit: BoxFit.contain,
+                                      //                                 errorBuilder: (context,
+                                      //                                     error, stackTrace) {
+                                      //                                   return ClipOval(
+                                      //                                     child:
+                                      //                                         Image.network(
+                                      //                                       "https://www.howardluksmd.com/wp-content/uploads/2021/10/featured-image-placeholder-728x404.jpg",
+                                      //                                     ),
+                                      //                                   );
+                                      //                                 },
+                                      //                               ),
+                                      //                             ),
+                                      //                           ),
+                                      //                           SizedBox(
+                                      //                             width: 10.w,
+                                      //                           ),
+                                      //                           Column(
+                                      //                             crossAxisAlignment:
+                                      //                                 CrossAxisAlignment
+                                      //                                     .start,
+                                      //                             children: [
+                                      //                               Text(
+                                      //                                 college.collegeName ??
+                                      //                                     "N/A",
+                                      //                                 style: GoogleFonts.roboto(
+                                      //                                     fontSize: 15.sp,
+                                      //                                     fontWeight:
+                                      //                                         FontWeight.w500,
+                                      //                                     color: themeMode ==
+                                      //                                             ThemeMode
+                                      //                                                 .light
+                                      //                                         ? Color(
+                                      //                                             0xFFFFFFFF)
+                                      //                                         : Color(
+                                      //                                             0xFF33323F)),
+                                      //                               ),
+                                      //                               Text(
+                                      //                                 "${college.city ?? "N/A"} | ${college.totalReviews} Review",
+                                      //                                 style: GoogleFonts.roboto(
+                                      //                                     fontSize: 15.sp,
+                                      //                                     fontWeight:
+                                      //                                         FontWeight.w500,
+                                      //                                     color: themeMode ==
+                                      //                                             ThemeMode
+                                      //                                                 .light
+                                      //                                         ? Color
+                                      //                                             .fromARGB(
+                                      //                                                 178,
+                                      //                                                 255,
+                                      //                                                 255,
+                                      //                                                 255)
+                                      //                                         : Color(
+                                      //                                             0xFF666666)),
+                                      //                               ),
+                                      //                             ],
+                                      //                           ),
+                                      //                           Spacer(),
+                                      //                           Container(
+                                      //                               padding: EdgeInsets.only(
+                                      //                                   left: 8.w,
+                                      //                                   right: 10.w,
+                                      //                                   top: 8.h,
+                                      //                                   bottom: 8.h),
+                                      //                               decoration: BoxDecoration(
+                                      //                                   borderRadius:
+                                      //                                       BorderRadius
+                                      //                                           .circular(
+                                      //                                               10.r),
+                                      //                                   color: Color.fromARGB(
+                                      //                                       51,
+                                      //                                       217,
+                                      //                                       162,
+                                      //                                       24)),
+                                      //                               child: Row(
+                                      //                                 children: [
+                                      //                                   Icon(
+                                      //                                     Icons.star,
+                                      //                                     color: Color(
+                                      //                                         0xFFD9A218),
+                                      //                                     size: 18.sp,
+                                      //                                   ),
+                                      //                                   SizedBox(
+                                      //                                     width: 5.w,
+                                      //                                   ),
+                                      //                                   Text(
+                                      //                                     college.avgRating!
+                                      //                                         .toStringAsFixed(
+                                      //                                             1),
+                                      //                                     maxLines: 1,
+                                      //                                     overflow:
+                                      //                                         TextOverflow
+                                      //                                             .ellipsis,
+                                      //                                     style: GoogleFonts.inter(
+                                      //                                         fontSize: 13.sp,
+                                      //                                         fontWeight:
+                                      //                                             FontWeight
+                                      //                                                 .w500,
+                                      //                                         color: Color(
+                                      //                                             0xFFD9A218)),
+                                      //                                   )
+                                      //                                 ],
+                                      //                               ))
+                                      //                         ],
+                                      //                       ),
+                                      //                     ],
+                                      //                   ),
+                                      //                 ),
+                                      //               );
+                                      //             },
+                                      //           );
+                                      //         },
+                                      //         loading: () => const Center(
+                                      //           child: CircularProgressIndicator(
+                                      //               color: Color(0xff9088F1)),
+                                      //         ),
+                                      //         error: (error, stack) => Center(
+                                      //           child: Text(
+                                      //             "Error loading colleges",
+                                      //             style: GoogleFonts.roboto(
+                                      //                 fontSize: 14.sp, color: Colors.white),
+                                      //           ),
+                                      //         ),
+                                      //       ),
+                                      //     ],
+                                      //   ),
+                                      // ),
+                                      // SizedBox(height: 25.h),
+                                      // Padding(
+                                      //   padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                      //   child: Row(
+                                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      //     children: [
+                                      //       Text(
+                                      //         "Top Companies",
+                                      //         style: GoogleFonts.roboto(
+                                      //             fontSize: 18.sp,
+                                      //             fontWeight: FontWeight.w600,
+                                      //             color: themeMode == ThemeMode.light
+                                      //                 ? Color(0xFFC5C3D9)
+                                      //                 : Color(0xFF1F1F26)),
+                                      //       ),
+                                      //       InkWell(
+                                      //         onTap: () {
+                                      //           Navigator.push(
+                                      //               context,
+                                      //               CupertinoPageRoute(
+                                      //                 builder: (context) => FindCompanyPage(),
+                                      //               ));
+                                      //         },
+                                      //         child: Row(
+                                      //           children: [
+                                      //             Text(
+                                      //               "View All",
+                                      //               style: GoogleFonts.roboto(
+                                      //                   fontSize: 15.sp,
+                                      //                   fontWeight: FontWeight.w500,
+                                      //                   color: themeMode == ThemeMode.light
+                                      //                       ? Color(0xFF4988C4)
+                                      //                       : Color(0xFF1C4D8D)),
+                                      //             ),
+                                      //             Icon(
+                                      //               Icons.arrow_forward_ios,
+                                      //               color: themeMode == ThemeMode.light
+                                      //                   ? Color(0xFF4988C4)
+                                      //                   : Color(0xFF1C4D8D),
+                                      //               size: 15.sp,
+                                      //             )
+                                      //           ],
+                                      //         ),
+                                      //       ),
+                                      //     ],
+                                      //   ),
+                                      // ),
+                                      // SizedBox(height: 20.h),
+                                      // getHomeStudentData.when(
+                                      //   data: (data) {
+                                      //     final companies = data.companies ?? [];
+                                      //     if (companies.isEmpty) {
+                                      //       return Center(
+                                      //         child: Text(
+                                      //           "No companies available",
+                                      //           style: GoogleFonts.roboto(
+                                      //               fontSize: 14.sp, color: Colors.white),
+                                      //         ),
+                                      //       );
+                                      //     }
+                                      //     final limitCompany = companies.take(5).toList();
+                                      //     return ListView.builder(
+                                      //       shrinkWrap: true,
+                                      //       physics: NeverScrollableScrollPhysics(),
+                                      //       padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                      //       itemCount: limitCompany.length,
+                                      //       itemBuilder: (context, index) {
+                                      //         final company = limitCompany[index];
+                                      //         return InkWell(
+                                      //           onTap: () {
+                                      //             Navigator.push(
+                                      //                 context,
+                                      //                 CupertinoPageRoute(
+                                      //                   builder: (context) =>
+                                      //                       CompanyDetailPage(company.id!),
+                                      //                 ));
+                                      //           },
+                                      //           child: Container(
+                                      //             margin: EdgeInsets.only(bottom: 15.h),
+                                      //             padding: EdgeInsets.only(
+                                      //                 left: 20.w,
+                                      //                 right: 20.w,
+                                      //                 bottom: 24.h,
+                                      //                 top: 20.h),
+                                      //             decoration: BoxDecoration(
+                                      //               color: themeMode == ThemeMode.light
+                                      //                   ? null
+                                      //                   : Color(0xFFFFFFFF),
+                                      //               border: Border.all(
+                                      //                   color: themeMode == ThemeMode.light
+                                      //                       ? Color.fromARGB(
+                                      //                           25, 255, 255, 255)
+                                      //                       : Color.fromARGB(
+                                      //                           25, 88, 85, 113)),
+                                      //               borderRadius: BorderRadius.circular(15.r),
+                                      //             ),
+                                      //             child: Column(
+                                      //               crossAxisAlignment:
+                                      //                   CrossAxisAlignment.start,
+                                      //               children: [
+                                      //                 Row(
+                                      //                   mainAxisAlignment:
+                                      //                       MainAxisAlignment.spaceBetween,
+                                      //                   children: [
+                                      //                     Container(
+                                      //                       width: 50.w,
+                                      //                       height: 50.h,
+                                      //                       decoration: BoxDecoration(
+                                      //                           shape: BoxShape.circle,
+                                      //                           border: Border.all(
+                                      //                             color: themeMode ==
+                                      //                                     ThemeMode.light
+                                      //                                 ? Color.fromARGB(
+                                      //                                     25, 255, 255, 255)
+                                      //                                 : Color.fromARGB(
+                                      //                                     25, 0, 0, 0),
+                                      //                           )),
+                                      //                       child: ClipOval(
+                                      //                         child: Image.network(
+                                      //                           company.image ??
+                                      //                               "https://www.howardluksmd.com/wp-content/uploads/2021/10/featured-image-placeholder-728x404.jpg",
+                                      //                           fit: BoxFit.contain,
+                                      //                           errorBuilder: (context, error,
+                                      //                               stackTrace) {
+                                      //                             return Image.network(
+                                      //                               "https://www.howardluksmd.com/wp-content/uploads/2021/10/featured-image-placeholder-728x404.jpg",
+                                      //                               fit: BoxFit.contain,
+                                      //                             );
+                                      //                           },
+                                      //                         ),
+                                      //                       ),
+                                      //                     ),
+                                      //                     Stack(
+                                      //                       clipBehavior: Clip.none,
+                                      //                       alignment: Alignment.topRight,
+                                      //                       children: [
+                                      //                         Positioned(
+                                      //                           top: -12, // fine-tuned offset
+                                      //                           right: -12,
+                                      //                           child: Image.asset(
+                                      //                             "assets/gridbg.png",
+                                      //                           ),
+                                      //                         ),
+                                      //                         Container(
+                                      //                           width: 45.w,
+                                      //                           height: 45.h,
+                                      //                           decoration: BoxDecoration(
+                                      //                             shape: BoxShape.circle,
+                                      //                             color: themeMode ==
+                                      //                                     ThemeMode.light
+                                      //                                 ? Color(0xFF26252E)
+                                      //                                 : Color(0xFFF0F0F7),
+                                      //                           ),
+                                      //                           child: Center(
+                                      //                             child: Icon(
+                                      //                               Icons
+                                      //                                   .arrow_forward_ios_outlined,
+                                      //                               color: themeMode ==
+                                      //                                       ThemeMode.light
+                                      //                                   ? Color(0xFFFFFFFF)
+                                      //                                   : Color(0xFF1F1F26),
+                                      //                               size: 15.sp,
+                                      //                             ),
+                                      //                           ),
+                                      //                         )
+                                      //                       ],
+                                      //                     ),
+                                      //                   ],
+                                      //                 ),
+                                      //                 SizedBox(
+                                      //                   height: 20.h,
+                                      //                 ),
+                                      //                 Column(
+                                      //                   crossAxisAlignment:
+                                      //                       CrossAxisAlignment.start,
+                                      //                   children: [
+                                      //                     Text(
+                                      //                       company.companyName ?? "Unknown",
+                                      //                       style: GoogleFonts.roboto(
+                                      //                           fontSize: 16.sp,
+                                      //                           fontWeight: FontWeight.w700,
+                                      //                           color: themeMode ==
+                                      //                                   ThemeMode.light
+                                      //                               ? Color(0xFFFFFFFF)
+                                      //                               : Color(0xFF33323F)),
+                                      //                     ),
+                                      //                     SizedBox(
+                                      //                       height: 4.h,
+                                      //                     ),
+                                      //                     Row(
+                                      //                       children: [
+                                      //                         Text(
+                                      //                           "Project Guide |",
+                                      //                           style: GoogleFonts.roboto(
+                                      //                               fontSize: 15.sp,
+                                      //                               fontWeight:
+                                      //                                   FontWeight.w500,
+                                      //                               color: themeMode ==
+                                      //                                       ThemeMode.light
+                                      //                                   ? Color.fromARGB(178,
+                                      //                                       255, 255, 255)
+                                      //                                   : Color(0xFF666666)),
+                                      //                         ),
+                                      //                         SizedBox(
+                                      //                           width: 5.w,
+                                      //                         ),
+                                      //                         Icon(
+                                      //                           Icons.star,
+                                      //                           color: themeMode ==
+                                      //                                   ThemeMode.light
+                                      //                               ? Color.fromARGB(
+                                      //                                   178, 255, 255, 255)
+                                      //                               : Color(0xFF666666),
+                                      //                           size: 18.sp,
+                                      //                         ),
+                                      //                         SizedBox(
+                                      //                           width: 5.w,
+                                      //                         ),
+                                      //                         Text(
+                                      //                           "${company.avgRating} Rating",
+                                      //                           style: GoogleFonts.roboto(
+                                      //                               fontSize: 15.sp,
+                                      //                               fontWeight:
+                                      //                                   FontWeight.w500,
+                                      //                               color: themeMode ==
+                                      //                                       ThemeMode.light
+                                      //                                   ? Color.fromARGB(178,
+                                      //                                       255, 255, 255)
+                                      //                                   : Color(0xFF666666)),
+                                      //                         ),
+                                      //                       ],
+                                      //                     ),
+                                      //                   ],
+                                      //                 ),
+                                      //               ],
+                                      //             ),
+                                      //           ),
+                                      //         );
+                                      //       },
+                                      //     );
+                                      //   },
+                                      //   loading: () => const Center(
+                                      //     child: CircularProgressIndicator(
+                                      //         color: Color(0xff9088F1)),
+                                      //   ),
+                                      //   error: (error, stack) => Center(
+                                      //     child: Text(
+                                      //       "Error loading companies",
+                                      //       style: GoogleFonts.roboto(
+                                      //           fontSize: 14.sp, color: Colors.white),
+                                      //     ),
+                                      //   ),
+                                      // ),
+                                      // SizedBox(height: 30.h),
+
+                                    ],
+                                  ),
+                                ),
+                                ////trend////
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+
+
+                  if (userType == "Professional" || userType == "Mentor")
+                    Column(
+                      children: [
+                        SizedBox(),
+                      ],
+                    )
+                  else
+                  Column(children: [
+
+                    Container(
+                      // color: Color(0xff1B1B1B),
+                      child: Column(
+                        children: [
+                          // SizedBox(height: 20.h),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 10.h),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Explore Trending Skills",
+                                  style: GoogleFonts.roboto(
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: themeMode == ThemeMode.light
+                                          ? Color(0xFF1F1F26):
+                                      Color(0xFFC5C3D9)
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                          builder: (context) => FindSkillPage(),
+                                        ));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "View All",
+                                        style: GoogleFonts.roboto(
+                                          color: themeMode == ThemeMode.light
+                                              ? Color(0xFF1F1F26):
+                                          Color(0xFFC5C3D9) ,
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: themeMode == ThemeMode.light
+                                            ? Color(0xFF1F1F26):
+                                        Color(0xFFC5C3D9),
+                                        size: 15.sp,
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+
+
+
+                          getHomeStudentData.when(
+                            data: (data) {
+                              final skills = data.skills ?? [];
+                              if (skills.isEmpty) {
+                                return Center(
+                                  child: Text(
+                                    "No skills available",
+                                    style: GoogleFonts.roboto(
+                                        fontSize: 14.sp, color: Colors.white),
+                                  ),
+                                );
+                              }
+                              return SizedBox(
+                                height: 140.h,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                  itemCount: skills.length,
+                                  itemBuilder: (context, index) {
+                                    final skill = skills[index];
+                                    return Padding(
+                                      padding: EdgeInsets.only(right: 15.w),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              CupertinoPageRoute(
+                                                builder: (context) =>
+                                                    TrendingExprtPage(
+                                                      id: skill.id ?? 0,
+                                                    ),
+                                              ));
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 20.w,
+
+                                              vertical: 10.h
+                                          ),
+                                          // width: 125.w,
+                                          decoration: BoxDecoration(
+                                            color: themeMode == ThemeMode.light
+                                                ? null
+                                                : Color(0xFF262626),
+                                            border: Border.all(
+                                                color:
+                                                themeMode == ThemeMode.light
+                                                    ? Color.fromARGB(
+                                                    25, 255, 255, 255)
+                                                    : Color.fromARGB(
+                                                  25,
+                                                  88,
+                                                  86,
+                                                  113,
+                                                )),
+                                            borderRadius:
+                                            BorderRadius.circular(10.r),
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              // Container(
+                                              //   width: 40.w,
+                                              //   height: 40.h,
+                                              //   decoration: BoxDecoration(
+                                              //     shape: BoxShape.circle,
+                                              //     image: DecorationImage(
+                                              //       image: NetworkImage(
+                                              //           skill.image ?? ""),
+                                              //       fit: BoxFit.cover,
+                                              //       onError: (exception,
+                                              //           stackTrace) =>
+                                              //       const AssetImage(
+                                              //           "assets/placeholder.png"),
+                                              //     ),
+                                              //   ),
+                                              // ),
+
+
+                                              Container(
+
+                                                  height:40.h,
+                                                  width: 40.w,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(10.sp),
+
+                                                      color: Color(0xff375454)
+                                                  ),
+                                                  child: Image.asset("assets/feather.png")
+                                              ),
+
+                                              SizedBox(height: 20.h,),
+                                              Text(
+                                                skill.level
+                                                    ?.toString()
+                                                    .split('.')
+                                                    .last ??
+                                                    "N/A",
+                                                style: GoogleFonts.roboto(
+                                                  fontSize: 11.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: themeMode ==
+                                                      ThemeMode.light
+                                                      ? Color(0xFF4988C4)
+                                                      : Color(0xFFBDE8F5),
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+
+                                              Text(
+                                                textAlign: TextAlign.center,
+                                                limitString(
+                                                    skill.title ?? "Unknown",
+                                                    18),
+                                                style: GoogleFonts.roboto(
+                                                  fontSize: 15.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: themeMode ==
+                                                      ThemeMode.light
+                                                      ? Color(0xFFC5C3D9)
+                                                      : Color(0xFFFFFFFF),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            loading: () => const Center(
+                              child: CircularProgressIndicator(
+                                  color: Color(0xff9088F1)),
+                            ),
+                            error: (error, stack) => Center(
+                              child: Text(
+                                "Error loading skills",
                                 style: GoogleFonts.roboto(
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: themeMode == ThemeMode.light
-                                        ? Color(0xFFC5C3D9)
-                                        : Color(0xFF1F1F26)),
+                                    fontSize: 14.sp, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20.h,),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30.sp),
+                            topRight: Radius.circular(30.sp),
+                            bottomRight: Radius.circular(30.sp),
+                            bottomLeft: Radius.circular(30.sp),
+                          )
+                      ),
+
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                margin:
+                                EdgeInsets.only(left: 20.w, top: 20.h),
+                                child: Text(
+                                  "Explore Collage Review ",
+                                  style: GoogleFonts.roboto(
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: themeMode == ThemeMode.light
+                                          ? Color(0xFFC5C3D9)
+                                          : Color(0xFF1F1F26)),
+                                ),
                               ),
                               InkWell(
                                 onTap: () {
                                   Navigator.push(
                                       context,
                                       CupertinoPageRoute(
-                                        builder: (context) => FindCompanyPage(),
+                                        builder: (context) =>
+                                            FindCollegePage(),
                                       ));
                                 },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "View All",
-                                      style: GoogleFonts.roboto(
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      right: 20.w, top: 20.h),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "View All",
+                                        style: GoogleFonts.roboto(
                                           fontSize: 15.sp,
                                           fontWeight: FontWeight.w500,
-                                          color: themeMode == ThemeMode.light
+                                          color:
+                                          themeMode == ThemeMode.light
                                               ? Color(0xFF4988C4)
-                                              : Color(0xFF1C4D8D)),
-                                    ),
-                                    Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: themeMode == ThemeMode.light
-                                          ? Color(0xFF4988C4)
-                                          : Color(0xFF1C4D8D),
-                                      size: 15.sp,
-                                    )
-                                  ],
+                                              : Color(0xFF1C4D8D),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: themeMode == ThemeMode.light
+                                            ? Color(0xFF4988C4)
+                                            : Color(0xFF1C4D8D),
+                                        size: 15.sp,
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        SizedBox(height: 20.h),
-                        getHomeStudentData.when(
-                          data: (data) {
-                            final companies = data.companies ?? [];
-                            if (companies.isEmpty) {
-                              return Center(
-                                child: Text(
-                                  "No companies available",
-                                  style: GoogleFonts.roboto(
-                                      fontSize: 14.sp, color: Colors.white),
-                                ),
-                              );
-                            }
-                            final limitCompany = companies.take(5).toList();
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              padding: EdgeInsets.symmetric(horizontal: 20.w),
-                              itemCount: limitCompany.length,
-                              itemBuilder: (context, index) {
-                                final company = limitCompany[index];
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        CupertinoPageRoute(
-                                          builder: (context) =>
-                                              CompanyDetailPage(company.id!),
-                                        ));
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(bottom: 15.h),
-                                    padding: EdgeInsets.only(
-                                        left: 20.w,
-                                        right: 20.w,
-                                        bottom: 24.h,
-                                        top: 20.h),
-                                    decoration: BoxDecoration(
-                                      color: themeMode == ThemeMode.light
-                                          ? null
-                                          : Color(0xFFFFFFFF),
-                                      border: Border.all(
-                                          color: themeMode == ThemeMode.light
-                                              ? Color.fromARGB(
-                                                  25, 255, 255, 255)
-                                              : Color.fromARGB(
-                                                  25, 88, 85, 113)),
-                                      borderRadius: BorderRadius.circular(15.r),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              width: 50.w,
-                                              height: 50.h,
-                                              decoration: BoxDecoration(
+                          SizedBox(height: 20.h),
+                          getHomeStudentData.when(
+                            data: (data) {
+                              final colleges = data.colleges ?? [];
+                              if (colleges.isEmpty) {
+                                return Center(
+                                  child: Text(
+                                    "No colleges available",
+                                    style: GoogleFonts.roboto(
+                                        fontSize: 14.sp,
+                                        color: Colors.white),
+                                  ),
+                                );
+                              }
+                              final limitCollage =
+                              colleges.take(5).toList();
+
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 20.w),
+                                itemCount: limitCollage.length,
+                                itemBuilder: (context, index) {
+                                  final college = limitCollage[index];
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                            builder: (context) =>
+                                                CollegeDetailPage(
+                                                    college.id!),
+                                          ));
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.only(bottom: 15.h),
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 18.h, horizontal: 15.w),
+                                      decoration: BoxDecoration(
+                                        color: themeMode == ThemeMode.light
+                                            ? null
+                                            : Color(0xFFFFFFFF),
+                                        border: Border.all(
+                                            color:
+                                            themeMode == ThemeMode.light
+                                                ? Color.fromARGB(
+                                                25, 255, 255, 255)
+                                                : Color.fromARGB(
+                                                25, 88, 86, 113)),
+                                        borderRadius:
+                                        BorderRadius.circular(10.r),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                width: 56.w,
+                                                height: 56.h,
+                                                decoration: BoxDecoration(
                                                   shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: themeMode ==
-                                                            ThemeMode.light
-                                                        ? Color.fromARGB(
-                                                            25, 255, 255, 255)
-                                                        : Color.fromARGB(
-                                                            25, 0, 0, 0),
-                                                  )),
-                                              child: ClipOval(
-                                                child: Image.network(
-                                                  company.image ??
-                                                      "https://www.howardluksmd.com/wp-content/uploads/2021/10/featured-image-placeholder-728x404.jpg",
-                                                  fit: BoxFit.contain,
-                                                  errorBuilder: (context, error,
-                                                      stackTrace) {
-                                                    return Image.network(
-                                                      "https://www.howardluksmd.com/wp-content/uploads/2021/10/featured-image-placeholder-728x404.jpg",
-                                                      fit: BoxFit.contain,
-                                                    );
-                                                  },
+                                                  color: Color(0xFFF0F0F7),
+                                                ),
+                                                child: ClipOval(
+                                                  child: Image.network(
+                                                    college.image ??
+                                                        "https://www.howardluksmd.com/wp-content/uploads/2021/10/featured-image-placeholder-728x404.jpg",
+                                                    fit: BoxFit.contain,
+                                                    errorBuilder: (context,
+                                                        error, stackTrace) {
+                                                      return ClipOval(
+                                                        child:
+                                                        Image.network(
+                                                          "https://www.howardluksmd.com/wp-content/uploads/2021/10/featured-image-placeholder-728x404.jpg",
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            Stack(
-                                              clipBehavior: Clip.none,
-                                              alignment: Alignment.topRight,
-                                              children: [
-                                                Positioned(
-                                                  top: -12, // fine-tuned offset
-                                                  right: -12,
-                                                  child: Image.asset(
-                                                    "assets/gridbg.png",
+                                              SizedBox(
+                                                width: 10.w,
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment
+                                                    .start,
+                                                children: [
+                                                  Text(
+                                                    college.collegeName ??
+                                                        "N/A",
+                                                    style: GoogleFonts.roboto(
+                                                        fontSize: 15.sp,
+                                                        fontWeight:
+                                                        FontWeight.w500,
+                                                        color: themeMode ==
+                                                            ThemeMode
+                                                                .light
+                                                            ? Color(
+                                                            0xFFFFFFFF)
+                                                            : Color(
+                                                            0xFF33323F)),
                                                   ),
-                                                ),
-                                                Container(
-                                                  width: 45.w,
-                                                  height: 45.h,
+                                                  Text(
+                                                    "${college.city ?? "N/A"} | ${college.totalReviews} Review",
+                                                    style: GoogleFonts.roboto(
+                                                        fontSize: 15.sp,
+                                                        fontWeight:
+                                                        FontWeight.w500,
+                                                        color: themeMode ==
+                                                            ThemeMode
+                                                                .light
+                                                            ? Color
+                                                            .fromARGB(
+                                                            178,
+                                                            255,
+                                                            255,
+                                                            255)
+                                                            : Color(
+                                                            0xFF666666)),
+                                                  ),
+                                                ],
+                                              ),
+                                              Spacer(),
+                                              Container(
+                                                  padding: EdgeInsets.only(
+                                                      left: 8.w,
+                                                      right: 10.w,
+                                                      top: 8.h,
+                                                      bottom: 8.h),
                                                   decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: themeMode ==
-                                                            ThemeMode.light
-                                                        ? Color(0xFF26252E)
-                                                        : Color(0xFFF0F0F7),
-                                                  ),
-                                                  child: Center(
-                                                    child: Icon(
-                                                      Icons
-                                                          .arrow_forward_ios_outlined,
-                                                      color: themeMode ==
-                                                              ThemeMode.light
-                                                          ? Color(0xFFFFFFFF)
-                                                          : Color(0xFF1F1F26),
-                                                      size: 15.sp,
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
+                                                      borderRadius:
+                                                      BorderRadius
+                                                          .circular(
+                                                          10.r),
+                                                      color: Color.fromARGB(
+                                                          51,
+                                                          217,
+                                                          162,
+                                                          24)),
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.star,
+                                                        color: Color(
+                                                            0xFFD9A218),
+                                                        size: 18.sp,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 5.w,
+                                                      ),
+                                                      Text(
+                                                        college.avgRating!
+                                                            .toStringAsFixed(
+                                                            1),
+                                                        maxLines: 1,
+                                                        overflow:
+                                                        TextOverflow
+                                                            .ellipsis,
+                                                        style: GoogleFonts.inter(
+                                                            fontSize: 13.sp,
+                                                            fontWeight:
+                                                            FontWeight
+                                                                .w500,
+                                                            color: Color(
+                                                                0xFFD9A218)),
+                                                      )
+                                                    ],
+                                                  ))
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            loading: () => const Center(
+                              child: CircularProgressIndicator(
+                                  color: Color(0xff9088F1)),
+                            ),
+                            error: (error, stack) => Center(
+                              child: Text(
+                                "Error loading colleges",
+                                style: GoogleFonts.roboto(
+                                    fontSize: 14.sp, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 25.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Company Reviews",
+                            style: GoogleFonts.roboto(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w600,
+                                color: themeMode == ThemeMode.light
+                                ?  Color(0xFF1F1F26):
+                                     Color(0xFFC5C3D9)
+                                   ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) => FindCompanyPage(),
+                                  ));
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  "View All",
+                                  style: GoogleFonts.roboto(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w500,
+    color: themeMode == ThemeMode.light
+    ?  Color(0xFF1F1F26):
+    Color(0xFFC5C3D9)
+
+
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: themeMode == ThemeMode.light
+                                      ?  Color(0xFF1F1F26):
+                                  Color(0xFFC5C3D9),
+                                  size: 15.sp,
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20.h),
+                    getHomeStudentData.when(
+                      data: (data) {
+                        final companies = data.companies ?? [];
+                        if (companies.isEmpty) {
+                          return Center(
+                            child: Text(
+                              "No companies available",
+                              style: GoogleFonts.roboto(
+                                  fontSize: 14.sp, color: Colors.white),
+                            ),
+                          );
+                        }
+                        final limitCompany = companies.take(5).toList();
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
+                          itemCount: limitCompany.length,
+                          itemBuilder: (context, index) {
+                            final company = limitCompany[index];
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                      builder: (context) =>
+                                          CompanyDetailPage(company.id!),
+                                    ));
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(bottom: 15.h),
+                                padding: EdgeInsets.only(
+                                    left: 20.w,
+                                    right: 20.w,
+                                    bottom: 14.h,
+                                    top: 10.h),
+                                decoration: BoxDecoration(
+                                  color: themeMode == ThemeMode.light
+                                      ? null
+                                      : Color(0xFF262626),
+                                  border: Border.all(
+                                      color: themeMode == ThemeMode.light
+                                          ? Color.fromARGB(
+                                          25, 255, 255, 255)
+                                          : Color.fromARGB(
+                                          25, 88, 85, 113)),
+                                  borderRadius: BorderRadius.circular(15.r),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          width: 50.w,
+                                          height: 50.h,
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: themeMode ==
+                                                    ThemeMode.light
+                                                    ? Color.fromARGB(
+                                                    25, 255, 255, 255)
+                                                    : Color.fromARGB(
+                                                    25, 0, 0, 0),
+                                              )),
+                                          child: ClipOval(
+                                            child: Image.network(
+                                              company.image ??
+                                                  "https://www.howardluksmd.com/wp-content/uploads/2021/10/featured-image-placeholder-728x404.jpg",
+                                              fit: BoxFit.contain,
+                                              errorBuilder: (context, error,
+                                                  stackTrace) {
+                                                return Image.network(
+                                                  "https://www.howardluksmd.com/wp-content/uploads/2021/10/featured-image-placeholder-728x404.jpg",
+                                                  fit: BoxFit.contain,
+                                                );
+                                              },
                                             ),
-                                          ],
+                                          ),
+                                        ),
+                                        // Stack(
+                                        //   clipBehavior: Clip.none,
+                                        //   alignment: Alignment.topRight,
+                                        //   children: [
+                                        //     Positioned(
+                                        //       top: -12, // fine-tuned offset
+                                        //       right: -12,
+                                        //       child: Image.asset(
+                                        //         "assets/gridbg.png",
+                                        //       ),
+                                        //     ),
+                                            Container(
+                                              width: 35.w,
+                                              height: 35.h,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: themeMode ==
+                                                    ThemeMode.light
+                                                    ? Color(0xFF26252E)
+                                                    : Color(0xFFF0F0F7),
+                                              ),
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons
+                                                      .arrow_forward_ios_outlined,
+                                                  color: themeMode ==
+                                                      ThemeMode.light
+                                                      ? Color(0xFFFFFFFF)
+                                                      : Color(0xFF1F1F26),
+                                                  size: 15.sp,
+                                                ),
+                                              ),
+                                            )
+                                        //   ],
+                                        // ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 20.h,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          company.companyName ?? "Unknown",
+                                          style: GoogleFonts.roboto(
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w700,
+                                              color: themeMode ==
+                                                  ThemeMode.light
+
+                                                  ? Color(0xFF33323F)  :Color(0xFFFFFFFF)),
                                         ),
                                         SizedBox(
-                                          height: 20.h,
+                                          height: 4.h,
                                         ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                        Row(
                                           children: [
                                             Text(
-                                              company.companyName ?? "Unknown",
+                                              "Project Guide |",
                                               style: GoogleFonts.roboto(
-                                                  fontSize: 16.sp,
-                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 15.sp,
+                                                  fontWeight:
+                                                  FontWeight.w500,
                                                   color: themeMode ==
-                                                          ThemeMode.light
-                                                      ? Color(0xFFFFFFFF)
-                                                      : Color(0xFF33323F)),
+                                                      ThemeMode.light
+                                                      ? Color.fromARGB(178,
+                                                      255, 255, 255)
+                                                      : Color(0xFFDCF881)),
                                             ),
                                             SizedBox(
-                                              height: 4.h,
+                                              width: 5.w,
                                             ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "Project Guide |",
-                                                  style: GoogleFonts.roboto(
-                                                      fontSize: 15.sp,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: themeMode ==
-                                                              ThemeMode.light
-                                                          ? Color.fromARGB(178,
-                                                              255, 255, 255)
-                                                          : Color(0xFF666666)),
-                                                ),
-                                                SizedBox(
-                                                  width: 5.w,
-                                                ),
-                                                Icon(
-                                                  Icons.star,
+                                            Icon(
+                                              Icons.star,
+                                              color: themeMode ==
+                                                  ThemeMode.light
+                                                  ? Color.fromARGB(
+                                                  178, 255, 255, 255)
+                                                  : Color(0xFFDCF881),
+                                              size: 18.sp,
+                                            ),
+                                            SizedBox(
+                                              width: 5.w,
+                                            ),
+                                            Text(
+                                              "${company.avgRating} Rating",
+                                              style: GoogleFonts.roboto(
+                                                  fontSize: 15.sp,
+                                                  fontWeight:
+                                                  FontWeight.w500,
                                                   color: themeMode ==
-                                                          ThemeMode.light
-                                                      ? Color.fromARGB(
-                                                          178, 255, 255, 255)
-                                                      : Color(0xFF666666),
-                                                  size: 18.sp,
-                                                ),
-                                                SizedBox(
-                                                  width: 5.w,
-                                                ),
-                                                Text(
-                                                  "${company.avgRating} Rating",
-                                                  style: GoogleFonts.roboto(
-                                                      fontSize: 15.sp,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: themeMode ==
-                                                              ThemeMode.light
-                                                          ? Color.fromARGB(178,
-                                                              255, 255, 255)
-                                                          : Color(0xFF666666)),
-                                                ),
-                                              ],
+                                                      ThemeMode.light
+                                                      ? Color.fromARGB(178,
+                                                      255, 255, 255)
+                                                      : Color(0xFFDCF881)),
                                             ),
                                           ],
                                         ),
                                       ],
                                     ),
-                                  ),
-                                );
-                              },
+                                  ],
+                                ),
+                              ),
                             );
                           },
-                          loading: () => const Center(
-                            child: CircularProgressIndicator(
-                                color: Color(0xff9088F1)),
-                          ),
-                          error: (error, stack) => Center(
-                            child: Text(
-                              "Error loading companies",
-                              style: GoogleFonts.roboto(
-                                  fontSize: 14.sp, color: Colors.white),
-                            ),
-                          ),
+                        );
+                      },
+                      loading: () => const Center(
+                        child: CircularProgressIndicator(
+                            color: Color(0xff9088F1)),
+                      ),
+                      error: (error, stack) => Center(
+                        child: Text(
+                          "Error loading companies",
+                          style: GoogleFonts.roboto(
+                              fontSize: 14.sp, color: Colors.white),
                         ),
-                        SizedBox(height: 30.h),
-                      ],
+                      ),
                     ),
-                  ),
-              ],
+                    SizedBox(height: 30.h),
+
+                  ],),
+
+
+
+                ],
+              ),
             ),
           ),
-        ),
       ),
     );
   }
@@ -2770,13 +3413,16 @@ class _HomePageContentState extends ConsumerState<HomePageContent> {
 
 class HomePageBody extends ConsumerStatefulWidget {
   final Function callBack;
+
   const HomePageBody({super.key, required this.callBack});
+
   @override
   _HomePageBodyState createState() => _HomePageBodyState();
 }
 
 class _HomePageBodyState extends ConsumerState<HomePageBody> {
   int currentTabIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     final getHomeStudentData = ref.watch(getHomeStudentDataProvider);
@@ -2787,77 +3433,77 @@ class _HomePageBodyState extends ConsumerState<HomePageBody> {
       children: [
         // SizedBox(height: 10.h),
 
-        Container(
-          decoration: BoxDecoration(
-              color: Color(0xff1C4D8D),
-              borderRadius: BorderRadius.circular(20.sp)),
-          padding: EdgeInsets.all(20.sp),
-          margin: EdgeInsets.all(20.sp),
-          // height: 200.h,
-          // width: double.infinity,
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Don’t find the right mentor ?",
-                      style: GoogleFonts.roboto(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    Text(
-                      "Upload your custom request and let the mentors bid on it",
-                      style: GoogleFonts.roboto(
-                        color: Colors.grey,
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: 10.w,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CreateListPage()));
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5.sp),
-                    color: Color(0xffD9A218),
-                  ),
-                  padding: EdgeInsets.all(10.sp),
-                  child: Text(
-                    "Upload Request",
-                    style: GoogleFonts.roboto(
-                      color: Colors.white,
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
+        // Container(
+        //   decoration: BoxDecoration(
+        //       color: Color(0xff1C4D8D),
+        //       borderRadius: BorderRadius.circular(20.sp)),
+        //   padding: EdgeInsets.all(20.sp),
+        //   margin: EdgeInsets.all(20.sp),
+        //   // height: 200.h,
+        //   // width: double.infinity,
+        //   child: Row(
+        //     children: [
+        //       Expanded(
+        //         child: Column(
+        //           crossAxisAlignment: CrossAxisAlignment.start,
+        //           children: [
+        //             Text(
+        //               "Don’t find the right mentor ?",
+        //               style: GoogleFonts.roboto(
+        //                 color: Colors.white,
+        //                 fontSize: 16.sp,
+        //                 fontWeight: FontWeight.w700,
+        //               ),
+        //               maxLines: 2,
+        //               overflow: TextOverflow.ellipsis,
+        //             ),
+        //             SizedBox(
+        //               height: 10.h,
+        //             ),
+        //             Text(
+        //               "Upload your custom request and let the mentors bid on it",
+        //               style: GoogleFonts.roboto(
+        //                 color: Colors.grey,
+        //                 fontSize: 13.sp,
+        //                 fontWeight: FontWeight.w700,
+        //               ),
+        //               maxLines: 2,
+        //               overflow: TextOverflow.ellipsis,
+        //             ),
+        //           ],
+        //         ),
+        //       ),
+        //       SizedBox(
+        //         width: 10.w,
+        //       ),
+        //       GestureDetector(
+        //         onTap: () {
+        //           Navigator.push(
+        //               context,
+        //               MaterialPageRoute(
+        //                   builder: (context) => CreateListPage()));
+        //         },
+        //         child: Container(
+        //           decoration: BoxDecoration(
+        //             borderRadius: BorderRadius.circular(5.sp),
+        //             color: Color(0xffD9A218),
+        //           ),
+        //           padding: EdgeInsets.all(10.sp),
+        //           child: Text(
+        //             "Upload Request",
+        //             style: GoogleFonts.roboto(
+        //               color: Colors.white,
+        //               fontSize: 13.sp,
+        //               fontWeight: FontWeight.w700,
+        //             ),
+        //             maxLines: 1,
+        //             overflow: TextOverflow.ellipsis,
+        //           ),
+        //         ),
+        //       )
+        //     ],
+        //   ),
+        // ),
 
         Container(
           margin: EdgeInsets.symmetric(horizontal: 20.w),

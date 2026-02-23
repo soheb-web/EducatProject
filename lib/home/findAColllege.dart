@@ -726,7 +726,7 @@ class _FindCollegePageState extends ConsumerState<FindCollegePage> {
     final themeMode = ref.watch(themeProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xff9088F1),
+      backgroundColor: const Color(0xff1B1B1B),
       body: Column(
         children: [
           SizedBox(height: 30.h),
@@ -743,17 +743,16 @@ class _FindCollegePageState extends ConsumerState<FindCollegePage> {
                     width: 40.w,
                     height: 40.h,
                     decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
+                        color: Color(0xff262626), shape: BoxShape.circle),
                     child: Center(
                       child: Padding(
                         padding: EdgeInsets.only(left: 8.w),
                         child: Icon(
                           Icons.arrow_back_ios,
                           size: 20,
-                          color: themeMode == ThemeMode.dark
-                              ? const Color(0xFF1B1B1B)
+                          color:
+                          themeMode == ThemeMode.dark
+                              ? const Color(0xFFFFFFFFF)
                               : null,
                         ),
                       ),
@@ -766,9 +765,11 @@ class _FindCollegePageState extends ConsumerState<FindCollegePage> {
                       "Find a ",
                       style: GoogleFonts.roboto(
                         fontSize: 24.sp,
-                        color: themeMode == ThemeMode.dark
-                            ? const Color(0xFF1B1B1B)
-                            : Colors.white,
+                        color:
+                        // themeMode == ThemeMode.dark
+                        //     ?
+                        const Color(0xFFDCF881)
+                            // : Colors.white,
                       ),
                     ),
                     Text(
@@ -1086,13 +1087,154 @@ class _FindCollegePageState extends ConsumerState<FindCollegePage> {
     );
   }
 }
+//
+// class CollegeTab extends StatelessWidget {
+//   final int id;
+//   final String name;
+//   final String desc;
+//   final String course;
+//   final String image;
+//   final String city;
+//   final String rating;
+//
+//   const CollegeTab({
+//     super.key,
+//     required this.id,
+//     required this.name,
+//     required this.desc,
+//     required this.course,
+//     required this.image,
+//     required this.city,
+//     required this.rating,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(20.r),
+//         color: const Color(0xFFFFFFFF),
+//         border: Border.all(color: Color.fromARGB(25, 0, 0, 0)),
+//       ),
+//       margin: EdgeInsets.symmetric(horizontal: 10.w),
+//       padding: EdgeInsets.all(8),
+//       child: Row(
+//         children: [
+//           ClipRRect(
+//             borderRadius: BorderRadius.circular(10.r),
+//             child: Image.network(
+//               image,
+//               width: 115.w,
+//               height: 110.h,
+//               fit: BoxFit.contain,
+//               errorBuilder: (context, error, stackTrace) {
+//                 return Image.network(
+//                   "https://t4.ftcdn.net/jpg/06/71/92/37/360_F_671923740_x0zOL3OIuUAnSF6sr7PuznCI5bQFKhI0.jpg",
+//                   width: 115.w,
+//                   height: 110.h,
+//                   fit: BoxFit.fill,
+//                 );
+//               },
+//             ),
+//           ),
+//           SizedBox(width: 10.w),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   name,
+//                   maxLines: 1,
+//                   overflow: TextOverflow.ellipsis,
+//                   style: GoogleFonts.roboto(
+//                     fontSize: 16.sp,
+//                     fontWeight: FontWeight.bold,
+//                     color: const Color(0xFF1B1B1B),
+//                   ),
+//                 ),
+//                 SizedBox(height: 4.h),
+//                 Text(
+//                   desc,
+//                   maxLines: 2,
+//                   overflow: TextOverflow.ellipsis,
+//                   style: GoogleFonts.roboto(
+//                     fontSize: 15.sp,
+//                     fontWeight: FontWeight.w400,
+//                     color: const Color(0xFF666666),
+//                     height: 1.1,
+//                   ),
+//                 ),
+//                 SizedBox(height: 12.h),
+//                 Container(
+//                   width: 220.w,
+//                   height: 2.h,
+//                   color: Color.fromARGB(25, 0, 0, 0),
+//                 ),
+//                 SizedBox(height: 10.h),
+//                 Row(
+//                   children: [
+//                     Container(
+//                       padding:
+//                           EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+//                       decoration: BoxDecoration(
+//                         borderRadius: BorderRadius.circular(15.r),
+//                         color: const Color(0xFFDEDDEC),
+//                       ),
+//                       child: Text(
+//                         city,
+//                         style: GoogleFonts.roboto(
+//                           fontSize: 12.sp,
+//                           fontWeight: FontWeight.w400,
+//                           color: const Color(0xFF2E2E2E),
+//                         ),
+//                       ),
+//                     ),
+//                     Container(
+//                       margin: EdgeInsets.only(left: 10.w),
+//                       padding:
+//                           EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+//                       decoration: BoxDecoration(
+//                         borderRadius: BorderRadius.circular(15.r),
+//                         color: const Color(0xFFDEDDEC),
+//                       ),
+//                       child: Row(
+//                         children: [
+//                           Icon(
+//                             Icons.star,
+//                             color: Color(0xff9088F1),
+//                             size: 15.sp,
+//                           ),
+//                           SizedBox(
+//                             width: 4.w,
+//                           ),
+//                           Text(
+//                             "${rating} Review",
+//                             style: GoogleFonts.roboto(
+//                               fontSize: 12.sp,
+//                               fontWeight: FontWeight.w400,
+//                               color: const Color(0xFF2E2E2E),
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class CollegeTab extends StatelessWidget {
   final int id;
   final String name;
   final String desc;
   final String course;
-  final String image;
+  final String image;     // keeping it for now (you can remove if not needed anymore)
   final String city;
   final String rating;
 
@@ -1107,6 +1249,17 @@ class CollegeTab extends StatelessWidget {
     required this.rating,
   });
 
+  String _getInitials(String name) {
+    if (name.trim().isEmpty) return "NA";
+
+    final words = name.trim().split(RegExp(r'\s+'));
+    if (words.length == 1) {
+      return words[0][0].toUpperCase();
+    } else {
+      return (words.first[0] + words.last[0]).toUpperCase();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1119,24 +1272,27 @@ class CollegeTab extends StatelessWidget {
       padding: EdgeInsets.all(8),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10.r),
-            child: Image.network(
-              image,
-              width: 115.w,
-              height: 110.h,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.network(
-                  "https://t4.ftcdn.net/jpg/06/71/92/37/360_F_671923740_x0zOL3OIuUAnSF6sr7PuznCI5bQFKhI0.jpg",
-                  width: 115.w,
-                  height: 110.h,
-                  fit: BoxFit.fill,
-                );
-              },
+          // Replaced image with initials avatar
+          Container(
+            width: 48.w,
+            height: 48.h,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF0F0F7), // light purple-ish background
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              _getInitials(name),
+              style: GoogleFonts.roboto(
+                fontSize: 14.sp,           // quite big for visibility
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF26538E), // nice accent color
+              ),
             ),
           ),
+
           SizedBox(width: 10.w),
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1152,76 +1308,99 @@ class CollegeTab extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 4.h),
-                Text(
-                  desc,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.roboto(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF666666),
-                    height: 1.1,
-                  ),
-                ),
-                SizedBox(height: 12.h),
-                Container(
-                  width: 220.w,
-                  height: 2.h,
-                  color: Color.fromARGB(25, 0, 0, 0),
-                ),
-                SizedBox(height: 10.h),
+                // Text(
+                //   desc,
+                //   maxLines: 2,
+                //   overflow: TextOverflow.ellipsis,
+                //   style: GoogleFonts.roboto(
+                //     fontSize: 15.sp,
+                //     fontWeight: FontWeight.w400,
+                //     color: const Color(0xFF666666),
+                //     height: 1.1,
+                //   ),
+                // ),
+                // SizedBox(height: 12.h),
+                // Container(
+                //   width: 220.w,
+                //   height: 2.h,
+                //   color: Color.fromARGB(25, 0, 0, 0),
+                // ),
+                // SizedBox(height: 10.h),
                 Row(
                   children: [
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.r),
-                        color: const Color(0xFFDEDDEC),
-                      ),
-                      child: Text(
-                        city,
-                        style: GoogleFonts.roboto(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xFF2E2E2E),
-                        ),
+                    Text(
+                      city,
+                      style: GoogleFonts.roboto(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF2E2E2E),
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(left: 10.w),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.r),
-                        color: const Color(0xFFDEDDEC),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.star,
-                            color: Color(0xff9088F1),
-                            size: 15.sp,
+                    SizedBox(width: 10.w,),
+
+                    Text("|",  style: GoogleFonts.roboto(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFF2E2E2E),
+                    ),) ,
+                    SizedBox(width: 10.w,),
+                    Row(
+                      children: [
+                        // Icon(
+                        //   Icons.star,
+                        //   color: Color(0xff9088F1),
+                        //   size: 15.sp,
+                        // ),
+                        // SizedBox(width: 4.w),
+                        Text(
+                          "${rating}",
+                          style: GoogleFonts.roboto(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                            color: const Color(0xFF2E2E2E),
                           ),
-                          SizedBox(
-                            width: 4.w,
-                          ),
-                          Text(
-                            "${rating} Review",
-                            style: GoogleFonts.roboto(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xFF2E2E2E),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ],
             ),
           ),
+
+          Container(
+            // width: 48.w,
+            // height: 48.h,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.sp),
+              color: const Color(0x33D9A218),
+              // 33₁₆ = 51 ≈ 20% of 255              borderRadius: BorderRadius.circular(10.r),
+            ),
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.star,
+                    color: Color(0xffD9A218),
+                    size: 15.sp,
+                  ),
+                  Text(
+                    "${rating}",
+                    style: GoogleFonts.roboto(
+                      fontSize: 14.sp,           // quite big for visibility
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xffD9A218), // nice accent color
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+
         ],
       ),
     );

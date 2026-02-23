@@ -118,6 +118,7 @@ flutter:
   assets:
     - assets/cuate.png
     - assets/
+    - assets/svg/
     - assets/Ellipse2.png
     
 

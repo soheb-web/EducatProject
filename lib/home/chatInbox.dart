@@ -28,7 +28,7 @@ class _ChatinboxState extends ConsumerState<Chatinbox> {
     final inboxData = ref.watch(inboxProvider(id.toString()));
     final themeMode = ref.watch(themeProvider);
     return Scaffold(
-      backgroundColor: Color(0xff9088F1),
+      backgroundColor: Color(0xFF1B1B1B),
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(inboxProvider(id.toString()));
@@ -65,8 +65,8 @@ class _ChatinboxState extends ConsumerState<Chatinbox> {
                         fontWeight: FontWeight.w600,
                         //color: Color(0xff9088F1),
                         color: themeMode == ThemeMode.dark
-                            ? Colors.white
-                            : Colors.white,
+                            ? Color(0xffDCF881)
+                            :Color(0xffDCF881)
                       ),
                     ),
                     Spacer(),

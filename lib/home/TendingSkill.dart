@@ -1134,7 +1134,7 @@ class _FindSkillPageState extends ConsumerState<FindSkillPage> {
     final themeMode = ref.watch(themeProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xff9088F1),
+      backgroundColor: const Color(0xff1B1B1B),
       body: Column(
         children: [
           SizedBox(height: 30.h),
@@ -1422,15 +1422,16 @@ class _FindSkillPageState extends ConsumerState<FindSkillPage> {
               width: 40.w,
               height: 40.h,
               decoration: const BoxDecoration(
-                  color: Colors.white, shape: BoxShape.circle),
+                  color: Color(0xff262626), shape: BoxShape.circle),
               child: Center(
                 child: Padding(
                   padding: EdgeInsets.only(left: 8.w),
                   child: Icon(
                     Icons.arrow_back_ios,
                     size: 20,
-                    color: themeMode == ThemeMode.dark
-                        ? const Color(0xFF1B1B1B)
+                    color:
+                    themeMode == ThemeMode.dark
+                        ? const Color(0xFFFFFFFFF)
                         : null,
                   ),
                 ),
@@ -1442,9 +1443,13 @@ class _FindSkillPageState extends ConsumerState<FindSkillPage> {
               Text("Trending ",
                   style: GoogleFonts.roboto(
                       fontSize: 24.sp,
-                      color: themeMode == ThemeMode.dark
-                          ? const Color(0xFF1B1B1B)
-                          : Colors.white)),
+                      color:
+                      // themeMode == ThemeMode.dark
+                      //     ?
+                      const Color(0xFFDCF881)
+                          // : Colors.white
+    )
+    ),
               Text("Course",
                   style: GoogleFonts.roboto(
                       fontSize: 24.sp, color: const Color(0xFFDCF881))),
@@ -1527,7 +1532,7 @@ class _SkillTabState extends ConsumerState<SkillTab> {
         color: const Color(0xFFF1F2F6),
       ),
       child: Column(
-        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
@@ -1657,36 +1662,55 @@ class _SkillTabState extends ConsumerState<SkillTab> {
           SizedBox(
             height: 6.h,
           ),
+          // Container(
+          //   height: 50.h,
+          //   width: 50.w,
+          //   decoration: BoxDecoration(
+          //     borderRadius: BorderRadius.circular(100.r),
+          //     image: DecorationImage(
+          //       image: widget.image.isNotEmpty
+          //           ? NetworkImage(widget.image)
+          //           : const AssetImage('assets/images/default_profile.png')
+          //               as ImageProvider,
+          //       fit: BoxFit.cover,
+          //     ),
+          //   ),
+          // ),
+          //
           Container(
+margin: EdgeInsets.only(left: 20.w),
             height: 50.h,
             width: 50.w,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100.r),
-              image: DecorationImage(
-                image: widget.image.isNotEmpty
-                    ? NetworkImage(widget.image)
-                    : const AssetImage('assets/images/default_profile.png')
-                        as ImageProvider,
-                fit: BoxFit.cover,
+              borderRadius: BorderRadius.circular(10.r),
+color: Color(0xff0F2854)
+
+            ),
+
+            child: Image.asset("assets/feather2.png",),
+          ),
+
+          SizedBox(height: 20.h),
+          Container(
+            margin: EdgeInsets.only(left: 20.w),
+
+            child: Text(
+              widget.level,
+              style: GoogleFonts.roboto(
+                color: const Color(0xff9088F1),
+                fontWeight: FontWeight.w600,
+                fontSize: 16.sp,
               ),
             ),
           ),
-          SizedBox(height: 8.h),
-          Text(
-            widget.level,
-            style: GoogleFonts.roboto(
-              color: const Color(0xff9088F1),
-              fontWeight: FontWeight.w600,
-              fontSize: 16.sp,
-            ),
-          ),
           SizedBox(height: 4.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.w),
+          Container(
+            margin: EdgeInsets.only(left: 20.w),
+
             child: Text(
               widget.name,
               textAlign: TextAlign.center,
-              maxLines: 2,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.roboto(
                 color: const Color(0xFF1B1B1B),
@@ -1696,12 +1720,13 @@ class _SkillTabState extends ConsumerState<SkillTab> {
             ),
           ),
           SizedBox(height: 6.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
+          Container(
+            margin: EdgeInsets.only(left: 20.w),
+
             child: Text(
               widget.description,
               maxLines: 2,
-              textAlign: TextAlign.center,
+              // textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.roboto(
                 fontSize: 13.sp,
